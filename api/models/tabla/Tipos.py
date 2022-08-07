@@ -7,11 +7,11 @@ class Tipos(Enum):
 
 
 def getTipo(s: str):
-    if s == "INT":
+    if s == "i64":
         return Tipos.INT
-    if s == "FLOAT":
+    if s == "f64":
         return Tipos.FLOAT
-    if s == "BOOLEAN":
+    if s == "bool":
         return Tipos.BOOLEAN
 
 
@@ -20,11 +20,10 @@ def definirTipo(value):
         return Tipos.FLOAT
     elif type(value) == int:
         return Tipos.INT
-    elif value == "true" or value == "false":
+    elif type(value) == bool:
         return Tipos.BOOLEAN
     else:
         return None
-
 
 class Tipo:
     def __init__(self, stipo: str):

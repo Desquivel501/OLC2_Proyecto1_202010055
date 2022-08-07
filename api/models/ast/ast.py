@@ -9,6 +9,6 @@ class Ast:
 
         self.instrucciones = instrucciones
 
-    def ejecutar(self, driver, ts):
+    def ejecutar(self, ts):
         for instruccion in self.instrucciones:
-            instruccion.ejecutar(driver, ts)
+            instruccion.ejecutar(ts)

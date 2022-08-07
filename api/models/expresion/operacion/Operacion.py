@@ -11,6 +11,15 @@ class Operador(Enum):
     MODULO = 5
     POW = 6
     POWF = 7
+    MAYOR = 8
+    MENOR = 9
+    MAYOR_I = 10
+    MENOR_I = 11
+    IGUAL = 12
+    NO_IGUAL = 13
+    OR = 14
+    AND = 15
+    NOT = 16
 
 def getOperador(op) -> Operador:
     if op == "+":
@@ -27,6 +36,24 @@ def getOperador(op) -> Operador:
         return  Operador.POW
     if op == 'powf':
         return  Operador.POWF
+    if op == '>':
+        return Operador.MAYOR
+    if op == '<':
+        return Operador.MENOR
+    if op == '>=':
+        return Operador.MAYOR_I
+    if op == '<=':
+        return Operador.MENOR_I
+    if op == '==':
+        return Operador.IGUAL
+    if op == '!=':
+        return Operador.NO_IGUAL
+    if op == "||":
+        return Operador.OR
+    if op == "&&":
+        return Operador.AND
+    if op == "!":
+        return Operador.NOT
         
     
 class Operacion(Expresion):

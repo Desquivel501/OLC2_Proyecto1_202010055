@@ -1,3 +1,4 @@
+from models.expresion.Expresion import Expresion
 from models.tabla.Tipos import Tipo
 from enum import Enum
 
@@ -9,9 +10,12 @@ def getSimbolo(s):
         return Simbolos.VARIABLE
 
 class Simbolo:
-    def __init__(self, simbolo: int, tipo: Tipo, id: str, value):
-        self.value = value
+    def __init__(self, simbolo: int, tipo: Tipo, id: str, valor:Expresion, mut:bool):
+        self.valor = valor
         self.id = id
         self.tipo = tipo
         self.simbolo = getSimbolo(simbolo)
+        self.mut = mut
+        
+    
         

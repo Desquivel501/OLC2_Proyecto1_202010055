@@ -8,8 +8,8 @@ class Primitivo(Expresion):
         self.linea = linea
         self.columna = columna
         
-    def getTipo(self, driver, ts):
-        return definirTipo(self.getValor(driver,ts))
+    def getTipo(self, ts):
+        return definirTipo(self.getValor(ts))
     
-    def getValor(self, driver, ts):
+    def getValor(self, ts):
         return self.primitivo

@@ -7,13 +7,22 @@ reservadas = {
     'pow':'POW_INT',
     'powf':'POW_FLOAT',
     'i64':'INT',
-    'f64':'FLOAT'
+    'f64':'FLOAT',
+    'mut':'MUT',
+    'let':'LET',
+    'if':'IF',
+    'else':'ELSE',
+    'bool':'BOOL',
+    'String':'STRING',
+    'str':'STR',
+    'char':'CHAR'
      
 }
 
 tokens = [
              'DECIMAL',
              'ENTERO',
+             'ID',
              'MAS',
              'MENOS',
              'MULTI',
@@ -28,12 +37,16 @@ tokens = [
              'MENOR',
              'MAYOR_I',
              'MENOR_I',
-             'D_IGUAL',
              'NO_IGUAL',
+             'OR',
+             'AND',
+             'NOT',
+             'IGUAL',
+             'D_IGUAL'
          ] + list(reservadas.values())
 
 # Caracteres ignorados
-t_ignore = '[\t ]'
+t_ignore = '[\r\t ]'
 
 # Tokens con Regex
 t_MAS = r'\+'
@@ -51,7 +64,11 @@ t_MENOR = r'<'
 t_MAYOR_I = r'>='
 t_MENOR_I = r'<='
 t_D_IGUAL = r'=='
+t_IGUAL = r'='
 t_NO_IGUAL = r'!='
+t_OR = r'\|\|'
+t_AND = r'&&'
+t_NOT = r'!'
 
 
 def t_DECIMAL(t):
@@ -68,6 +85,11 @@ def t_ENTERO(t):
     t.value = int(t.value)
     return t
 
+def t_CADENA(t):
+    r'"([^"]*)"'
+    t.value = str(t.value).replace('"', '')
+    return t
+
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
@@ -75,7 +97,7 @@ def t_ID(t):
 
 # Ignora y hace una accion
 def t_ignorar_salto(t):
-    r'\n+'
+    r"""\n+"""
     t.lexer.lineno += t.value.count('\n')
     
 def t_COMENTARIO_SIMPLE(t):

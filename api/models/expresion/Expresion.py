@@ -1,7 +1,7 @@
 class Expresion:
 
-    def getTipo(self, driver, ts):
+    def getTipo(self, ts):
         pass
 
-    def getValor(self, driver, ts):
+    def getValor(self,ts):
         pass

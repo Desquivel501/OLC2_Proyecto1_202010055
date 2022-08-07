@@ -1,5 +1,6 @@
 from models.instruccion.Instruccion import Instruccion
 from models.expresion.Expresion import Expresion
+from models.misc.Program import Program
 
 
 class Ejecutar(Instruccion):
@@ -9,5 +10,5 @@ class Ejecutar(Instruccion):
         self.linea = linea
         self.exp = exp
 
-    def ejecutar(self, driver, ts):
-        driver.append(str(self.exp.getValor(driver, ts)))
+    def ejecutar(self, ts):
+        Program.console += str(self.exp.getValor(ts)) + "\n"

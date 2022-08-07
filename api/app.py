@@ -1,13 +1,47 @@
+from flask import Flask, jsonify, request, redirect
+from flask_cors import CORS
+import json
+from models.misc.Program import Program
+
 from models.tabla.TablaSimbolos import TablaSimbolos
-from models.driver import Driver
+from models.misc.driver import Driver
 from models.ast.ast import Ast
 
 from analizador.parser import parser
 
-ast: Ast = parser.parse("ejecutar( true );")
+app = Flask(__name__)
+CORS(app)
 
-ts = TablaSimbolos(None, 'Global')
-driver = Driver()
-ast.ejecutar(driver, ts)
+# ast: Ast = parser.parse("ejecutar(1 + 1); ejecutar(1 + 1);")
 
-print(driver.console)
+# ts = TablaSimbolos(None, 'Global')
+# driver = Driver()
+# ast.ejecutar(driver, ts)
+
+# print(driver.console)
+
+
+@app.route("/interpretar",methods=["POST"])
+def interpretar():
+    if request.method == 'POST':
+        Program.console = ""
+        data = request.json
+        print(data)
+        ast: Ast = parser.parse(data.get('instrucciones'))
+        
+        ts = TablaSimbolos(None, 'Global')
+        
+        try:
+            ast.ejecutar(ts)
+        except:
+            pass
+
+        print(Program.console)
+
+        return {
+            'resultado': Program.console
+        }
+
+
+if __name__ == "__main__":
+    app.run(threaded=True, debug=True, port=5000)

@@ -1,0 +1,7 @@
+
+class Program:
+    
+    console = ""
+    errores = []
+    
+    
