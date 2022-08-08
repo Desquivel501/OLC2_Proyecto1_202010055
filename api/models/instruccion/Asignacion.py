@@ -1,3 +1,4 @@
+from models.misc.error import Error_
 from models.instruccion.Instruccion import Instruccion
 
 from models.tabla.Simbolo import Simbolo, Simbolos
@@ -22,10 +23,13 @@ class Asignacion(Instruccion):
         var_tipo = self.variable.valor.getTipo( ts)
         var_valor = self.variable.valor.getValor(ts)
         
-        if self.tipo.tipo != var_tipo:
-            print(f'El valor de la variable no coincide con su tipo')
-            return
-        
+        if self.tipo is not None:
+            if self.tipo.tipo != var_tipo:
+                print(f'El valor de la variable no coincide con su tipo')
+                raise Error_("Semantica", "El valor de la variable no coincide con su tipo'", self.linea, self.columna)
+        else:
+            self.tipo = Tipo(var_tipo)
+            
         simbolo = ts.buscar(self.identificador);
         
         if simbolo is None:

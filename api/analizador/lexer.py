@@ -1,3 +1,4 @@
+from re import L
 from ply import lex
 
 reservadas = {
@@ -30,6 +31,8 @@ tokens = [
              'DIV',
              'PAR_I',
              'PAR_D',
+             'LLV_I',
+             'LLV_D',
              'D_PUNTO',
              'PUNTOCOMA',
              'COMA',
@@ -55,6 +58,8 @@ t_DIV = r'/'
 t_MULTI = r'\*'
 t_PAR_I = r'\('
 t_PAR_D = r'\)'
+t_LLV_I = r'\{'
+t_LLV_D = r'\}'
 t_PUNTOCOMA = r'\;'
 t_MODULO = r'%'
 t_COMA = r','

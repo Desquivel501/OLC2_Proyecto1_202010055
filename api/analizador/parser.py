@@ -1,6 +1,8 @@
 
 from ply.yacc import yacc
 from analizador import lexer
+from models.instruccion.Statement import Statement
+from models.instruccion.If import If
 
 from models.expresion.Identificador import Identificador
 from models.instruccion.Asignacion import Asignacion
@@ -33,7 +35,7 @@ def p_ini(p):
     
 def p_instrucciones(p):
     """
-    instrucciones : instrucciones instruccion PUNTOCOMA						
+    instrucciones : instrucciones instruccion 						
     """
     p[1].append(p[2])
     p[0] = p[1]
@@ -41,14 +43,15 @@ def p_instrucciones(p):
     
 def p_instrucciones_instruccion(p):
     """
-    instrucciones : instruccion PUNTOCOMA						
+    instrucciones : instruccion 						
     """
     p[0] = [p[1]]
     
 def p_instruccion(p):
     """
-    instruccion : ejecutar
-                | asignacion
+    instruccion : ejecutar PUNTOCOMA
+                | asignacion PUNTOCOMA
+                | if
     """
     p[0] = p[1]
     
@@ -60,17 +63,63 @@ def p_instruccion_ejecutar(p):
     p[0] = Ejecutar(p[3], p.lineno(1),p.lexpos(1))
     
     
+def p_instruccion_if(p):
+    """
+    if : IF expresion statement
+    """
+    p[0] = If(p[2], p[3], None, p.lineno(1), p.lexpos(1))
+        
+
+def p_instruccion_if_else(p):
+    """
+    if : IF expresion statement else
+    """
+    p[0] = If(p[2], p[3], p[4], p.lineno(1), p.lexpos(1))
+    
+    
+def p_else(p):
+    """
+    else : ELSE statement
+         | ELSE if
+    """
+    p[0] = p[2]
+    
+    
+def p_statement(p):
+    """
+    statement : LLV_I instrucciones LLV_D 
+    """
+    p[0] = Statement(p[2],p.lineno(1),p.lexpos(1))
+    
+    
 def p_asignacion(p):
+    """
+    asignacion : LET ID IGUAL expresion
+    """
+    p[0] = Asignacion(p[2], Simbolo(Simbolos.VARIABLE, None, p[2], p[4], False), None, False, p.lineno(1),p.lexpos(1))
+                
+                      
+def p_asignacion_mut(p):
+    """
+    asignacion : LET MUT ID IGUAL expresion
+    """
+    p[0] = Asignacion(p[3],  Simbolo(Simbolos.VARIABLE, None, p[3], p[5], True), None,True, p.lineno(1),p.lexpos(1))
+
+
+def p_asignacion_tipo(p):
     """
     asignacion : LET ID D_PUNTO tipo IGUAL expresion
     """
     p[0] = Asignacion(p[2], Simbolo(Simbolos.VARIABLE, p[4], p[2], p[6], False), p[4], False, p.lineno(1),p.lexpos(1))
+          
                       
-def p_asignacion_mut(p):
+def p_asignacion_mut_tipo(p):
     """
     asignacion : LET MUT ID D_PUNTO tipo IGUAL expresion
     """
     p[0] = Asignacion(p[3],  Simbolo(Simbolos.VARIABLE, p[5], p[3], p[7], True), p[5],True, p.lineno(1),p.lexpos(1))
+  
+    
 
 def p_tipo(p):
     """

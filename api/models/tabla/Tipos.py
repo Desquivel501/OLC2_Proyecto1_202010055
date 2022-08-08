@@ -29,6 +29,9 @@ class Tipo:
     def __init__(self, stipo: str):
         self.stipo = stipo
         self.tipo = getTipo(stipo)
+        
+    def __init__(self, tipo: Tipos):
+        self.tipo = tipo
 
     def getSTipo(self):
         return self.stipo
