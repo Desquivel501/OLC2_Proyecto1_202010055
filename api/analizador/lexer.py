@@ -16,7 +16,12 @@ reservadas = {
     'bool':'BOOL',
     'String':'STRING',
     'str':'STR',
-    'char':'CHAR'
+    'char':'CHAR',
+    'println':'PRINT',
+    'abs':"ABS",
+    'sqrt':'SQRT', 
+    'to_owned':'TO_OWNED',
+    'to_string':'TO_STRING'
      
 }
 
@@ -77,8 +82,9 @@ t_NOT = r'!'
 
 
 def t_DECIMAL(t):
-    r'\d+.\d+'
+    r'\d+\.\d+'
     try:
+        print(t.value)
         t.value = float(t.value)
     except ValueError:
         print("Float value too large %d", t.value)

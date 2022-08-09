@@ -1,3 +1,4 @@
+from cmath import sqrt
 from models.misc.error import Error_
 from models.tabla.Tipos import Tipos, definirTipo
 from models.expresion.operacion.Operacion import Operador, Operacion
@@ -15,8 +16,11 @@ class Aritmetica(Operacion):
         tipo_left = self.left.getTipo(ts)
         tipo_right = self.right.getTipo(ts) 
         
+        print(tipo_left, " - ", tipo_right)
+        
         if self.unaria is True:
             return valor_left*(-1)
+            
         
         if self.operador == Operador.POW:
             if tipo_left != Tipos.INT or tipo_right != Tipos.INT:
@@ -74,4 +78,13 @@ class Aritmetica(Operacion):
             else:
                 print(f'No se puede calcular el modulo entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede calcular el modulo entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)
+             
                 
+        if self.operador == Operador.ABS:
+            return abs(valor_left)
+        
+        if self.operador == Operador.SQRT:
+            if valor_left < 0:
+                raise Error_("Semantico",f'La raiz cuadrada de negativos no esta definida',self.linea,self.columna)
+            else:
+                return valor_left ** 0.5

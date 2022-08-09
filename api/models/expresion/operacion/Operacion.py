@@ -20,6 +20,9 @@ class Operador(Enum):
     OR = 14
     AND = 15
     NOT = 16
+    ABS = 17
+    SQRT = 18
+
 
 def getOperador(op) -> Operador:
     if op == "+":
@@ -54,7 +57,11 @@ def getOperador(op) -> Operador:
         return Operador.AND
     if op == "!":
         return Operador.NOT
-        
+    if op == "abs":
+        return Operador.ABS
+    if op == "sqrt":
+        return Operador.SQRT
+                
     
 class Operacion(Expresion):
     def __init__(self, left: Expresion, operador, right: Expresion, linea, columna, unaria):

@@ -1,4 +1,5 @@
 
+from models.expresion.ExpIF import ExpIf
 from ply.yacc import yacc
 from analizador import lexer
 from models.instruccion.Statement import Statement
@@ -77,7 +78,7 @@ def p_instruccion_if_else(p):
     p[0] = If(p[2], p[3], p[4], p.lineno(1), p.lexpos(1))
     
     
-def p_else(p):
+def p_instruccion_else(p):
     """
     else : ELSE statement
          | ELSE if
@@ -90,6 +91,24 @@ def p_statement(p):
     statement : LLV_I instrucciones LLV_D 
     """
     p[0] = Statement(p[2],p.lineno(1),p.lexpos(1))
+    
+
+def p_expresion_if_else(p):
+    """
+    exp_if : IF expresion LLV_I expresion LLV_D exp_else
+    """
+    p[0] = ExpIf(p[2],p[4],p[6],p.lineno(1),p.lexpos(1))
+    
+    
+def p_expresion_else(p):
+    """
+    exp_else : ELSE LLV_I expresion LLV_D
+             | ELSE exp_if
+    """
+    if p[2] == '{':
+        p[0] = p[3]
+    else:
+        p[0] = p[2]
     
     
 def p_asignacion(p):
@@ -152,11 +171,19 @@ def p_expresion_pow(p):
     """
     expresion : INT D_PUNTO D_PUNTO POW_INT PAR_I expresion COMA expresion PAR_D
               | FLOAT D_PUNTO D_PUNTO POW_FLOAT PAR_I expresion COMA expresion PAR_D
+              | ABS PAR_I expresion PAR_D
+              | SQRT PAR_I expresion PAR_D
     """
+    
     if p[4] == "pow":
         p[0] = Aritmetica(p[6], 'pow', p[8], p.lineno(1), p.lexpos(1), False)
-    else:
+    elif p[4] == "powf":
         p[0] = Aritmetica(p[6], 'powf', p[8], p.lineno(1), p.lexpos(1), False)
+    elif p[1] == "abs":
+        p[0] = Aritmetica(p[3], 'abs', p[3], p.lineno(1), p.lexpos(1), False)
+    elif p[1] == "sqrt":
+        p[0] = Aritmetica(p[3], 'sqrt', p[3], p.lineno(1), p.lexpos(1), False)
+    
 
 
 def p_expresion_numero(p):
@@ -215,6 +242,13 @@ def p_factor_agrupacion(p):
     expresion : PAR_I expresion PAR_D
     """
     p[0] = p[2]
+    
+def p_expresion_if_(p):
+    """
+    expresion : exp_if
+    """
+    p[0] = p[1]
+
 
 
 # Error sintactico
