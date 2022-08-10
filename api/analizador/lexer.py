@@ -31,7 +31,6 @@ tokens = [
              'DECIMAL',
              'ENTERO',
              'ID',
-             'ID2',
              'MAS',
              'MENOS',
              'MULTI',
@@ -113,7 +112,7 @@ def t_ID(t):
     t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
     return t
 
-def t_ID2(t):
+def t_ID_(t):
     r'[a-zA-Z_][a-zA-Z_0-9]+'
     t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
     return t

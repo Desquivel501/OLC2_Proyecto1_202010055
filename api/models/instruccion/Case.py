@@ -13,3 +13,5 @@ class Case(Instruccion):
 
     def ejecutar(self, ts):        
         pass
+    
+    

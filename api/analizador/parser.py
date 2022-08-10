@@ -2,7 +2,9 @@
 from models.misc.error import Error_
 from models.instruccion.Match import Match
 from models.instruccion.Case import Case
+from models.expresion.ExpMatch import ExpMatch
 from models.expresion.ExpIF import ExpIf
+from models.expresion.ExpCase import ExpCase
 from ply.yacc import yacc
 from analizador import lexer
 from models.instruccion.Statement import Statement
@@ -57,6 +59,16 @@ def p_instruccion(p):
                 | asignacion PUNTOCOMA
                 | if
                 | match
+    """
+    p[0] = p[1]
+    
+    
+def p_instruccion_no_pt(p):
+    """
+    instruccion_no_pt : ejecutar 
+                      | asignacion
+                      | if
+                      | match
     """
     p[0] = p[1]
     
@@ -141,7 +153,7 @@ def p_case_list(p):
 def p_case(p):
     """
     case : exp_list IGUAL MAYOR statement
-         | exp_list IGUAL MAYOR instruccion COMA
+         | exp_list IGUAL MAYOR instruccion_no_pt COMA
     """
     p[0] = Case(p[1],p[4], p.lineno(1),p.lexpos(1))
     
@@ -166,6 +178,45 @@ def p_exp_list(p):
         p[1].append(p[3])
         p[0] = p[1]
         
+        
+def p_exp_match(p):
+    """
+    match_exp : MATCH expresion LLV_I case_list_exp LLV_D
+              | MATCH expresion LLV_I case_list_exp default_exp LLV_D
+    """
+    print("match")
+    if len(p) == 6:
+        p[0] = ExpMatch(p[2],p[4],None,p.lineno(1),p.lexpos(1))
+    else:
+        p[0] = ExpMatch(p[2],p[4],p[5],p.lineno(1),p.lexpos(1))
+    
+    
+def p_exp_case_list(p):
+    """
+    case_list_exp : case_list_exp case_exp
+                  | case_exp 
+    """
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[2])
+        p[0] = p[1]
+    
+    
+def p_exp_case(p):
+    """
+    case_exp : exp_list IGUAL MAYOR expresion
+             | exp_list IGUAL MAYOR expresion COMA
+    """
+    p[0] = ExpCase(p[1],p[4], p.lineno(1),p.lexpos(1))
+    
+    
+def p_exp_default(p):
+    """
+    default_exp : GUION_B IGUAL MAYOR expresion
+    """
+    print("default")
+    p[0] = p[4]
     
     
 def p_asignacion(p):
@@ -300,9 +351,10 @@ def p_factor_agrupacion(p):
     """
     p[0] = p[2]
     
-def p_expresion_if_(p):
+def p_expresion_sentencia(p):
     """
     expresion : exp_if
+              | match_exp
     """
     p[0] = p[1]
 
@@ -311,7 +363,8 @@ def p_expresion_if_(p):
 # Error sintactico
 def p_error(p):
     print(f'Error de sintaxis {p.value!r}')
-    raise Error_("Sintactivo", f'Error de sintaxis {p.value!r}', p.lineno(1), p.lexpos(1))
+    print(p.lineno(1))
+    Error_("Sintactivo", f'Error de sintaxis {p.value!r}', p.lineno(1), p.lexpos(1))
 
 
 # Build the parser

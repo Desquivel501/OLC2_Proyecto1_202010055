@@ -1,65 +1,61 @@
 
-from operator import truediv
-from models.instruccion.Statement import Statement
+
+from models.expresion.Expresion import Expresion
+from models.tabla.Simbolo import Simbolo
+from models.misc import driver
 from models.expresion.Expresion import Expresion
 from models.tabla.TablaSimbolos import TablaSimbolos
-from models.misc.Program import Program
-from models.instruccion.Instruccion import Instruccion
-from models.instruccion.Case import Case
-from models.tabla.Tipos import Tipos
+from models.expresion.Expresion import Expresion
+from models.tabla.Tipos import definirTipo, Tipos
 from models.misc.error import Error_
 
 
-class Match(Instruccion):
-
+class ExpMatch(Expresion):
     def __init__(self, condicion: Expresion, case_list, default, linea, columna):
         self.condicion = condicion
         self.case_list = case_list
         self.default = default
         self.linea = linea
         self.columna = columna
-
-
-    def ejecutar(self, ts):
+        self.correcto = True
         
-        ts_local = TablaSimbolos(ts, "MATCH")
+        
+    def getTipo(self, ts):
+        tipo = self.condicion.getTipo(ts)
+        
+        return tipo
+    
+    def getValor(self, ts):
         condicion = self.condicion.getValor(ts)
         tipo_condicion = self.condicion.getTipo(ts)
-       
+        
         incorrecto = False
-        tipo = tipo_condicion
+        
         for case in self.case_list:
             for opcion in case.lista_exp:
-                if tipo != opcion.getTipo(ts):
+                if tipo_condicion != opcion.getTipo(ts):
                     incorrecto = True
-            
+           
+        tipo_res = None         
+        for case in self.case_list:
+            if tipo_res is None:
+                tipo_res = case.getTipo(ts)
+            elif  tipo_res != case.getTipo(ts):
+                incorrecto = True
+                    
         if incorrecto :
             raise Error_("Semantico", "Todas las opciones de un Match deben de ser del mismo tipo", self.linea, self.columna)
-            
-            
+        
+        
         found = False
-        for case in self.case_list:
+        for case in self.case_list:  
             found_case = False
-
             for opcion in case.lista_exp:
-                
                 if opcion.getValor(ts) == condicion:
                     found_case = True
-                    print("Found")
                     break
-                
             if found_case is True:
-                print("Ejecutar")
-                case.codigo.ejecutar(ts_local)
-                found = True
-                break
-        
-        print("Found - " , found)
-        print("Default: - " , self.default)
+                return case.getValor(ts)
         
         if not found and self.default is not None:
-            print("Default")
-            self.default.ejecutar(ts_local)
-            
-            
-        
+            return self.default.getValor(ts)
