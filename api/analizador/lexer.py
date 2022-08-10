@@ -1,4 +1,5 @@
 from re import L
+from models.misc.error import Error_
 from ply import lex
 
 reservadas = {
@@ -21,7 +22,8 @@ reservadas = {
     'abs':"ABS",
     'sqrt':'SQRT', 
     'to_owned':'TO_OWNED',
-    'to_string':'TO_STRING'
+    'to_string':'TO_STRING',
+    'match':'MATCH'
      
 }
 
@@ -29,6 +31,7 @@ tokens = [
              'DECIMAL',
              'ENTERO',
              'ID',
+             'ID2',
              'MAS',
              'MENOS',
              'MULTI',
@@ -50,7 +53,9 @@ tokens = [
              'AND',
              'NOT',
              'IGUAL',
-             'D_IGUAL'
+             'D_IGUAL',
+             'GUION_B',
+             'BARRA'
          ] + list(reservadas.values())
 
 # Caracteres ignorados
@@ -79,6 +84,8 @@ t_NO_IGUAL = r'!='
 t_OR = r'\|\|'
 t_AND = r'&&'
 t_NOT = r'!'
+t_GUION_B = r'\_'
+t_BARRA = r'\|'
 
 
 def t_DECIMAL(t):
@@ -102,7 +109,12 @@ def t_CADENA(t):
     return t
 
 def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    r'[a-zA-Z][a-zA-Z_0-9]*'
+    t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
+    return t
+
+def t_ID2(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]+'
     t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
     return t
 
@@ -120,6 +132,8 @@ def t_COMENTARIO_SIMPLE(t):
 def t_error(t):
     print(f'Caracter no reconocido {t.value[0]!r} en la linea {t.lexer.lineno}')
     t.lexer.skip(1)
+    error = Error_("Lexico", f'Caracter {t.value[0]!r} no reconocido', t.lexer.lineno,0)
+    
 
 
 lex.lex()

@@ -1,4 +1,7 @@
 
+from models.misc.error import Error_
+from models.instruccion.Match import Match
+from models.instruccion.Case import Case
 from models.expresion.ExpIF import ExpIf
 from ply.yacc import yacc
 from analizador import lexer
@@ -53,6 +56,7 @@ def p_instruccion(p):
     instruccion : ejecutar PUNTOCOMA
                 | asignacion PUNTOCOMA
                 | if
+                | match
     """
     p[0] = p[1]
     
@@ -109,6 +113,59 @@ def p_expresion_else(p):
         p[0] = p[3]
     else:
         p[0] = p[2]
+        
+
+def p_instruccion_match(p):
+    """
+    match : MATCH expresion LLV_I case_list LLV_D
+         | MATCH expresion LLV_I case_list default LLV_D
+    """
+    if len(p) == 6:
+        p[0] = Match(p[2],p[4],None,p.lineno(1),p.lexpos(1))
+    else:
+        p[0] = Match(p[2],p[4],p[5],p.lineno(1),p.lexpos(1))
+    
+    
+def p_case_list(p):
+    """
+    case_list : case_list case
+              | case 
+    """
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[2])
+        p[0] = p[1]
+    
+    
+def p_case(p):
+    """
+    case : exp_list IGUAL MAYOR statement
+         | exp_list IGUAL MAYOR instruccion COMA
+    """
+    p[0] = Case(p[1],p[4], p.lineno(1),p.lexpos(1))
+    
+    
+def p_default(p):
+    """
+    default : GUION_B IGUAL MAYOR statement
+            | GUION_B IGUAL MAYOR instruccion
+    """
+    print("default")
+    p[0] = p[4]
+    
+    
+def p_exp_list(p):
+    """
+    exp_list : exp_list BARRA expresion
+             | expresion
+    """
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[3])
+        p[0] = p[1]
+        
     
     
 def p_asignacion(p):
@@ -254,6 +311,7 @@ def p_expresion_if_(p):
 # Error sintactico
 def p_error(p):
     print(f'Error de sintaxis {p.value!r}')
+    raise Error_("Sintactivo", f'Error de sintaxis {p.value!r}', p.lineno(1), p.lexpos(1))
 
 
 # Build the parser

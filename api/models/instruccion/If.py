@@ -25,7 +25,7 @@ class If(Instruccion):
         tipo_condicion = self.condicion.getTipo(ts)
         
         if tipo_condicion is not Tipos.BOOLEAN:
-            raise Error_("Semantica", "La condicion en in If debe ser de tipo BOOLEAN", self.linea, self.columna)
+            raise Error_("Semantico", "La condicion en in If debe ser de tipo BOOLEAN", self.linea, self.columna)
         
         if condicion:
             self.cuerpo.ejecutar(ts_local)

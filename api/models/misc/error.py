@@ -10,7 +10,7 @@ class Error_(Exception):
         self.columna = columna
         
         Program.errores.append(self);
-        Program.console += self.getError() + "\n "
+        Program.console += self.getError() + "\n"
         
     def getError(self):
         print(self.tipo + ", " + self.mensaje)

@@ -16,8 +16,6 @@ class Aritmetica(Operacion):
         tipo_left = self.left.getTipo(ts)
         tipo_right = self.right.getTipo(ts) 
         
-        print(tipo_left, " - ", tipo_right)
-        
         if self.unaria is True:
             return valor_left*(-1)
             
