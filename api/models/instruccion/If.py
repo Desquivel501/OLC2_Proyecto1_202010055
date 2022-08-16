@@ -28,6 +28,6 @@ class If(Instruccion):
             raise Error_("Semantico", "La condicion en in If debe ser de tipo BOOLEAN", self.linea, self.columna)
         
         if condicion:
-            self.cuerpo.ejecutar(ts_local)
+            return self.cuerpo.ejecutar(ts_local)
         elif self.else_ is not None:
-            self.else_.ejecutar(ts_local)
+            return self.else_.ejecutar(ts_local)

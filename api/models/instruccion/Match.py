@@ -50,16 +50,11 @@ class Match(Instruccion):
                 
             if found_case is True:
                 print("Ejecutar")
-                case.codigo.ejecutar(ts_local)
-                found = True
-                break
-        
-        print("Found - " , found)
-        print("Default: - " , self.default)
+                return case.codigo.ejecutar(ts_local)
         
         if not found and self.default is not None:
             print("Default")
-            self.default.ejecutar(ts_local)
+            return self.default.ejecutar(ts_local)
             
             
         

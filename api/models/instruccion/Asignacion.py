@@ -20,13 +20,13 @@ class Asignacion(Instruccion):
         
     def ejecutar(self, ts: TablaSimbolos):
         
-        var_tipo = self.variable.valor.getTipo( ts)
+        var_tipo = self.variable.valor.getTipo(ts)
         var_valor = self.variable.valor.getValor(ts)
         
         if self.tipo is not None:
             if self.tipo.tipo != var_tipo:
                 print(f'El valor de la variable no coincide con su tipo')
-                raise Error_("Semantica", "El valor de la variable no coincide con su tipo'", self.linea, self.columna)
+                raise Error_("Semantica", "El valor de la variable no coincide con su tipo", self.linea, self.columna)
         else:
             self.tipo = Tipo(var_tipo)
             
@@ -41,9 +41,11 @@ class Asignacion(Instruccion):
         else:
             if simbolo.tipo.tipo != var_tipo:
                 print(f'El valor de la variable no coincide con su tipo')
+                raise Error_("Semantica", "El valor de la variable no coincide con su tipo", self.linea, self.columna)
                 
             elif simbolo.mut is False:
                 print(f'No se puede cambiar el valor de una constante')
+                raise Error_("Semantica", "No se puede cambiar el valor de una constante", self.linea, self.columna)
             else:
                 simbolo.valor = var_valor
                 ts.add(self.identificador, simbolo)

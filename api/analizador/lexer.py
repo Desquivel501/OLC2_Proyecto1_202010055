@@ -23,7 +23,11 @@ reservadas = {
     'sqrt':'SQRT', 
     'to_owned':'TO_OWNED',
     'to_string':'TO_STRING',
-    'match':'MATCH'
+    'match':'MATCH',
+    'while':'WHILE',
+    'break':'BREAK',
+    'continue':'CONTINUE',
+    'loop':'LOOP'
      
 }
 

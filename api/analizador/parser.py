@@ -1,4 +1,8 @@
 
+from models.instruccion.Continue import Continue
+from models.instruccion.Loop import Loop
+from models.instruccion.Break import Break
+from models.instruccion.While import While
 from models.misc.error import Error_
 from models.instruccion.Match import Match
 from models.instruccion.Case import Case
@@ -36,7 +40,7 @@ def p_ini(p):
     """
     ini : instrucciones
     """
-    p[0] = Ast(p[1])
+    p[0] = Ast(p[1])    
     
     
 def p_instrucciones(p):
@@ -59,6 +63,10 @@ def p_instruccion(p):
                 | asignacion PUNTOCOMA
                 | if
                 | match
+                | while 
+                | loop
+                | break
+                | continue
     """
     p[0] = p[1]
     
@@ -73,11 +81,18 @@ def p_instruccion_no_pt(p):
     p[0] = p[1]
     
     
+#--------------------------------------------------------------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------------------------------------------------------------  
+    
+    
 def p_instruccion_ejecutar(p):
     """
     ejecutar : EJECUTAR PAR_I expresion PAR_D			
     """
     p[0] = Ejecutar(p[3], p.lineno(1),p.lexpos(1))
+    
+    
+#--------------------------------------------------------------------------------------------------------------------------------------   
     
     
 def p_instruccion_if(p):
@@ -125,6 +140,10 @@ def p_expresion_else(p):
         p[0] = p[3]
     else:
         p[0] = p[2]
+        
+
+#---------------------------------------------------------------------------------------------------------------------------------------  
+#----------------------------------------------------------------------------------------------------------------------------------------
         
 
 def p_instruccion_match(p):
@@ -215,9 +234,61 @@ def p_exp_default(p):
     """
     default_exp : GUION_B IGUAL MAYOR expresion
     """
-    print("default")
     p[0] = p[4]
     
+    
+#---------------------------------------------------------------------------------------------------------------------------------------  
+#----------------------------------------------------------------------------------------------------------------------------------------
+    
+    
+def p_while(p):
+    """
+    while : WHILE expresion statement
+    """
+    p[0] = While(p[2],p[3],p.lineno(1),p.lexpos(1))
+    
+
+def p_break(p):
+    """
+    break : BREAK PUNTOCOMA
+          | BREAK expresion PUNTOCOMA
+    """
+    if len(p) == 3 :
+        p[0] = Break(None,p.lineno(1),p.lexpos(1))
+    else:
+        p[0] = Break(p[2], p.lineno(1),p.lexpos(1))
+        
+        
+def p_continue(p):
+    """
+    continue : CONTINUE PUNTOCOMA
+    """
+    p[0] = Continue(p.lineno(1),p.lexpos(1))
+    
+    
+#---------------------------------------------------------------------------------------------------------------------------------------  
+#----------------------------------------------------------------------------------------------------------------------------------------
+
+
+def p_loop(p):
+    """
+    loop : LOOP statement
+    """
+    p[0] = Loop(p[2], False, p.lineno(1),p.lexpos(1))
+    
+
+def p_loop_exp(p):
+    """
+    loop_exp : LOOP statement
+    """
+    p[0] = Loop(p[2], False, p.lineno(1),p.lexpos(1))
+    
+    
+    
+#---------------------------------------------------------------------------------------------------------------------------------------  
+#----------------------------------------------------------------------------------------------------------------------------------------
+
+
     
 def p_asignacion(p):
     """
@@ -246,7 +317,14 @@ def p_asignacion_mut_tipo(p):
     """
     p[0] = Asignacion(p[3],  Simbolo(Simbolos.VARIABLE, p[5], p[3], p[7], True), p[5],True, p.lineno(1),p.lexpos(1))
   
-    
+
+def p_re_asignacion(p):
+    """
+    asignacion : ID IGUAL expresion
+    """
+    p[0] = Asignacion( p[1], Simbolo(Simbolos.VARIABLE, None, p[1], p[3], True), None, True,  p.lineno(1),p.lexpos(1) )
+   
+
 
 def p_tipo(p):
     """
@@ -255,6 +333,10 @@ def p_tipo(p):
         | BOOL
     """
     p[0] = Tipo(p[1])
+    
+
+#---------------------------------------------------------------------------------------------------------------------------------------  
+#----------------------------------------------------------------------------------------------------------------------------------------
       
 
 def p_expresion_aritmetica(p):
@@ -363,7 +445,6 @@ def p_expresion_sentencia(p):
 # Error sintactico
 def p_error(p):
     print(f'Error de sintaxis {p.value!r}')
-    print(p.lineno(1))
     Error_("Sintactivo", f'Error de sintaxis {p.value!r}', p.lineno(1), p.lexpos(1))
 
 

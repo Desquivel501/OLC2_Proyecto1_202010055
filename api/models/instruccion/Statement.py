@@ -10,9 +10,24 @@ class Statement(Instruccion):
         self.columna = columna
 
 
-    def ejecutar(self, ts):        
+    def ejecutar(self, ts):  
+        element = None;
+        
         for ins in self.codigo:
             try:
-                ins.ejecutar(ts)
+                element = ins.ejecutar(ts)
+                
+                if element is not None:
+                    if element["tipo"] == "break":
+                        return element
+                    
+                    if element["tipo"] == "continue":
+                        return element
+
+                
             except Exception as e:
                 print(e)
+                
+        return None
+
+    
