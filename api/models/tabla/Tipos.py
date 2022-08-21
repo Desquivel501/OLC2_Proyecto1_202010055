@@ -6,6 +6,7 @@ class Tipos(Enum):
     BOOLEAN = 3
     STR = 4
     STRING = 5
+    CHAR = 6
 
 
 def getTipo(s: str):
@@ -20,6 +21,8 @@ def getTipo(s: str):
         return Tipos.STR
     if s == "String":
         return Tipos.STRING
+    if s == "char":
+        return Tipos.CHAR
 
 
 def definirTipo(value):

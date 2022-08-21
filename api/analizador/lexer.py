@@ -26,7 +26,8 @@ reservadas = {
     'while':'WHILE',
     'break':'BREAK',
     'continue':'CONTINUE',
-    'loop':'LOOP'
+    'loop':'LOOP',
+    'as':'AS'
 }
 
 tokens = [
@@ -59,7 +60,8 @@ tokens = [
              'BARRA',
              'PUNTO',
              'CADENA',
-             'AMP'
+             'AMP',
+             'CHAR_S'
          ] + list(reservadas.values())
 
 # Caracteres ignorados
@@ -112,6 +114,11 @@ def t_ENTERO(t):
 def t_CADENA(t):
     r'"([^"]*)"'
     t.value = str(t.value).replace('"', '')
+    return t
+
+def t_CHAR_S(t):
+    r'\'[^\']\''
+    t.value = str(t.value).replace('\'', '')
     return t
 
 def t_ID(t):

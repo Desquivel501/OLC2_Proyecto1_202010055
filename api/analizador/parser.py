@@ -1,4 +1,5 @@
 
+from models.expresion.Casteo import Casteo
 from models.expresion.ToString import ToString
 from models.tabla.Tipos import Tipos
 from models.instruccion.Print import Print_
@@ -365,6 +366,7 @@ def p_tipo(p):
         | BOOL
         | AMP STR
         | STRING
+        | CHAR
     """
     if len(p) == 2:
         p[0] = Tipo(stipo = p[1])
@@ -430,6 +432,12 @@ def p_expresion_bool(p):
     val = True if p[1] == 'true' else False
     p[0] = Primitivo(val, Tipos.BOOLEAN, p.lineno(1), p.lexpos(1))
     
+
+def p_expresion_char(p):
+    """
+    expresion : CHAR_S 
+    """
+    p[0] = Primitivo(p[1], Tipos.CHAR, p.lineno(1), p.lexpos(1))    
     
     
 def p_expresion_str(p):
@@ -444,6 +452,13 @@ def p_to_string(p):
     expresion : expresion PUNTO TO_STRING PAR_I PAR_D
     """
     p[0] = ToString(p[1], p.lineno(1), p.lexpos(1))
+    
+    
+def p_cast(p):
+    """
+    expresion : expresion AS tipo    
+    """
+    p[0] = Casteo(p[3],p[1], p.lineno(1), p.lexpos(1))
     
     
 def p_expresion_id(p):
@@ -501,6 +516,14 @@ def p_expresion_sentencia(p):
 def p_error(p):
     # print(f'Error de sintaxis {p.value!r}')
     raise Error_("Sintactivo", f'Error de sintaxis {p.value!r}',0,0)
+
+    # while True:
+    #      tok = parser.token()            
+    #      if not tok or tok.type == 'SEMI': break
+    # parser.errok()
+
+    # return tok  
+
 
 
 # Build the parser
