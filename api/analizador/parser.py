@@ -1,4 +1,7 @@
 
+from models.expresion.ToString import ToString
+from models.tabla.Tipos import Tipos
+from models.instruccion.Print import Print_
 from models.instruccion.Continue import Continue
 from models.instruccion.Loop import Loop
 from models.instruccion.Break import Break
@@ -33,6 +36,7 @@ precedence = (
     ('left', 'MENOS', 'MAS'),
     ('left', 'MULTI', 'DIV'),
     ('left', 'MODULO', 'POW_INT', 'POW_FLOAT'),
+    ('left', 'PUNTO'),
     ('right', 'UMENOS'),
 )
 
@@ -67,6 +71,7 @@ def p_instruccion(p):
                 | loop
                 | break
                 | continue
+                | print PUNTOCOMA
     """
     p[0] = p[1]
     
@@ -93,6 +98,33 @@ def p_instruccion_ejecutar(p):
     
     
 #--------------------------------------------------------------------------------------------------------------------------------------   
+
+
+def p_instruccion_print(p):
+    """
+    print : PRINT NOT PAR_I expresion PAR_D	
+          | PRINT NOT PAR_I CADENA COMA exp_list PAR_D			
+    """
+    
+    if len(p) == 6:
+         p[0] = Print_(p[4], None,p.lineno(1),p.lexpos(1))
+    else:
+        p[0] = Print_( Primitivo(p[4], Tipos.STR, p.lineno(1), p.lexpos(1)) , p[6],p.lineno(1),p.lexpos(1))
+    
+    
+def p_exp_list(p):
+    """
+    exp_list : exp_list COMA expresion
+             | expresion
+    """
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[3])
+        p[0] = p[1]
+    
+    
+#-------------------------------------------------------------------------------------------------------------------------------------- 
     
     
 def p_instruccion_if(p):
@@ -186,10 +218,10 @@ def p_default(p):
     p[0] = p[4]
     
     
-def p_exp_list(p):
+def p_exp_list_c(p):
     """
-    exp_list : exp_list BARRA expresion
-             | expresion
+    exp_list_c : exp_list_c BARRA expresion
+               | expresion
     """
     if len(p) == 2:
         p[0] = [p[1]]
@@ -224,8 +256,8 @@ def p_exp_case_list(p):
     
 def p_exp_case(p):
     """
-    case_exp : exp_list IGUAL MAYOR expresion
-             | exp_list IGUAL MAYOR expresion COMA
+    case_exp : exp_list_c IGUAL MAYOR expresion
+             | exp_list_c IGUAL MAYOR expresion COMA
     """
     p[0] = ExpCase(p[1],p[4], p.lineno(1),p.lexpos(1))
     
@@ -331,8 +363,13 @@ def p_tipo(p):
     tipo : INT
         | FLOAT
         | BOOL
+        | AMP STR
+        | STRING
     """
-    p[0] = Tipo(p[1])
+    if len(p) == 2:
+        p[0] = Tipo(stipo = p[1])
+    else:
+        p[0] = Tipo(stipo = "&str")
     
 
 #---------------------------------------------------------------------------------------------------------------------------------------  
@@ -381,7 +418,7 @@ def p_expresion_numero(p):
     expresion : ENTERO 
               | DECIMAL
     """
-    p[0] = Primitivo(p[1], p.lineno(1), p.lexpos(1))
+    p[0] = Primitivo(p[1], None, p.lineno(1), p.lexpos(1))
     
     
 def p_expresion_bool(p):
@@ -391,14 +428,30 @@ def p_expresion_bool(p):
     """
     
     val = True if p[1] == 'true' else False
-    p[0] = Primitivo(val, p.lineno(1), p.lexpos(1))
+    p[0] = Primitivo(val, Tipos.BOOLEAN, p.lineno(1), p.lexpos(1))
     
-
+    
+    
+def p_expresion_str(p):
+    """
+    expresion : CADENA 
+    """
+    p[0] = Primitivo(p[1], Tipos.STR, p.lineno(1), p.lexpos(1))
+    
+    
+def p_to_string(p):
+    """
+    expresion : expresion PUNTO TO_STRING PAR_I PAR_D
+    """
+    p[0] = ToString(p[1], p.lineno(1), p.lexpos(1))
+    
+    
 def p_expresion_id(p):
     """
     expresion : ID
     """
     p[0] = Identificador(p[1], p.lineno(1), p.lexpos(1))
+    
 
 def p_expresion_relacional(p):
     """
@@ -433,10 +486,12 @@ def p_factor_agrupacion(p):
     """
     p[0] = p[2]
     
+    
 def p_expresion_sentencia(p):
     """
     expresion : exp_if
               | match_exp
+              | loop_exp
     """
     p[0] = p[1]
 
@@ -444,8 +499,8 @@ def p_expresion_sentencia(p):
 
 # Error sintactico
 def p_error(p):
-    print(f'Error de sintaxis {p.value!r}')
-    Error_("Sintactivo", f'Error de sintaxis {p.value!r}', p.lineno(1), p.lexpos(1))
+    # print(f'Error de sintaxis {p.value!r}')
+    raise Error_("Sintactivo", f'Error de sintaxis {p.value!r}',0,0)
 
 
 # Build the parser

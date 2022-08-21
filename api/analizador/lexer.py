@@ -21,14 +21,12 @@ reservadas = {
     'println':'PRINT',
     'abs':"ABS",
     'sqrt':'SQRT', 
-    'to_owned':'TO_OWNED',
     'to_string':'TO_STRING',
     'match':'MATCH',
     'while':'WHILE',
     'break':'BREAK',
     'continue':'CONTINUE',
     'loop':'LOOP'
-     
 }
 
 tokens = [
@@ -58,7 +56,10 @@ tokens = [
              'IGUAL',
              'D_IGUAL',
              'GUION_B',
-             'BARRA'
+             'BARRA',
+             'PUNTO',
+             'CADENA',
+             'AMP'
          ] + list(reservadas.values())
 
 # Caracteres ignorados
@@ -89,6 +90,8 @@ t_AND = r'&&'
 t_NOT = r'!'
 t_GUION_B = r'\_'
 t_BARRA = r'\|'
+t_PUNTO = r'\.'
+t_AMP = r'&'
 
 
 def t_DECIMAL(t):

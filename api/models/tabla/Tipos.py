@@ -4,15 +4,22 @@ class Tipos(Enum):
     INT = 1
     FLOAT = 2
     BOOLEAN = 3
+    STR = 4
+    STRING = 5
 
 
 def getTipo(s: str):
+    
     if s == "i64":
         return Tipos.INT
     if s == "f64":
         return Tipos.FLOAT
     if s == "bool":
         return Tipos.BOOLEAN
+    if s == "&str":
+        return Tipos.STR
+    if s == "String":
+        return Tipos.STRING
 
 
 def definirTipo(value):
@@ -24,14 +31,18 @@ def definirTipo(value):
         return Tipos.BOOLEAN
     else:
         return None
+    
+
 
 class Tipo:
-    def __init__(self, stipo: str):
-        self.stipo = stipo
-        self.tipo = getTipo(stipo)
+    def __init__(self, stipo = None, tipo = None):
+        if stipo is not None:
+            self.stipo = stipo
+            self.tipo = getTipo(stipo)
+        else:
+            self.stipo = None
+            self.tipo = tipo
         
-    def __init__(self, tipo: Tipos):
-        self.tipo = tipo
 
     def getSTipo(self):
         return self.stipo

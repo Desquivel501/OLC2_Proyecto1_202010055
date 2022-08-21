@@ -27,14 +27,14 @@ def interpretar():
         Program.console = ""
         data = request.json
         print(data)
-        ast: Ast = parser.parse(data.get('instrucciones'))
-        
-        ts = TablaSimbolos(None, 'Global')
+       
         
         try:
+            ast: Ast = parser.parse(data.get('instrucciones'))
+            ts = TablaSimbolos(None, 'Global')
             ast.ejecutar(ts)
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
         print(Program.console)
 

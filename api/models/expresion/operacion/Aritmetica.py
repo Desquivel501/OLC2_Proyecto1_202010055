@@ -33,6 +33,16 @@ class Aritmetica(Operacion):
                 raise Error_("Semantico",f'La operacion POWF solo es valida con valores FLOAT',self.linea,self.columna)
             elif tipo_left == tipo_right:
                 return valor_left ** valor_right
+            
+        
+        
+        if self.operador == Operador.SUMA and tipo_left in [Tipos.STRING, Tipos.STR] and tipo_right in [Tipos.STR, Tipos.STRING] :
+            if tipo_left == Tipos.STR and tipo_right == Tipos.STRING:
+                return valor_left + valor_right
+            else:
+                print(f'No se puede realizar una suma entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
+                raise Error_("Semantico",f'No se puede realizar una suma entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)
+            
         
         
         if tipo_left not in [Tipos.INT, Tipos.FLOAT] and tipo_right not in [Tipos.INT, Tipos.FLOAT]:

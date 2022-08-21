@@ -5,8 +5,7 @@ from models.tabla.Simbolo import Simbolo, Simbolos
 from models.misc import driver
 from models.expresion.Expresion import Expresion
 from models.tabla.TablaSimbolos import TablaSimbolos
-from models.tabla.Tipos import Tipo, definirTipo
-from models.misc.driver import Driver
+from models.tabla.Tipos import Tipo
 
 class Asignacion(Instruccion):
     
@@ -23,12 +22,15 @@ class Asignacion(Instruccion):
         var_tipo = self.variable.valor.getTipo(ts)
         var_valor = self.variable.valor.getValor(ts)
         
+        print("tipo: ", var_tipo)
+        
         if self.tipo is not None:
             if self.tipo.tipo != var_tipo:
-                print(f'El valor de la variable no coincide con su tipo')
-                raise Error_("Semantica", "El valor de la variable no coincide con su tipo", self.linea, self.columna)
+                print('Semantica', f'El valor de la variable no coincide con su tipo: {self.tipo.tipo} -> {var_tipo}')
+                raise Error_('Semantica', f'El valor de la variable no coincide con su tipo: { self.tipo.tipo} -> {var_tipo}', self.linea, self.columna)
         else:
-            self.tipo = Tipo(var_tipo)
+            
+            self.tipo = Tipo(tipo = var_tipo)
             
         simbolo = ts.buscar(self.identificador);
         
@@ -40,8 +42,8 @@ class Asignacion(Instruccion):
         
         else:
             if simbolo.tipo.tipo != var_tipo:
-                print(f'El valor de la variable no coincide con su tipo')
-                raise Error_("Semantica", "El valor de la variable no coincide con su tipo", self.linea, self.columna)
+                print(f'El valor de la variable no coincide con su tipo: {simbolo.tipo.tipo} -> {var_tipo}')
+                raise Error_(f'Semantica", "El valor de la variable no coincide con su tipo: {simbolo.tipo.tipo} -> {var_tipo}', self.linea, self.columna)
                 
             elif simbolo.mut is False:
                 print(f'No se puede cambiar el valor de una constante')
