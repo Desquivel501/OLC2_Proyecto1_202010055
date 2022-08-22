@@ -5,19 +5,23 @@ from models.expresion.operacion.Operacion import Operador, Operacion
 class Relacional(Operacion):
     
     def getTipo(self, ts):
-        return definirTipo(self.getValor(ts))
+        pass
     
     def getValor(self, ts):
+        
+        print("here - ", self.operador)
+        
         valor_left = self.left.getValor(ts)
         valor_right = self.right.getValor(ts)
         
         tipo_left = self.left.getTipo(ts)
         tipo_right = self.right.getTipo(ts) 
         
+        tipos_str = [Tipos.STR, Tipos.STRING]
         
-        if tipo_left not in [Tipos.INT, Tipos.FLOAT, Tipos.BOOLEAN] and tipo_right not in [Tipos.INT, Tipos.FLOAT,Tipos.BOOLEAN]:
-                print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
-                raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)
+        # if tipo_left not in tipos1 and tipo_right not in tipos1:
+        #         print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
+        #         raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)
                 
 
         if self.operador == Operador.IGUAL:
@@ -40,15 +44,16 @@ class Relacional(Operacion):
         #------------------------------------------------------------------------------------------------------------------------------------------------------------------
                 
         
-        if tipo_left not in [Tipos.INT, Tipos.FLOAT] and tipo_right not in [Tipos.INT, Tipos.FLOAT]:
-                print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
-                raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)
+        # if tipo_left not in [Tipos.INT, Tipos.FLOAT] and tipo_right not in [Tipos.INT, Tipos.FLOAT]:
+        #         print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
+        #         raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)
                 
         
         if self.operador == Operador.MAYOR:
             if tipo_left == tipo_right:
                 return valor_left > valor_right
             else:
+                
                 print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)
                 
@@ -77,7 +82,7 @@ class Relacional(Operacion):
                 raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)
                
                 
-    def getOperacion(op:Operador):
+    def getOperacion(self, op:Operador):
         if op == Operador.IGUAL:
             return "Igualacion"
         if op == Operador.NO_IGUAL:
