@@ -9,9 +9,9 @@ from models.tabla.Tipos import Tipo
 
 class Asignacion(Instruccion):
     
-    def __init__(self, identificador: str, variable: Simbolo, tipo: Tipo, mut:bool, linea:int, columna: int ):
+    def __init__(self, identificador: str, valor: Expresion, tipo: Tipo, mut:bool, linea:int, columna: int ):
         self.identificador = identificador
-        self.variable = variable
+        self.valor = valor
         self.tipo = tipo
         self.mut = mut
         self.linea = linea
@@ -19,8 +19,8 @@ class Asignacion(Instruccion):
         
     def ejecutar(self, ts: TablaSimbolos):
         
-        var_tipo = self.variable.valor.getTipo(ts)
-        var_valor = self.variable.valor.getValor(ts)
+        var_tipo = self.valor.getTipo(ts)
+        var_valor = self.valor.getValor(ts)
         
         print("tipo: ", var_tipo)
         
@@ -35,7 +35,8 @@ class Asignacion(Instruccion):
         simbolo = ts.buscar(self.identificador);
         
         if simbolo is None:
-            nuevo = Simbolo(Simbolos.VARIABLE, self.tipo, self.identificador, var_valor, self.mut)
+            nuevo = Simbolo()
+            nuevo.iniciarPrimitivo(self.tipo, self.identificador, var_valor, self.mut)
             ts.add(self.identificador, nuevo)
             
             print("creado: " + self.identificador)

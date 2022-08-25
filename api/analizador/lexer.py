@@ -27,7 +27,10 @@ reservadas = {
     'break':'BREAK',
     'continue':'CONTINUE',
     'loop':'LOOP',
-    'as':'AS'
+    'as':'AS',
+    'fn': 'FN',
+    'return': 'RETURN',
+    'void':'VOID'
 }
 
 tokens = [
@@ -61,7 +64,9 @@ tokens = [
              'PUNTO',
              'CADENA',
              'AMP',
-             'CHAR_S'
+             'CHAR_S',
+             'COR_I',
+             'COR_D'
          ] + list(reservadas.values())
 
 # Caracteres ignorados
@@ -76,6 +81,8 @@ t_PAR_I = r'\('
 t_PAR_D = r'\)'
 t_LLV_I = r'\{'
 t_LLV_D = r'\}'
+t_COR_I = r'\['
+t_COR_D = r'\]'
 t_PUNTOCOMA = r'\;'
 t_MODULO = r'%'
 t_COMA = r','

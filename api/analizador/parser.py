@@ -1,4 +1,8 @@
 
+from models.expresion.Llamada import Llamada
+from models.tabla.Funcion import Funcion
+from models.instruccion.Return import Return
+from models.misc.Parametro import Parametro
 from models.expresion.Casteo import Casteo
 from models.expresion.ToString import ToString
 from models.tabla.Tipos import Tipos
@@ -72,7 +76,10 @@ def p_instruccion(p):
                 | loop
                 | break
                 | continue
+                | return PUNTOCOMA
                 | print PUNTOCOMA
+                | funcion
+                | llamada PUNTOCOMA
     """
     p[0] = p[1]
     
@@ -126,6 +133,62 @@ def p_exp_list(p):
     
     
 #-------------------------------------------------------------------------------------------------------------------------------------- 
+#-------------------------------------------------------------------------------------------------------------------------------------- 
+
+def p_funcion(p):
+    """
+    funcion : FN ID PAR_I lista_param PAR_D statement  
+            | FN ID PAR_I PAR_D statement 			
+    """
+    if len(p) == 7:
+        p[0] = Funcion(p[2],p[4],p[6], Tipo(tipo = Tipos.VOID), p.lineno(1), p.lexpos(1))
+    else:
+        p[0] = Funcion(p[2],[],p[5], Tipo(tipo = Tipos.VOID), p.lineno(1), p.lexpos(1))
+
+
+def p_funcion_tipo(p):
+    """
+    funcion : FN ID PAR_I lista_param PAR_D MENOS MAYOR tipo statement  
+            | FN ID PAR_I PAR_D MENOS MAYOR tipo statement 			
+    """
+    if len(p) == 10:
+        p[0] = Funcion(p[2],p[4],p[9], p[8], p.lineno(1), p.lexpos(1))
+    else:
+        p[0] = Funcion(p[2],[],p[8], p[7], p.lineno(1), p.lexpos(1))
+
+
+def p_lista_param(p):
+    """
+    lista_param : lista_param COMA ID D_PUNTO tipo 
+                | ID D_PUNTO tipo 
+    """
+    if len(p) == 4:
+        p[0] = [Parametro(p[1], p[3])]
+    else:
+        p[1].append(Parametro(p[3], p[5]))
+        p[0] = p[1]
+
+
+def p_return(p):
+    """
+    return : RETURN expresion
+    """
+    
+    p[0] = Return(p[2], p.lineno(1), p.lexpos(1))
+    
+
+def p_llamada(p):
+    """
+    llamada : ID PAR_I PAR_D
+            | ID PAR_I exp_list PAR_D
+    """
+    if len(p) == 4:
+        p[0] = Llamada(p[1],[],p.lineno(1), p.lexpos(1))
+    else:
+        p[0] = Llamada(p[1],p[3],p.lineno(1), p.lexpos(1))
+    
+#-------------------------------------------------------------------------------------------------------------------------------------- 
+#-------------------------------------------------------------------------------------------------------------------------------------- 
     
     
 def p_instruccion_if(p):
@@ -153,8 +216,12 @@ def p_instruccion_else(p):
 def p_statement(p):
     """
     statement : LLV_I instrucciones LLV_D 
+              | LLV_I  LLV_D 
     """
-    p[0] = Statement(p[2],p.lineno(1),p.lexpos(1))
+    if len(p) == 3:
+        p[0] = Statement(None,p.lineno(1),p.lexpos(1))
+    else:
+        p[0] = Statement(p[2],p.lineno(1),p.lexpos(1))
     
 
 def p_expresion_if_else(p):
@@ -327,35 +394,35 @@ def p_asignacion(p):
     """
     asignacion : LET ID IGUAL expresion
     """
-    p[0] = Asignacion(p[2], Simbolo(Simbolos.VARIABLE, None, p[2], p[4], False), None, False, p.lineno(1),p.lexpos(1))
+    p[0] = Asignacion(p[2], p[4], None, False, p.lineno(1),p.lexpos(1))
                 
                       
 def p_asignacion_mut(p):
     """
     asignacion : LET MUT ID IGUAL expresion
     """
-    p[0] = Asignacion(p[3],  Simbolo(Simbolos.VARIABLE, None, p[3], p[5], True), None,True, p.lineno(1),p.lexpos(1))
+    p[0] = Asignacion(p[3], p[5], None,True, p.lineno(1),p.lexpos(1))
 
 
 def p_asignacion_tipo(p):
     """
     asignacion : LET ID D_PUNTO tipo IGUAL expresion
     """
-    p[0] = Asignacion(p[2], Simbolo(Simbolos.VARIABLE, p[4], p[2], p[6], False), p[4], False, p.lineno(1),p.lexpos(1))
+    p[0] = Asignacion(p[2], p[6], p[4], False, p.lineno(1),p.lexpos(1))
           
                       
 def p_asignacion_mut_tipo(p):
     """
     asignacion : LET MUT ID D_PUNTO tipo IGUAL expresion
     """
-    p[0] = Asignacion(p[3],  Simbolo(Simbolos.VARIABLE, p[5], p[3], p[7], True), p[5],True, p.lineno(1),p.lexpos(1))
+    p[0] = Asignacion(p[3],p[7], p[5],True, p.lineno(1),p.lexpos(1))
   
 
 def p_re_asignacion(p):
     """
     asignacion : ID IGUAL expresion
     """
-    p[0] = Asignacion( p[1], Simbolo(Simbolos.VARIABLE, None, p[1], p[3], True), None, True,  p.lineno(1),p.lexpos(1) )
+    p[0] = Asignacion( p[1], p[3], None, True,  p.lineno(1),p.lexpos(1) )
    
 
 
@@ -367,6 +434,7 @@ def p_tipo(p):
         | AMP STR
         | STRING
         | CHAR
+        | VOID
     """
     if len(p) == 2:
         p[0] = Tipo(stipo = p[1])
@@ -507,6 +575,7 @@ def p_expresion_sentencia(p):
     expresion : exp_if
               | match_exp
               | loop_exp
+              | llamada
     """
     p[0] = p[1]
 

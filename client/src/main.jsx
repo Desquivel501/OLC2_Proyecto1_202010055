@@ -11,7 +11,7 @@ import { NavbarComponent } from './components/NavbarComponent';
 
 import App from './App'
 import {About}  from './views/About'
-import {Reportes}  from './views/Reportes'
+import {Reporte_TS}  from './views/Reporte_TS'
 
 import './index.css';
 
@@ -22,7 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path='/' element={<App />} />
         <Route path='/about' element={<About />} />
-        <Route path='/reportes' element={<Reportes />} />
+        <Route path='/reporte_ts' element={<Reporte_TS />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

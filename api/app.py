@@ -29,14 +29,22 @@ def interpretar():
         print(data)
        
         
-        try:
-            ast: Ast = parser.parse(data.get('instrucciones'))
-            ts = TablaSimbolos(None, 'Global')
-            ast.ejecutar(ts)
-        except Exception as e:
-            print(e)
+        # try:
+        #     ast: Ast = parser.parse(data.get('instrucciones'))
+        #     ts = TablaSimbolos(None, 'Global')
+        #     ast.ejecutar(ts)
+        # except Exception as e:
+        #     print(e)
+            
+        ast: Ast = parser.parse(data.get('instrucciones'))
+        ts = TablaSimbolos(None, 'Global')
+        ast.ejecutar(ts)
 
-        print(Program.console)
+
+
+        # print(Program.console)
+        # tabla = Program.tabla
+        # Program.printTabla(tabla)
 
         return {
             'resultado': Program.console

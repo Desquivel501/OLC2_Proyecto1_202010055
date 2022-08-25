@@ -5,7 +5,7 @@ from models.expresion.operacion.Operacion import Operador, Operacion
 class Relacional(Operacion):
     
     def getTipo(self, ts):
-        pass
+        return definirTipo(self.getValor(ts))
     
     def getValor(self, ts):
         

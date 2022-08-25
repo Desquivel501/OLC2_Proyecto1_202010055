@@ -7,6 +7,7 @@ class Tipos(Enum):
     STR = 4
     STRING = 5
     CHAR = 6
+    VOID = 7
 
 
 def getTipo(s: str):
@@ -23,6 +24,8 @@ def getTipo(s: str):
         return Tipos.STRING
     if s == "char":
         return Tipos.CHAR
+    if s == "void":
+        return Tipos.VOID
 
 
 def definirTipo(value):

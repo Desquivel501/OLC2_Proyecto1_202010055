@@ -29,7 +29,7 @@ class While(Instruccion):
         i = 0
         while condicion:
             
-            res = self.cuerpo.ejecutar(ts_local)
+            res = self.cuerpo.ejecutar(ts_local, "while")
                 
             if res is not None:
                 if res["tipo"] == "break":

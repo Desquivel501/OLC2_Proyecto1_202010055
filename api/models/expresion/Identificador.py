@@ -1,4 +1,5 @@
 
+from models.misc.error import Error_
 from models.tabla.Simbolo import Simbolo
 from models.misc import driver
 from models.expresion.Expresion import Expresion
@@ -17,14 +18,13 @@ class Identificador(Expresion):
         if simbolo is not None:
             return simbolo.tipo.tipo
         else:
-            print(f'No se encontro el simbolo {self.identificador}')
+            raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', self.linea, self.columna)
              
         
-    
     def getValor(self, ts: TablaSimbolos):
         simbolo = ts.buscar(self.identificador)
         
         if simbolo is not None:
             return simbolo.valor;
         else:
-            print(f'No se encontro el simbolo {self.identificador}')
+            raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', self.linea, self.columna)

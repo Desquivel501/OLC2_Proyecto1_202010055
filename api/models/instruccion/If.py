@@ -22,12 +22,17 @@ class If(Instruccion):
         
         ts_local = TablaSimbolos(ts, "IF")
         condicion = self.condicion.getValor(ts)
+        
+        print(condicion)
+        
         tipo_condicion = self.condicion.getTipo(ts)
+        
+        print(tipo_condicion)
         
         if tipo_condicion is not Tipos.BOOLEAN:
             raise Error_("Semantico", "La condicion en in If debe ser de tipo BOOLEAN", self.linea, self.columna)
         
         if condicion:
-            return self.cuerpo.ejecutar(ts_local)
+            return self.cuerpo.ejecutar(ts_local, "if")
         elif self.else_ is not None:
-            return self.else_.ejecutar(ts_local)
+            return self.else_.ejecutar(ts_local, "if")
