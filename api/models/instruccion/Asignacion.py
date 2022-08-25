@@ -36,7 +36,7 @@ class Asignacion(Instruccion):
         
         if simbolo is None:
             nuevo = Simbolo()
-            nuevo.iniciarPrimitivo(self.tipo, self.identificador, var_valor, self.mut)
+            nuevo.iniciarPrimitivo( self.identificador, self.tipo, var_valor, self.mut)
             ts.add(self.identificador, nuevo)
             
             print("creado: " + self.identificador)

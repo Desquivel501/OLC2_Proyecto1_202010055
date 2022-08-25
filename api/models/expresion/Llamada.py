@@ -20,7 +20,7 @@ class Llamada(Expresion, Instruccion):
         funcion = ts.obtenerFuncion(self.identificador)
         
         if funcion is not None:
-            return funcion.tipo
+            return funcion.tipo.tipo
         else:
            raise Error_("Semantico", f'No se encontro la funcion {self.identificador}', self.linea, self.columna)
              
@@ -45,6 +45,8 @@ class Llamada(Expresion, Instruccion):
                 valor_exp = exp.getValor(ts)
                 tipo_exp = exp.getTipo(ts)
                 
+                print("--------------------------", tipo_exp)
+                
                 if funcion.lista_param[i].tipo.tipo != tipo_exp:
                     raise Error_("Semantico", f'Tipo incorrecto en parametro {funcion.lista_param[i].identificador}', self.linea, self.columna)
                 
@@ -60,21 +62,26 @@ class Llamada(Expresion, Instruccion):
             
             res = funcion.instrucciones.ejecutar(ts_local, "funcion")
             
-            print(ts_local.variables)
             
             if funcion.tipo.tipo != Tipos.VOID:
-                
+               
                 if res["tipo"] == "return":
+                    
+                    if res["exp"] is None:
+                        raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return', self.linea, self.columna)
+                    
                     valor_return = res["exp"].getValor(ts_local)
                     tipo_return = res["exp"].getTipo(ts_local)
-                    
+                            
                     if tipo_return != funcion.tipo.tipo:
                         raise Error_("Semantico", f'Tipo de Return incorrecto', self.linea, self.columna)
-
+                            
                     return valor_return
                 
                 else:
-                    raise Error_("Semantico", f'Funcion {self.identificador} debe de poseer un Return', self.linea, self.columna)    
+                    raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return', self.linea, self.columna)
+
+            
             
         else:
             raise Error_("Semantico", f'No se encontro la funcion {self.identificador}', self.linea, self.columna)

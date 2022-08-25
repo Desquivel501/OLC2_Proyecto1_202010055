@@ -16,6 +16,7 @@ class Identificador(Expresion):
         simbolo = ts.buscar(self.identificador)
         
         if simbolo is not None:
+            print(simbolo.tipo)
             return simbolo.tipo.tipo
         else:
             raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', self.linea, self.columna)

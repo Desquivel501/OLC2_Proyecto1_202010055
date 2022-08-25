@@ -172,9 +172,12 @@ def p_lista_param(p):
 def p_return(p):
     """
     return : RETURN expresion
+           | RETURN
     """
-    
-    p[0] = Return(p[2], p.lineno(1), p.lexpos(1))
+    if len(p) == 2:
+        p[0] = Return(None, p.lineno(1), p.lexpos(1))
+    else:
+        p[0] = Return(p[2], p.lineno(1), p.lexpos(1))
     
 
 def p_llamada(p):

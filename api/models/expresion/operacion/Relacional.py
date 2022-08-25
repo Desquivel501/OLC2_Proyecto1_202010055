@@ -9,8 +9,6 @@ class Relacional(Operacion):
     
     def getValor(self, ts):
         
-        print("here - ", self.operador)
-        
         valor_left = self.left.getValor(ts)
         valor_right = self.right.getValor(ts)
         
