@@ -45,7 +45,6 @@ class Llamada(Expresion, Instruccion):
                 valor_exp = exp.getValor(ts)
                 tipo_exp = exp.getTipo(ts)
                 
-                print("--------------------------", tipo_exp)
                 
                 if funcion.lista_param[i].tipo.tipo != tipo_exp:
                     raise Error_("Semantico", f'Tipo incorrecto en parametro {funcion.lista_param[i].identificador}', self.linea, self.columna)
@@ -53,9 +52,7 @@ class Llamada(Expresion, Instruccion):
 
                 nuevo = Simbolo()
                 nuevo.iniciarPrimitivo(funcion.lista_param[i].identificador, funcion.lista_param[i].tipo, valor_exp, True)
-                
-                
-                print(funcion.lista_param[i].identificador)
+
                 ts_local.add(funcion.lista_param[i].identificador, nuevo)
                 
                 i += 1
@@ -75,7 +72,7 @@ class Llamada(Expresion, Instruccion):
                             
                     if tipo_return != funcion.tipo.tipo:
                         raise Error_("Semantico", f'Tipo de Return incorrecto', self.linea, self.columna)
-                            
+                    
                     return valor_return
                 
                 else:

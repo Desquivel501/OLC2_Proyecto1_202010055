@@ -1,3 +1,5 @@
+from models.tabla.InstanciaStruct import InstanciaStruct
+from models.tabla.Struct import Struct
 from models.tabla.Funcion import Funcion
 from models.misc.Program import Program
 from models.tabla.Simbolo import Simbolo
@@ -9,9 +11,10 @@ class TablaSimbolos:
         self.anterior = anterior
         self.variables = {}
         self.funciones = {}
+        self.structs = {}
+        self.instancias_structs = {}
 
     def add(self, id: str, simbolo: Simbolo):
-        print("creado - ", id)
         self.variables[id] = simbolo
         Program.tabla[id] = (simbolo, self.env)
 
@@ -38,10 +41,10 @@ class TablaSimbolos:
     
     def agregarFuncion(self, id: str,  func: Funcion):
         self.funciones[id] = func
+        
     
     def obtenerFuncion(self, id: str):
         ts = self
-
         while ts is not None:
             exist = ts.funciones.get(id)
             if exist is not None:
@@ -49,4 +52,30 @@ class TablaSimbolos:
             ts = ts.anterior
         return None
     
+     #-------------------------------------------STRUCTS-----------------------------------------------
+    
+    def agregarStruct(self, id: str,  struct: Struct):
+        self.structs[id] = struct
+        
+    
+    def obtenerStruct(self, id: str):
+        ts = self
+        while ts is not None:
+            exist = ts.structs.get(id)
+            if exist is not None:
+                return exist
+            ts = ts.anterior
+        return None
+    
+    def obtenerInstancia(self, id:str):
+        ts = self
+        while ts is not None:
+            exist = ts.instancias_structs.get(id)
+            if exist is not None:
+                return exist
+            ts = ts.anterior
+        return None
+    
+    def agregarIntancia(self, id: str,  struct: InstanciaStruct):
+        self.instancias_structs[id] = struct
 

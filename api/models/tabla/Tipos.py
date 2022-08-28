@@ -1,5 +1,4 @@
 from enum import Enum
-
 class Tipos(Enum):
     INT = 1
     FLOAT = 2
@@ -8,6 +7,7 @@ class Tipos(Enum):
     STRING = 5
     CHAR = 6
     VOID = 7
+    STRUCT = 8
 
 
 def getTipo(s: str):

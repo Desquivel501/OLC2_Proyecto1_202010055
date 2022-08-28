@@ -28,20 +28,23 @@ def interpretar():
         data = request.json
         print(data)
        
+        instrucciones = data.get('instrucciones')
         
-        # try:
-        #     ast: Ast = parser.parse(data.get('instrucciones'))
-        #     ts = TablaSimbolos(None, 'Global')
-        #     ast.ejecutar(ts)
+        if instrucciones != "":
             
-        # except Exception as e:
-        #     print(e)
-            
-        ast: Ast = parser.parse(data.get('instrucciones'))
-        ts = TablaSimbolos(None, 'Global')
-        ast.ejecutar(ts)
-
-
+            # try:
+            #     ast: Ast = parser.parse(instrucciones)
+            #     ts = TablaSimbolos(None, 'Global')
+            #     ast.ejecutar(ts)
+                
+            # except Exception as e:
+            #     print(e)
+                
+            ast: Ast = parser.parse(instrucciones)
+            ts = TablaSimbolos(None, 'Global')
+            ast.ejecutar(ts)    
+        
+        
 
         # print(Program.console)
         # tabla = Program.tabla

@@ -1,4 +1,11 @@
 
+from models.instruccion.ModStruct import ModStruct
+from models.expresion.AccesoStruct import AccesoStruct
+from models.misc.Atributo import Atributo
+from models.tabla.InstanciaStruct import InstanciaStruct
+from models.instruccion.CrearInstanciaStruct import CrearInstanciaStruct
+from models.misc.Campos import Campos
+from models.tabla.Struct import Struct
 from models.expresion.Llamada import Llamada
 from models.tabla.Funcion import Funcion
 from models.instruccion.Return import Return
@@ -36,8 +43,9 @@ from models.tabla.Tipos import Tipo
 tokens = lexer.tokens
 
 precedence = (
-    ('left', 'AND', 'OR','NOT'),
-    ('left', 'MAYOR','MENOR','MAYOR_I','MENOR_I', 'IGUAL','NO_IGUAL'),
+    ('left', 'OR'),
+    ('left', 'AND'),
+    ('nonassoc', 'MAYOR','MENOR','MAYOR_I','MENOR_I', 'IGUAL','NO_IGUAL'),
     ('left', 'MENOS', 'MAS'),
     ('left', 'MULTI', 'DIV'),
     ('left', 'MODULO', 'POW_INT', 'POW_FLOAT'),
@@ -47,10 +55,12 @@ precedence = (
 
 def p_ini(p):
     """
-    ini : instrucciones
+    ini : intrucciones_global
     """
-    p[0] = Ast(p[1])    
+    p[0] = Ast(p[1])  
     
+    
+#----------------------------------------------------------------------------------------------------INSTRUCCIONES
     
 def p_instrucciones(p):
     """
@@ -68,44 +78,58 @@ def p_instrucciones_instruccion(p):
     
 def p_instruccion(p):
     """
-    instruccion : ejecutar PUNTOCOMA
-                | asignacion PUNTOCOMA
+    instruccion : asignacion PUNTOCOMA
                 | if
                 | match
                 | while 
                 | loop
-                | break
-                | continue
+                | break PUNTOCOMA
+                | continue PUNTOCOMA
                 | return PUNTOCOMA
                 | print PUNTOCOMA
-                | funcion
                 | llamada PUNTOCOMA
+                | mod_struct PUNTOCOMA
+                
     """
     p[0] = p[1]
     
     
 def p_instruccion_no_pt(p):
     """
-    instruccion_no_pt : ejecutar 
-                      | asignacion
-                      | if
+    instruccion_no_pt : if
                       | match
+                      | print
+                      | while 
+                      | loop
+                      | break 
+                      | continue 
+                      | return 
+                      | llamada
     """
     p[0] = p[1]
     
-    
-#--------------------------------------------------------------------------------------------------------------------------------------- 
-#----------------------------------------------------------------------------------------------------------------------------------------  
-    
-    
-def p_instruccion_ejecutar(p):
+
+def p_instrucciones_global(p):
     """
-    ejecutar : EJECUTAR PAR_I expresion PAR_D			
+    intrucciones_global : intrucciones_global ins_global
+                        | ins_global
     """
-    p[0] = Ejecutar(p[3], p.lineno(1),p.lexpos(1))
-    
-    
-#--------------------------------------------------------------------------------------------------------------------------------------   
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[2])
+        p[0] = p[1]
+
+
+def p_instruccion_global(p):
+    """
+    ins_global : funcion 
+               | struct
+    """
+    p[0] = p[1]
+
+
+#--------------------------------------------------------------------------------------------------------------------------PRINT
 
 
 def p_instruccion_print(p):
@@ -131,9 +155,8 @@ def p_exp_list(p):
         p[1].append(p[3])
         p[0] = p[1]
     
-    
-#-------------------------------------------------------------------------------------------------------------------------------------- 
-#-------------------------------------------------------------------------------------------------------------------------------------- 
+     
+#-----------------------------------------------------------------------------------------------------------FUNCIONES
 
 def p_funcion(p):
     """
@@ -189,9 +212,58 @@ def p_llamada(p):
         p[0] = Llamada(p[1],[],p.lineno(1), p.lexpos(1))
     else:
         p[0] = Llamada(p[1],p[3],p.lineno(1), p.lexpos(1))
+        
+
+#----------------------------------------------------------------------------------------------------STRUCTS
+
+def p_struct(p):
+    """
+    struct : STRUCT ID LLV_I lista_campos LLV_D  
+    """
+    p[0] = Struct(p[2],p[4],p.lineno(1), p.lexpos(1))
+
+def p_lista_campos(p):
+    """
+    lista_campos : lista_campos COMA campo
+                 | campo
+    """
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[3])
+        p[0] = p[1]
     
-#-------------------------------------------------------------------------------------------------------------------------------------- 
-#-------------------------------------------------------------------------------------------------------------------------------------- 
+    
+def p_campo(p):
+    """
+    campo : ID D_PUNTO tipo 
+          | ID D_PUNTO ID 
+    """
+    if p.slice[3].type == 'ID':
+        p[0] = Campos(p[1], Tipo(tipo=Tipos.STRUCT))
+    else:
+        p[0] = Campos(p[1], p[3])
+
+
+def p_instancia(p):
+    """
+    instancia : ID LLV_I lista_atributo LLV_D  
+    """
+    p[0] = InstanciaStruct(p[1],p[3],p.lineno(1), p.lexpos(1))
+
+def p_lista_atributo(p):
+    """
+    lista_atributo : lista_atributo COMA ID D_PUNTO expresion
+                   | ID D_PUNTO expresion
+    """
+    if len(p) == 4:
+        p[0] = [Atributo(p[1],p[3])]
+    else:
+        p[1].append(Atributo(p[3],p[5]))
+        p[0] = p[1]
+
+
+#----------------------------------------------------------------------------------------------------IF
     
     
 def p_instruccion_if(p):
@@ -245,8 +317,8 @@ def p_expresion_else(p):
         p[0] = p[2]
         
 
-#---------------------------------------------------------------------------------------------------------------------------------------  
-#----------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------MATCH 
+
         
 
 def p_instruccion_match(p):
@@ -340,8 +412,7 @@ def p_exp_default(p):
     p[0] = p[4]
     
     
-#---------------------------------------------------------------------------------------------------------------------------------------  
-#----------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------WHILE
     
     
 def p_while(p):
@@ -353,8 +424,8 @@ def p_while(p):
 
 def p_break(p):
     """
-    break : BREAK PUNTOCOMA
-          | BREAK expresion PUNTOCOMA
+    break : BREAK 
+          | BREAK expresion
     """
     if len(p) == 3 :
         p[0] = Break(None,p.lineno(1),p.lexpos(1))
@@ -364,13 +435,12 @@ def p_break(p):
         
 def p_continue(p):
     """
-    continue : CONTINUE PUNTOCOMA
+    continue : CONTINUE
     """
     p[0] = Continue(p.lineno(1),p.lexpos(1))
     
     
-#---------------------------------------------------------------------------------------------------------------------------------------  
-#----------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------LOOP
 
 
 def p_loop(p):
@@ -388,9 +458,7 @@ def p_loop_exp(p):
     
     
     
-#---------------------------------------------------------------------------------------------------------------------------------------  
-#----------------------------------------------------------------------------------------------------------------------------------------
-
+#------------------------------------------------------------------------------------------------------------------------------ASIGNACION VARIABLE 
 
     
 def p_asignacion(p):
@@ -445,8 +513,7 @@ def p_tipo(p):
         p[0] = Tipo(stipo = "&str")
     
 
-#---------------------------------------------------------------------------------------------------------------------------------------  
-#----------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------EXPRESIONES
       
 
 def p_expresion_aritmetica(p):
@@ -467,30 +534,66 @@ def p_expresion_unario_ar(p):
     p[0] = Aritmetica(p[2], p[1], p[2], p.lineno(1), p.lexpos(1), True)
     
     
-def p_expresion_pow(p):
+def p_expresion_ex(p):
     """
     expresion : INT D_PUNTO D_PUNTO POW_INT PAR_I expresion COMA expresion PAR_D
               | FLOAT D_PUNTO D_PUNTO POW_FLOAT PAR_I expresion COMA expresion PAR_D
-              | ABS PAR_I expresion PAR_D
-              | SQRT PAR_I expresion PAR_D
+              | expresion PUNTO ABS PAR_I  PAR_D
+              | expresion PUNTO SQRT PAR_I  PAR_D
     """
     
     if p[4] == "pow":
         p[0] = Aritmetica(p[6], 'pow', p[8], p.lineno(1), p.lexpos(1), False)
     elif p[4] == "powf":
         p[0] = Aritmetica(p[6], 'powf', p[8], p.lineno(1), p.lexpos(1), False)
-    elif p[1] == "abs":
-        p[0] = Aritmetica(p[3], 'abs', p[3], p.lineno(1), p.lexpos(1), False)
-    elif p[1] == "sqrt":
-        p[0] = Aritmetica(p[3], 'sqrt', p[3], p.lineno(1), p.lexpos(1), False)
+        
+    elif p[3] == "abs":
+        p[0] = Aritmetica(p[1], 'abs', p[1], p.lineno(1), p.lexpos(1), False)
+    elif p[3] == "sqrt":
+        p[0] = Aritmetica(p[1], 'sqrt', p[1], p.lineno(1), p.lexpos(1), False)
     
 
+def p_expresion_relacional(p):
+    """
+    expresion : expresion MAYOR expresion
+              | expresion MENOR expresion
+              | expresion MAYOR_I expresion
+              | expresion MENOR_I expresion
+              | expresion D_IGUAL expresion
+              | expresion NO_IGUAL expresion
+    """
+    print("here r")
+    p[0] = Relacional(p[1], p[2], p[3], p.lineno(1), p.lexpos(1), False)
+    
+    
+def p_expresion_logica(p):
+    """
+    expresion : expresion OR expresion
+              | expresion AND expresion
+    """
+    p[0] = Logica(p[1], p[2], p[3], p.lineno(1), p.lexpos(1), False)
+    
+    
+def p_expresion_unario_lo(p):
+    """
+    expresion : NOT expresion
+    """
+    p[0] = Logica(p[2], p[1], p[2], p.lineno(1), p.lexpos(1), True)
+    
+
+def p_factor_agrupacion(p):
+    """
+    expresion : PAR_I expresion PAR_D
+    """
+    p[0] = p[2]
+    
 
 def p_expresion_numero(p):
     """
     expresion : ENTERO 
               | DECIMAL
     """
+    print(p.slice[1].type)
     p[0] = Primitivo(p[1], None, p.lineno(1), p.lexpos(1))
     
     
@@ -517,12 +620,49 @@ def p_expresion_str(p):
     """
     p[0] = Primitivo(p[1], Tipos.STR, p.lineno(1), p.lexpos(1))
     
+
+def p_expresion_id(p):
+    """
+    expresion : ID
+    """
+    print("ID")
+    p[0] = Identificador(p[1], p.lineno(1), p.lexpos(1))
+    
+    
     
 def p_to_string(p):
     """
     expresion : expresion PUNTO TO_STRING PAR_I PAR_D
     """
     p[0] = ToString(p[1], p.lineno(1), p.lexpos(1))
+    
+
+def p_mod_struct(p):
+    """
+    mod_struct : acceso_struct IGUAL expresion
+    """
+    p[0] = ModStruct(p[1],p[3],p.lineno(1), p.lexpos(1))
+    
+
+def p_acceso_struct_exp(p):
+    """
+    acceso_struct_exp : acceso_struct 
+    """
+    p[0] = AccesoStruct(p[1],p.lineno(1), p.lexpos(1))
+    
+    
+def p_acceso_struct(p):
+    """ 
+    acceso_struct : acceso_struct PUNTO ID
+                  | ID PUNTO ID
+    """
+    if  p.slice[1].type == 'ID':
+        lista = [p[1]]
+        lista.append(p[3])
+        p[0] = lista
+    else:
+        p[1].append(p[3])
+        p[0] = p[1]
     
     
 def p_cast(p):
@@ -531,46 +671,7 @@ def p_cast(p):
     """
     p[0] = Casteo(p[3],p[1], p.lineno(1), p.lexpos(1))
     
-    
-def p_expresion_id(p):
-    """
-    expresion : ID
-    """
-    p[0] = Identificador(p[1], p.lineno(1), p.lexpos(1))
-    
 
-def p_expresion_relacional(p):
-    """
-    expresion : expresion MAYOR expresion
-              | expresion MENOR expresion
-              | expresion MAYOR_I expresion
-              | expresion MENOR_I expresion
-              | expresion D_IGUAL expresion
-              | expresion NO_IGUAL expresion
-    """
-    p[0] = Relacional(p[1], p[2], p[3], p.lineno(1), p.lexpos(1), False)
-    
-    
-def p_expresion_logica(p):
-    """
-    expresion : expresion OR expresion
-              | expresion AND expresion
-    """
-    p[0] = Logica(p[1], p[2], p[3], p.lineno(1), p.lexpos(1), False)
-    
-    
-def p_expresion_unario_lo(p):
-    """
-    expresion : NOT expresion
-    """
-    p[0] = Logica(p[2], p[1], p[2], p.lineno(1), p.lexpos(1), True)
-    
-
-def p_factor_agrupacion(p):
-    """
-    expresion : PAR_I expresion PAR_D
-    """
-    p[0] = p[2]
     
     
 def p_expresion_sentencia(p):
@@ -581,7 +682,14 @@ def p_expresion_sentencia(p):
               | llamada
     """
     p[0] = p[1]
-
+    
+    
+def p_otras_expresiones(p):
+    """
+    expresion : instancia
+              | acceso_struct_exp
+    """
+    p[0] = p[1]
 
 
 # Error sintactico

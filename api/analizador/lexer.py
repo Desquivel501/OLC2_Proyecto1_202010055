@@ -3,7 +3,6 @@ from models.misc.error import Error_
 from ply import lex
 
 reservadas = {
-    'ejecutar': 'EJECUTAR',
     'true': 'TRUE',
     'false':'FALSE',
     'pow':'POW_INT',
@@ -30,7 +29,10 @@ reservadas = {
     'as':'AS',
     'fn': 'FN',
     'return': 'RETURN',
-    'void':'VOID'
+    'void':'VOID',
+    'struct':'STRUCT',
+
+    
 }
 
 tokens = [
@@ -103,6 +105,13 @@ t_PUNTO = r'\.'
 t_AMP = r'&'
 
 
+
+def t_ID(t):
+    r'[a-zA-Z][a-zA-Z_0-9]*'
+    t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
+    return t
+
+
 def t_DECIMAL(t):
     r'\d+\.\d+'
     try:
@@ -114,8 +123,11 @@ def t_DECIMAL(t):
     return t
 
 def t_ENTERO(t):
-    r'\d+'
-    t.value = int(t.value)
+    r"""\d+"""
+    try:
+        t.value = int(t.value)
+    except ValueError:
+        t.value = 0
     return t
 
 def t_CADENA(t):
@@ -128,10 +140,7 @@ def t_CHAR_S(t):
     t.value = str(t.value).replace('\'', '')
     return t
 
-def t_ID(t):
-    r'[a-zA-Z][a-zA-Z_0-9]*'
-    t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
-    return t
+
 
 def t_ID_(t):
     r'[a-zA-Z_][a-zA-Z_0-9]+'

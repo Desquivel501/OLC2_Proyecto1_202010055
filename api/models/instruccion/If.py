@@ -35,4 +35,10 @@ class If(Instruccion):
         if condicion:
             return self.cuerpo.ejecutar(ts_local, "if")
         elif self.else_ is not None:
-            return self.else_.ejecutar(ts_local, "if")
+            
+            if isinstance(self.else_, If):
+                return self.else_.ejecutar(ts_local)
+            else:
+                return self.else_.ejecutar(ts_local, "if")
+            
+            

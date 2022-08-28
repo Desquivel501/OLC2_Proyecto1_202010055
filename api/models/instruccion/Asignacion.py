@@ -1,3 +1,6 @@
+from models.expresion.AccesoStruct import AccesoStruct
+from models.instruccion.CrearInstanciaStruct import CrearInstanciaStruct
+from models.tabla.InstanciaStruct import InstanciaStruct
 from models.misc.error import Error_
 from models.instruccion.Instruccion import Instruccion
 
@@ -19,11 +22,17 @@ class Asignacion(Instruccion):
         
     def ejecutar(self, ts: TablaSimbolos):
         
+        if isinstance(self.valor, InstanciaStruct):
+            struct = CrearInstanciaStruct(self.identificador,self.valor,self.mut,self.linea,self.columna)
+            struct.ejecutar(ts)
+            
+            return
+        
+        print("here.......")
+        
         var_tipo = self.valor.getTipo(ts)
         var_valor = self.valor.getValor(ts)
-        
-        print("tipo: ", var_tipo)
-        
+
         if self.tipo is not None:
             if self.tipo.tipo != var_tipo:
                 print('Semantica', f'El valor de la variable no coincide con su tipo: {self.tipo.tipo} -> {var_tipo}')
@@ -38,8 +47,6 @@ class Asignacion(Instruccion):
             nuevo = Simbolo()
             nuevo.iniciarPrimitivo( self.identificador, self.tipo, var_valor, self.mut)
             ts.add(self.identificador, nuevo)
-            
-            print("creado: " + self.identificador)
         
         else:
             if simbolo.tipo.tipo != var_tipo:
