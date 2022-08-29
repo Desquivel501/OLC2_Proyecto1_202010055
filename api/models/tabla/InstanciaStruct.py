@@ -16,18 +16,26 @@ class InstanciaStruct(Expresion):
         self.linea = linea
         self.columna = columna
         self.dic_atributos = {}
+        self.compilada = False
         
     def getTipo(self, ts):
         return Tipos.STRUCT
     
     def getValor(self, ts):
+        print("Instancia - ", self.id_instancia)
+        
+        if self.compilada:
+            return self
+        
         struct:Struct = ts.obtenerStruct(self.id_struct)
         
         if struct is None:
             raise Error_("Semantico", f'Struct {self.id_struct } no ha sido declarado', self.linea, self.columna)
         
+        
         for campo in struct.campos:
             if len(self.lista_atributos) == 0:
+                print("es 0")
                 raise Error_("Semantico", f'Numero incorrecto de atributos', self.linea, self.columna)
             
             atributo = self.lista_atributos[0]
@@ -50,7 +58,7 @@ class InstanciaStruct(Expresion):
             
             self.lista_atributos.pop(0)
 
-        
+        self.compilada = True
         return self
 
 

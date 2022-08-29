@@ -28,7 +28,7 @@ class ModStruct(Instruccion):
         if not struct.mut:
              raise Error_("Semantico", f'No se puede modificar un struct constante', self.linea, self.columna)
         
-        return self.acceso(self.listaExpresiones, struct, ts)
+        self.acceso(self.listaExpresiones, struct, ts)
                     
         
     

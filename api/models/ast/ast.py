@@ -32,7 +32,7 @@ class Ast:
         main = ts.obtenerFuncion("main")
         
         if main is not None:
-            main.instrucciones.ejecutar(ts, "funcion")
+            main.instrucciones.ejecutar(ts)
         else:
             raise Error_('Semantico', f'No existe metodo main', 0, 0)
         

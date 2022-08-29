@@ -31,8 +31,9 @@ reservadas = {
     'return': 'RETURN',
     'void':'VOID',
     'struct':'STRUCT',
+    'in': 'IN',
+    'for': 'FOR'
 
-    
 }
 
 tokens = [

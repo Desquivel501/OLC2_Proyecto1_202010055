@@ -23,7 +23,7 @@ class Loop(Instruccion):
         
         while True:
             
-            res = self.cuerpo.ejecutar(ts_local, "loop")
+            res = self.cuerpo.ejecutar(ts_local)
                 
             if res is not None:
                 if res["tipo"] == "break":

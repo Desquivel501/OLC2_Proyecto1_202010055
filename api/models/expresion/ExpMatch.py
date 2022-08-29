@@ -21,9 +21,18 @@ class ExpMatch(Expresion):
         
         
     def getTipo(self, ts):
-        tipo = self.condicion.getTipo(ts)
+        incorrecto = False
+        tipo_res = None         
+        for case in self.case_list:
+            if tipo_res is None:
+                tipo_res = case.getTipo(ts)
+            elif  tipo_res != case.getTipo(ts):
+                incorrecto = True
+                    
+        if incorrecto :
+            raise Error_("Semantico", "Todas las opciones de un Match deben de ser del mismo tipo", self.linea, self.columna)
         
-        return tipo
+        return tipo_res
     
     def getValor(self, ts):
         condicion = self.condicion.getValor(ts)

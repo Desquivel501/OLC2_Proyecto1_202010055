@@ -23,7 +23,7 @@ class CrearInstanciaStruct(Instruccion):
         nueva_instancia: InstanciaStruct = ts.obtenerInstancia(self.id_instancia)
         
         if nueva_instancia is None:
-
+            
             nueva_instancia = self.instancia.getValor(ts)
             nueva_instancia.id_instancia = self.id_instancia
             nueva_instancia.mut = self.mut

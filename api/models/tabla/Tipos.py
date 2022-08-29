@@ -8,6 +8,8 @@ class Tipos(Enum):
     CHAR = 6
     VOID = 7
     STRUCT = 8
+    ARRAY_DATA = 9
+    ARRAY = 10
 
 
 def getTipo(s: str):

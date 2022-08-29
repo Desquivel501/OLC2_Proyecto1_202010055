@@ -1,5 +1,6 @@
 
 
+from models.tabla.InstanciaStruct import InstanciaStruct
 from models.instruccion.Instruccion import Instruccion
 from models.tabla.Funcion import Funcion
 from models.tabla.Tipos import Tipos
@@ -30,37 +31,35 @@ class AccesoStruct(Expresion):
             return self.valor
         
         expresionInicial = self.listaExpresiones.pop(0)
+        expresionInicial = expresionInicial.getValor(ts)
+         
+        if isinstance(expresionInicial, InstanciaStruct):
+            return self.acceso(self.listaExpresiones, expresionInicial, ts)
         
-        struct = ts.obtenerInstancia(expresionInicial)
-        
-        if struct is None:
-            print("here")
-            raise Error_("Semantico", f'No se encontro el simbolo {expresionInicial}', self.linea, self.columna)
-        
-        return self.acceso(self.listaExpresiones, struct, ts)
+        else:
+            raise Error_("Semantico", f'NOSE', self.linea, self.columna)
                     
         
     
     def acceso(self, listaExpresion, struct, ts):
-        print((listaExpresion))
         expresionInicial = self.listaExpresiones.pop(0)
         
-        print(expresionInicial)
         
+
         if len(listaExpresion) == 0:
-    
+            expresionInicial = expresionInicial.identificador
             valor = struct.dic_atributos.get(expresionInicial)
             
             if valor is not None:
                 res = struct.dic_atributos[expresionInicial].valor
                 self.tipo = struct.dic_atributos[expresionInicial].tipo
-                print("res - ", res)
                 self.valor = res
                 return(res)
             else:
                 raise Error_("Semantico", f'No se encontro el atributo {expresionInicial}', self.linea, self.columna)
             
         else:
+            expresionInicial = expresionInicial.identificador
             nuevo_struct = struct.dic_atributos[expresionInicial].valor
             
             if nuevo_struct is not None:

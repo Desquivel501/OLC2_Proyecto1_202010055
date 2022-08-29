@@ -22,16 +22,17 @@ class Asignacion(Instruccion):
         
     def ejecutar(self, ts: TablaSimbolos):
         
-        if isinstance(self.valor, InstanciaStruct):
-            struct = CrearInstanciaStruct(self.identificador,self.valor,self.mut,self.linea,self.columna)
-            struct.ejecutar(ts)
-            
-            return
-        
-        print("here.......")
         
         var_tipo = self.valor.getTipo(ts)
         var_valor = self.valor.getValor(ts)
+        
+        
+        if isinstance(var_valor, InstanciaStruct):
+            struct = CrearInstanciaStruct(self.identificador,var_valor,self.mut,self.linea,self.columna)
+            struct.ejecutar(ts)
+            return
+        
+        
 
         if self.tipo is not None:
             if self.tipo.tipo != var_tipo:

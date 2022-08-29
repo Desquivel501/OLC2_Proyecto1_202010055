@@ -45,16 +45,13 @@ class Match(Instruccion):
                 
                 if opcion.getValor(ts) == condicion:
                     found_case = True
-                    print("Found")
                     break
                 
             if found_case is True:
-                print("Ejecutar")
-                return case.codigo.ejecutar(ts_local, "match")
+                return case.codigo.ejecutar(ts_local)
         
         if not found and self.default is not None:
-            print("Default")
-            return self.default.ejecutar(ts_local, "match")
+            return self.default.ejecutar(ts_local)
             
             
         

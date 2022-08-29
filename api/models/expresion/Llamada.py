@@ -35,6 +35,7 @@ class Llamada(Expresion, Instruccion):
         if funcion is not None:
             
             ts_local = TablaSimbolos(ts, "funcion")
+            print("ts - ", ts_local)
             
             
             if len(funcion.lista_param) != len(self.listaExpresiones):
@@ -52,13 +53,13 @@ class Llamada(Expresion, Instruccion):
 
                 nuevo = Simbolo()
                 nuevo.iniciarPrimitivo(funcion.lista_param[i].identificador, funcion.lista_param[i].tipo, valor_exp, True)
-
+                
                 ts_local.add(funcion.lista_param[i].identificador, nuevo)
                 
                 i += 1
             
-            res = funcion.instrucciones.ejecutar(ts_local, "funcion")
-            
+            res = funcion.instrucciones.ejecutar(ts_local)
+            print("res f - ", res)
             
             if funcion.tipo.tipo != Tipos.VOID:
                
@@ -72,7 +73,7 @@ class Llamada(Expresion, Instruccion):
                             
                     if tipo_return != funcion.tipo.tipo:
                         raise Error_("Semantico", f'Tipo de Return incorrecto', self.linea, self.columna)
-                    
+
                     return valor_return
                 
                 else:
