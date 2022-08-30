@@ -16,12 +16,14 @@ class Identificador(Expresion):
     def getTipo(self, ts: TablaSimbolos):
         simbolo = ts.buscar(self.identificador)
         struct = ts.obtenerInstancia(self.identificador)
+        array = ts.obtenerArreglo(self.identificador)
         
         if simbolo is not None:
             return simbolo.tipo.tipo
         elif struct is not None:
             return Tipos.STRUCT
-            
+        elif array is not None:
+            return Tipos.ARRAY
         else:
             raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', self.linea, self.columna)
              
@@ -29,10 +31,13 @@ class Identificador(Expresion):
     def getValor(self, ts: TablaSimbolos):
         simbolo = ts.buscar(self.identificador)
         struct = ts.obtenerInstancia(self.identificador)
+        array = ts.obtenerArreglo(self.identificador)
         
         if simbolo is not None:
             return simbolo.valor;
         elif struct is not None:
             return struct
+        elif array is not None:
+            return array
         else:
             raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', self.linea, self.columna)

@@ -18,7 +18,10 @@ class ArrayData(Expresion):
         return Tipos.ARRAY_DATA
     
     def getValor(self, ts):
+        
         tipo = Tipos.VOID
+        
+        
         for i in range(0, len(self.listaExpresiones)):
             expresion = self.listaExpresiones[i]
             
@@ -27,23 +30,27 @@ class ArrayData(Expresion):
             
             if i == 0:
                 tipo = tipo_expresion
-                self.expresionesCompiladas.append(expresion)
+                self.expresionesCompiladas.append({"tipo":tipo_expresion, "valor":valor_expresion})
             
             else:
                 if tipo != tipo_expresion:
                     raise Error_("Semantico", f'Tipos en arreglo no coinciden', self.linea, self.columna)
                 else:
-                    self.expresionesCompiladas.append(valor_expresion)
-        
+                    self.expresionesCompiladas.append({"tipo":tipo_expresion, "valor":valor_expresion})
+                    
+ 
         
         self.listaDimensiones.append(len(self.expresionesCompiladas))
+        
+        
         tipoFin = Tipos.VOID
         
         for i in range(0, len(self.expresionesCompiladas)):
+            
             expresionCompilada = self.expresionesCompiladas[i]
             
-            valor_expresion = expresionCompilada.getValor(ts)
-            tipo_expresion = expresionCompilada.getTipo(ts)
+            valor_expresion = expresionCompilada.get("valor")
+            tipo_expresion = expresionCompilada.get("tipo")
             
             if tipo_expresion != Tipos.ARRAY_DATA:
                 tipoFin = tipo_expresion
@@ -61,6 +68,8 @@ class ArrayData(Expresion):
                         raise Error_("Semantico", f'Tipos en arreglo no coinciden', self.linea, self.columna)
                 
                 self.valores.insert(i, instanciaArray.valores )
+                
+        
         
         instanciaArray = InstanciaArreglo(tipoFin, self.listaDimensiones, self.valores)
        

@@ -30,12 +30,12 @@ class CrearInstanciaStruct(Instruccion):
             
             ts.agregarIntancia(self.id_instancia, nueva_instancia)
             
-            print("Struct : ", nueva_instancia.id_struct)
-            print("ID : ", self.id_instancia)
+            # print("Struct : ", nueva_instancia.id_struct)
+            # print("ID : ", self.id_instancia)
         
             
-            for x in self.instancia.dic_atributos:
-                print(x, " : ",self.instancia.dic_atributos[x].valor )
+            # for x in self.instancia.dic_atributos:
+            #     print(x, " : ",self.instancia.dic_atributos[x].valor )
                 
             print("")
             

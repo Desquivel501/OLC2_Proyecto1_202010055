@@ -1,4 +1,8 @@
 
+from models.expresion.Contains import Contains
+from models.instruccion.ModArreglo import ModArreglo
+from models.expresion.AccesoArreglo import AccesoArreglo
+from models.expresion.ArrayData import ArrayData
 from models.instruccion.CrearArreglo import CrearArreglo
 from models.misc.Dimension import Dimension
 from models.instruccion.For import For
@@ -16,6 +20,7 @@ from models.instruccion.Return import Return
 from models.misc.Parametro import Parametro
 from models.expresion.Casteo import Casteo
 from models.expresion.ToString import ToString
+from models.expresion.Length import Length
 from models.tabla.Tipos import Tipos
 from models.instruccion.Print import Print_
 from models.instruccion.Continue import Continue
@@ -49,12 +54,12 @@ tokens = lexer.tokens
 precedence = (
     ('left', 'OR'),
     ('left', 'AND'),
-    ('nonassoc', 'MAYOR','MENOR','MAYOR_I','MENOR_I', 'IGUAL','NO_IGUAL'),
+    ('left', 'MAYOR','MENOR','MAYOR_I','MENOR_I', 'IGUAL','NO_IGUAL'),
     ('left', 'MENOS', 'MAS'),
     ('left', 'MULTI', 'DIV'),
     ('left', 'MODULO', 'POW_INT', 'POW_FLOAT'),
     ('left', 'PUNTO'),
-    ('right', 'UMENOS'),
+    ('right', 'UMENOS')
 )
 
 def p_ini(p):
@@ -82,7 +87,8 @@ def p_instrucciones_instruccion(p):
 
 def p_instruccion(p):
     """
-    instruccion : asignacion PUNTOCOMA
+    instruccion : declaracion_arreglo PUNTOCOMA
+                | asignacion PUNTOCOMA
                 | if
                 | match
                 | while
@@ -93,9 +99,8 @@ def p_instruccion(p):
                 | return PUNTOCOMA
                 | print PUNTOCOMA
                 | llamada PUNTOCOMA
-                | mod_struct PUNTOCOMA
-                | declaracion_arreglo  PUNTOCOMA
-
+                | mod_struct PUNTOCOMA    
+                | mod_arreglo PUNTOCOMA         
     """
     p[0] = p[1]
 
@@ -288,7 +293,6 @@ def p_instruccion_match(p):
     match : MATCH expresion LLV_I case_list LLV_D
          | MATCH expresion LLV_I case_list default LLV_D
     """
-    print("match")
     if len(p) == 6:
         p[0] = Match(p[2],p[4],None,p.lineno(1),p.lexpos(1))
     else:
@@ -320,7 +324,6 @@ def p_default(p):
     default : GUION_B IGUAL MAYOR statement
             | GUION_B IGUAL MAYOR instruccion_no_pt COMA
     """
-    print("default")
     p[0] = p[4]
 
 
@@ -341,7 +344,6 @@ def p_exp_match(p):
     match_exp : MATCH expresion LLV_I case_list_exp LLV_D
               | MATCH expresion LLV_I case_list_exp default_exp LLV_D
     """
-    print("match")
     if len(p) == 6:
         p[0] = ExpMatch(p[2],p[4],None,p.lineno(1),p.lexpos(1))
     else:
@@ -478,6 +480,9 @@ def p_re_asignacion(p):
 
 
 
+#----------------------------------------------------------------------------------------------------TIPOS
+
+
 def p_tipo(p):
     """
     tipo : INT
@@ -490,7 +495,6 @@ def p_tipo(p):
         | ID
 
     """
-    print(p[1])
     if p.slice[1].type == 'ID':
         p[0] = Tipo(tipo=Tipos.STRUCT)
     elif len(p) == 2:
@@ -533,8 +537,8 @@ def p_instancia(p):
     """
     instancia : ID LLV_I lista_atributo LLV_D
     """
-    print("instancia")
     p[0] = InstanciaStruct(p[1],p[3],p.lineno(1), p.lexpos(1))
+
 
 def p_lista_atributo(p):
     """
@@ -547,6 +551,39 @@ def p_lista_atributo(p):
         p[1].append(Atributo(p[3],p[5]))
         p[0] = p[1]
 
+#-------------------------------------------------------------------------ACCESO STRUCT
+
+def p_mod_struct(p):
+    """
+    mod_struct : acceso_struct IGUAL expresion
+    """
+    p[0] = ModStruct(p[1],p[3],p.lineno(1), p.lexpos(1))
+
+
+def p_acceso_struct_exp(p):
+    """
+    acceso_struct_exp : acceso_struct
+    """
+    
+    p[0] = AccesoStruct(p[1],p.lineno(1), p.lexpos(1))
+
+
+def p_acceso_struct(p):
+    """
+    acceso_struct : acceso_struct PUNTO expresion
+    """
+    p[1].append(p[3])
+    p[0] = p[1]
+
+
+def p_acceso_corte(p):
+    """
+    acceso_struct  : expresion PUNTO expresion
+    """
+    lista = [p[1]]
+    lista.append(p[3])
+    p[0] = lista
+
 
 #----------------------------------------------------------------------------------------------------ARREGLOS
 
@@ -554,10 +591,27 @@ def p_arreglo(p):
     """
     declaracion_arreglo : LET ID D_PUNTO dimensiones_arreglo IGUAL datos_arreglo
     """
+    
     lista = p[4].lista
     tipo = p[4].tipo
-    p[0] = CrearArreglo(p[2],lista,tipo,p[6],p.lineno(1), p.lexpos(1))
+    print("tipo: ", tipo)
+    print("lista: ", lista)
+    p[0] = CrearArreglo(p[2],lista,tipo,p[6],False,p.lineno(1), p.lexpos(1))
+    
 
+
+def p_arreglo_mut(p):
+    """
+    declaracion_arreglo : LET MUT ID D_PUNTO dimensiones_arreglo IGUAL datos_arreglo
+    """
+    
+    lista = p[4].lista
+    tipo = p[4].tipo
+    print("tipo: ", tipo)
+    print("lista: ", lista)
+    p[0] = CrearArreglo(p[2],lista,tipo,p[6],True,p.lineno(1), p.lexpos(1))
+
+        
 
 def p_dimension_arreglo(p):
     """
@@ -565,36 +619,60 @@ def p_dimension_arreglo(p):
                         | COR_I tipo PUNTOCOMA expresion COR_D
 
     """
-    if p[2].type == 'tipo':
+    if p.slice[2].type == "tipo":
         p[0] = Dimension(p[2], p[4])
     else:
         p[2].lista.append(p[4])
         p[0] = p[2]
 
 
-# def p_dimension_arreglo_corte(p):
-#     """
-#     dimensiones_arreglo :
-#     """
-#     print(p[4])
-
-
-
-
 def p_datos_arreglo(p):
     """
-    datos_arreglo : COR_I exp_list  COR_D
+    datos_arreglo : COR_I exp_list COR_D
+    """
+    p[0] = ArrayData(p[2])
+    
+    
+#----------------------------------------------------------------------------------------------------ACCESO ARREGLOS
+
+def p_acceso_arreglo(p):
+    """
+    acceso_arreglo : ID dimensiones
+    """
+    p[0] = AccesoArreglo(p[1],p[2], p.lineno(1), p.lexpos(1))
+
+
+def p_dimensiones(p):
+    """ 
+    dimensiones : dimensiones dimension
+    """
+    p[1].append(p[2])
+    p[0] = p[1]
+
+
+def p_dimensiones_corte(p):
+    """ 
+    dimensiones : dimension
+    """
+    p[0] = [p[1]]
+
+
+def p_dimension(p):
+    """ 
+    dimension : COR_I expresion COR_D
     """
     p[0] = p[2]
 
 
-def p_dato_arreglo_exp(p):
-    """
-    expresion : datos_arreglo
-    """
-    p[0] = p[1]
+#----------------------------------------------------------------------------------------------------MODIFICACION ARREGLOS
 
+def p_mod_arreglo(p):
+    """
+    mod_arreglo : ID dimensiones IGUAL expresion
+    """
+    p[0] = ModArreglo(p[1],p[2],p[4], p.lineno(1), p.lexpos(1))
 
+  
 #------------------------------------------------------------------------------------------------------------------------------EXPRESIONES
 
 
@@ -644,7 +722,6 @@ def p_expresion_relacional(p):
               | expresion D_IGUAL expresion
               | expresion NO_IGUAL expresion
     """
-    print("here r")
     p[0] = Relacional(p[1], p[2], p[3], p.lineno(1), p.lexpos(1), False)
 
 
@@ -675,7 +752,6 @@ def p_expresion_numero(p):
     expresion : ENTERO
               | DECIMAL
     """
-    print(p.slice[1].type)
     p[0] = Primitivo(p[1], None, p.lineno(1), p.lexpos(1))
 
 
@@ -707,7 +783,6 @@ def p_expresion_id(p):
     """
     expresion : ID
     """
-    print("ID")
     p[0] = Identificador(p[1], p.lineno(1), p.lexpos(1))
 
 
@@ -715,52 +790,31 @@ def p_expresion_id(p):
 def p_to_string(p):
     """
     expresion : expresion PUNTO TO_STRING PAR_I PAR_D
+              | expresion PUNTO TO_OWNED PAR_I PAR_D
     """
     p[0] = ToString(p[1], p.lineno(1), p.lexpos(1))
+    
 
 
-
- #-------------------------------------------------------------------------ACCESO STRUCT
-
-def p_mod_struct(p):
+def p_len(p):
     """
-    mod_struct : acceso_struct IGUAL expresion
+    expresion : expresion PUNTO LEN PAR_I PAR_D
     """
-    p[0] = ModStruct(p[1],p[3],p.lineno(1), p.lexpos(1))
+    p[0] = Length(p[1], p.lineno(1), p.lexpos(1))
+    
 
-
-def p_acceso_struct_exp(p):
+def p_contains(p):
     """
-    acceso_struct_exp : acceso_struct
+    expresion : expresion PUNTO CONTAINS PAR_I AMP  expresion PAR_D
     """
-    p[0] = AccesoStruct(p[1],p.lineno(1), p.lexpos(1))
-
-
-
-def p_acceso_struct(p):
-    """
-    acceso_struct : acceso_struct PUNTO expresion
-    """
-    p[1].append(p[3])
-    p[0] = p[1]
-
-
-def p_acceso_corte(p):
-    """
-    acceso_struct  : expresion PUNTO expresion
-    """
-    lista = [p[1]]
-    lista.append(p[3])
-    p[0] = lista
-
-#-------------------------------------------------------------------------
+    p[0] = Contains(p[1], p[6], p.lineno(1), p.lexpos(1))
+    
 
 def p_cast(p):
     """
     expresion : expresion AS tipo
     """
     p[0] = Casteo(p[3],p[1], p.lineno(1), p.lexpos(1))
-
 
 
 
@@ -780,12 +834,21 @@ def p_otras_expresiones(p):
               | acceso_struct_exp
     """
     p[0] = p[1]
+    
 
-
+def p_dato_arreglo_exp(p):
+    """
+    expresion : datos_arreglo
+              | acceso_arreglo
+    """
+    p[0] = p[1]
+    
 
 # Error sintactico
 def p_error(p):
     print(f'Error de sintaxis {p.value!r}, linea {p.lineno}')
+    print("next: ", parser.token())
+    parser.restart()
     raise Error_("Sintactivo", f'Error de sintaxis {p.value!r}',p.lineno,0)
 
 

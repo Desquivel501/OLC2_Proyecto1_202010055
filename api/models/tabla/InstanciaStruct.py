@@ -27,6 +27,8 @@ class InstanciaStruct(Expresion):
         if self.compilada:
             return self
         
+        print("atributos - ", self.lista_atributos)
+        
         struct:Struct = ts.obtenerStruct(self.id_struct)
         
         if struct is None:

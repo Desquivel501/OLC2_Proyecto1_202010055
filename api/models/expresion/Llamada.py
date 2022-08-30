@@ -35,8 +35,6 @@ class Llamada(Expresion, Instruccion):
         if funcion is not None:
             
             ts_local = TablaSimbolos(ts, "funcion")
-            print("ts - ", ts_local)
-            
             
             if len(funcion.lista_param) != len(self.listaExpresiones):
                 raise Error_("Semantico", f'Cantidad de parametros incorrecto', self.linea, self.columna)

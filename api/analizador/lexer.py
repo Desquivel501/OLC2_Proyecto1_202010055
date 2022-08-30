@@ -32,7 +32,10 @@ reservadas = {
     'void':'VOID',
     'struct':'STRUCT',
     'in': 'IN',
-    'for': 'FOR'
+    'for': 'FOR',
+    'to_owned' : 'TO_OWNED',
+    'len' : 'LEN',
+    'contains' : 'CONTAINS'
 
 }
 
@@ -73,7 +76,7 @@ tokens = [
          ] + list(reservadas.values())
 
 # Caracteres ignorados
-t_ignore = '[\r\t ]'
+t_ignore = '\r\t '
 
 # Tokens con Regex
 t_MAS = r'\+'
@@ -84,19 +87,21 @@ t_PAR_I = r'\('
 t_PAR_D = r'\)'
 t_LLV_I = r'\{'
 t_LLV_D = r'\}'
+
 t_COR_I = r'\['
 t_COR_D = r'\]'
-t_PUNTOCOMA = r'\;'
+
+t_PUNTOCOMA = r';'
 t_MODULO = r'%'
 t_COMA = r','
-t_D_PUNTO = r':'
-t_MAYOR = r'>'
-t_MENOR = r'<'
-t_MAYOR_I = r'>='
-t_MENOR_I = r'<='
-t_D_IGUAL = r'=='
-t_IGUAL = r'='
-t_NO_IGUAL = r'!='
+t_D_PUNTO = r'\:'
+t_MAYOR = r'\>'
+t_MENOR = r'\<'
+t_MAYOR_I = r'\>\='
+t_MENOR_I = r'\<\='
+t_D_IGUAL = r'\=\='
+t_IGUAL = r'\='
+t_NO_IGUAL = r'\!\='
 t_OR = r'\|\|'
 t_AND = r'&&'
 t_NOT = r'!'
@@ -116,7 +121,6 @@ def t_ID(t):
 def t_DECIMAL(t):
     r'\d+\.\d+'
     try:
-        print(t.value)
         t.value = float(t.value)
     except ValueError:
         print("Float value too large %d", t.value)
@@ -166,4 +170,4 @@ def t_error(t):
     
 
 
-lex.lex()
+lexer = lex.lex()

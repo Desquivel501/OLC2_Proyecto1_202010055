@@ -22,12 +22,11 @@ class Asignacion(Instruccion):
         
     def ejecutar(self, ts: TablaSimbolos):
         
-        
-        var_tipo = self.valor.getTipo(ts)
         var_valor = self.valor.getValor(ts)
-        
+        var_tipo = self.valor.getTipo(ts)
         
         if isinstance(var_valor, InstanciaStruct):
+            print("Asignacion - ", self.identificador)
             struct = CrearInstanciaStruct(self.identificador,var_valor,self.mut,self.linea,self.columna)
             struct.ejecutar(ts)
             return
@@ -48,6 +47,7 @@ class Asignacion(Instruccion):
             nuevo = Simbolo()
             nuevo.iniciarPrimitivo( self.identificador, self.tipo, var_valor, self.mut)
             ts.add(self.identificador, nuevo)
+            print("var: ",self.identificador, " - ", var_valor, "Tipo: " , self.tipo.tipo)
         
         else:
             if simbolo.tipo.tipo != var_tipo:
@@ -59,7 +59,7 @@ class Asignacion(Instruccion):
                 raise Error_("Semantica", "No se puede cambiar el valor de una constante", self.linea, self.columna)
             else:
                 simbolo.valor = var_valor
-                ts.add(self.identificador, simbolo)
+                print("var: ",self.identificador, " - ", var_valor, "Tipo: " ,  self.tipo.tipo)
                 
             
        

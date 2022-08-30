@@ -1,12 +1,20 @@
 from cmath import sqrt
+from models.expresion.Expresion import Expresion
 from models.misc.error import Error_
 from models.tabla.Tipos import Tipos, definirTipo
 from models.expresion.operacion.Operacion import Operador, Operacion
 
 class Aritmetica(Operacion):
     
+    def __init__(self, left: Expresion, operador, right: Expresion, linea, columna, unaria):
+        super().__init__(left, operador, right, linea, columna, unaria)
+        self.tipo = None
+    
     def getTipo(self, ts):
-        return definirTipo(self.getValor(ts))
+        if self.tipo == None:
+            return definirTipo(self.getValor(ts))
+        else:
+            return self.tipo
     
     def getValor(self, ts):
         
@@ -15,6 +23,8 @@ class Aritmetica(Operacion):
         
         tipo_left = self.left.getTipo(ts)
         tipo_right = self.right.getTipo(ts) 
+        
+        print(valor_left, " - ", valor_right )
         
         if self.unaria is True:
             return valor_left*(-1)
@@ -37,13 +47,9 @@ class Aritmetica(Operacion):
         
         
         if self.operador == Operador.SUMA and tipo_left in [Tipos.STRING, Tipos.STR] and tipo_right in [Tipos.STR, Tipos.STRING] :
-            if tipo_left == Tipos.STR and tipo_right == Tipos.STRING:
-                return valor_left + valor_right
-            else:
-                print(f'No se puede realizar una suma entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
-                raise Error_("Semantico",f'No se puede realizar una suma entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)
-            
-        
+            self.tipo = tipo_left;
+            return valor_left + valor_right
+         
         
         if tipo_left not in [Tipos.INT, Tipos.FLOAT] and tipo_right not in [Tipos.INT, Tipos.FLOAT]:
             print(f'No se puede realizar una operacion entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
@@ -96,3 +102,7 @@ class Aritmetica(Operacion):
                 raise Error_("Semantico",f'La raiz cuadrada de negativos no esta definida',self.linea,self.columna)
             else:
                 return valor_left ** 0.5
+            
+        print("here----------------------------------")
+        print(f'No se puede realizar una suma entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
+        raise Error_("Semantico",f'No se puede realizar una suma entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',self.linea,self.columna)

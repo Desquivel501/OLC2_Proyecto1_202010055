@@ -44,9 +44,8 @@ class AccesoStruct(Expresion):
     def acceso(self, listaExpresion, struct, ts):
         expresionInicial = self.listaExpresiones.pop(0)
         
-        
-
         if len(listaExpresion) == 0:
+
             expresionInicial = expresionInicial.identificador
             valor = struct.dic_atributos.get(expresionInicial)
             
