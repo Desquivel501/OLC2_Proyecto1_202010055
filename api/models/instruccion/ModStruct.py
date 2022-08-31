@@ -16,14 +16,16 @@ class ModStruct(Instruccion):
         
      
     def ejecutar(self, ts: TablaSimbolos):
-        
+        print("MOD********************************************")
         expresionInicial = self.listaExpresiones.pop(0)
         
-        struct : InstanciaStruct = ts.obtenerInstancia(expresionInicial)
+        struct = ts.buscar(expresionInicial)
         
         if struct is None:
-            print("here")
             raise Error_("Semantico", f'No se encontro el simbolo {expresionInicial}', self.linea, self.columna)
+        
+        if not isinstance(struct, InstanciaStruct):
+            raise Error_("Semantico", f'Simbolo \'{self.identificador}\' no es de tipo Struct', self.linea, self.columna)
         
         if not struct.mut:
              raise Error_("Semantico", f'No se puede modificar un struct constante', self.linea, self.columna)
@@ -33,10 +35,7 @@ class ModStruct(Instruccion):
         
     
     def acceso(self, listaExpresion, struct, ts):
-        print((listaExpresion))
         expresionInicial = self.listaExpresiones.pop(0)
-        
-        print(expresionInicial)
         
         if len(listaExpresion) == 0:
     

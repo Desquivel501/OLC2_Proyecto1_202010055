@@ -1,11 +1,12 @@
 
 from struct import Struct
+from models.tabla.Simbolo import Simbolo
 from models.misc.error import Error_
 from models.instruccion.Instruccion import Instruccion
 from models.tabla.Tipos import Tipo, Tipos
 from models.expresion.Expresion import Expresion
 
-class InstanciaArreglo(Expresion):
+class InstanciaArreglo(Expresion, Simbolo):
 
     def __init__(self,tipo, dimensiones, valores):
         self.dimensiones = dimensiones
@@ -39,6 +40,9 @@ class InstanciaArreglo(Expresion):
         
     def modValor(self, listaDimensiones, index, valores, nuevo, linea, columna):
 
+        if self.mut == False:
+            raise Error_("Semantico", f'No se puede emodificar un arreglo constante', linea, columna)
+        
         indiceDimension:int = listaDimensiones.pop(0)
         tamanoDimension:int = self.dimensiones[index]
 

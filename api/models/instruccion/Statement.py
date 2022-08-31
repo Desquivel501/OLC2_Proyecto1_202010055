@@ -21,10 +21,10 @@ class Statement(Instruccion):
         #         element = ins.ejecutar(ts)
                 
         #         if element is not None:
-        #             if element["tipo"] == "break" and tipo != "funcion":
+        #             if element["tipo"] == "break":
         #                 return element
                     
-        #             if element["tipo"] == "continue" and tipo != "funcion":
+        #             if element["tipo"] == "continue":
         #                 return element
                     
         #             if element["tipo"] == "return":

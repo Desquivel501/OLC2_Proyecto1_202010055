@@ -32,17 +32,17 @@ def interpretar():
         
         if instrucciones != "":
             
-            try:
-                ast: Ast = parser.parse(instrucciones)
-                ts = TablaSimbolos(None, 'Global')
-                ast.ejecutar(ts)
+            # try:
+            #     ast: Ast = parser.parse(instrucciones)
+            #     ts = TablaSimbolos(None, 'Global')
+            #     ast.ejecutar(ts)
                 
-            except Exception as e:
-                print(e)
+            # except Exception as e:
+            #     print(e)
                 
-            # ast: Ast = parser.parse(instrucciones)
-            # ts = TablaSimbolos(None, 'Global')
-            # ast.ejecutar(ts)    
+            ast: Ast = parser.parse(instrucciones)
+            ts = TablaSimbolos(None, 'Global')
+            ast.ejecutar(ts)    
         
         
 

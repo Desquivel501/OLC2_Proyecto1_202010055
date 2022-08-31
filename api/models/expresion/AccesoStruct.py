@@ -1,5 +1,6 @@
 
 
+import copy
 from models.tabla.InstanciaStruct import InstanciaStruct
 from models.instruccion.Instruccion import Instruccion
 from models.tabla.Funcion import Funcion
@@ -16,7 +17,6 @@ class AccesoStruct(Expresion):
         self.tipo = None
         self.linea = linea
         self.columna = columna
-        self.valor = None
         
     def getTipo(self, ts: TablaSimbolos):
         
@@ -27,14 +27,15 @@ class AccesoStruct(Expresion):
              
     def getValor(self, ts: TablaSimbolos):
         
-        if self.valor is not None:
-            return self.valor
+        copiaLista = copy.deepcopy(self.listaExpresiones)
         
         expresionInicial = self.listaExpresiones.pop(0)
         expresionInicial = expresionInicial.getValor(ts)
          
         if isinstance(expresionInicial, InstanciaStruct):
-            return self.acceso(self.listaExpresiones, expresionInicial, ts)
+            val = self.acceso(self.listaExpresiones, expresionInicial, ts)
+            self.listaExpresiones = copiaLista
+            return val
         
         else:
             raise Error_("Semantico", f'NOSE', self.linea, self.columna)
@@ -52,7 +53,6 @@ class AccesoStruct(Expresion):
             if valor is not None:
                 res = struct.dic_atributos[expresionInicial].valor
                 self.tipo = struct.dic_atributos[expresionInicial].tipo
-                self.valor = res
                 return(res)
             else:
                 raise Error_("Semantico", f'No se encontro el atributo {expresionInicial}', self.linea, self.columna)

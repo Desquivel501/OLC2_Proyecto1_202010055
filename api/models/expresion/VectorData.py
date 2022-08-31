@@ -1,12 +1,11 @@
-from models.tabla.InstanciaArreglo import InstanciaArreglo
+from models.tabla.InstanciaVector import InstanciaVector
 from models.misc.error import Error_
-from models.instruccion.Instruccion import Instruccion
 from models.tabla.Tipos import Tipo, Tipos
 from models.expresion.Expresion import Expresion
 
 
 
-class ArrayData(Expresion):
+class VectorData(Expresion):
 
     def __init__(self, listaExpresiones, linea:int, columna: int):
         self.listaExpresiones = listaExpresiones
@@ -17,7 +16,7 @@ class ArrayData(Expresion):
         self.columna = columna
     
     def getTipo(self, ts):
-        return Tipos.ARRAY_DATA
+        return Tipos.VECTOR_DATA
     
     def getValor(self, ts):
         
@@ -36,7 +35,7 @@ class ArrayData(Expresion):
             
             else:
                 if tipo != tipo_expresion:
-                    raise Error_("Semantico", f'Tipos en arreglo no coinciden', self.linea, self.columna)
+                    raise Error_("Semantico", f'Tipos en vector no coinciden', self.linea, self.columna)
                 else:
                     self.expresionesCompiladas.append({"tipo":tipo_expresion, "valor":valor_expresion})
                     
@@ -54,7 +53,7 @@ class ArrayData(Expresion):
             valor_expresion = expresionCompilada.get("valor")
             tipo_expresion = expresionCompilada.get("tipo")
             
-            if tipo_expresion != Tipos.ARRAY_DATA:
+            if tipo_expresion != Tipos.VECTOR_DATA:
                 tipoFin = tipo_expresion
                 self.valores.append(valor_expresion)
                 continue
@@ -67,14 +66,14 @@ class ArrayData(Expresion):
                 
                 else:
                     if instanciaArray.tipo != tipoFin:
-                        raise Error_("Semantico", f'Tipos en arreglo no coinciden', self.linea, self.columna)
+                        raise Error_("Semantico", f'Tipos en vector no coinciden', self.linea, self.columna)
                 
                 self.valores.insert(i, instanciaArray.valores )
                 
         
         
-        instanciaArray = InstanciaArreglo(tipoFin, self.listaDimensiones, self.valores)
+        instanciaVector = InstanciaVector(tipoFin, self.listaDimensiones, self.valores)
        
-        return instanciaArray
+        return instanciaVector
         
         

@@ -18,23 +18,50 @@ class Ast:
     def ejecutar(self, ts):
         for instruccion in self.instrucciones:
             
+        #     try:
+        #         if isinstance(instruccion, Funcion):
+        #             fun = ts.obtenerFuncion(instruccion.identificador)
+        #             if fun is None:
+        #                 instruccion.ejecutar(ts)
+                
+                
+        #         if isinstance(instruccion, Struct):
+        #             struct = ts.obtenerStruct(instruccion.identificador)
+        #             if struct is None:
+        #                 instruccion.ejecutar(ts)
+                        
+        #     except Exception as e:
+        #         print(e)
+                    
+        # try:
+        #     main = ts.obtenerFuncion("main")
+        
+        #     if main is not None:
+        #         main.instrucciones.ejecutar(ts)
+        #     else:
+        #         raise Error_('Semantico', f'No existe metodo main', 0, 0)
+        # except Exception as e:
+        #         print(e)
+        
             if isinstance(instruccion, Funcion):
                 fun = ts.obtenerFuncion(instruccion.identificador)
                 if fun is None:
                     instruccion.ejecutar(ts)
-            
-            
+                    
+                    
             if isinstance(instruccion, Struct):
                 struct = ts.obtenerStruct(instruccion.identificador)
                 if struct is None:
-                    instruccion.ejecutar(ts)
-
-        main = ts.obtenerFuncion("main")
+                        instruccion.ejecutar(ts)
+                        
+                        
         
+        main = ts.obtenerFuncion("main")
+
         if main is not None:
             main.instrucciones.ejecutar(ts)
-        else:
-            raise Error_('Semantico', f'No existe metodo main', 0, 0)
+        
+        
         
         self.ts = ts
     

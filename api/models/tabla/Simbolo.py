@@ -28,3 +28,4 @@ class Simbolo:
         self.tipo = tipo
         self.simbolo = Simbolos.VARIABLE
         self.mut = mut
+        

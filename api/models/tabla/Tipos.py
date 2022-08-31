@@ -10,6 +10,8 @@ class Tipos(Enum):
     STRUCT = 8
     ARRAY_DATA = 9
     ARRAY = 10
+    VECTOR_DATA = 11
+    VECTOR = 12
 
 
 def getTipo(s: str):

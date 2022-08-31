@@ -1,13 +1,15 @@
 
 
+import copy
 from struct import Struct
+from models.tabla.Simbolo import Simbolo
 from models.misc.error import Error_
 from models.instruccion.Instruccion import Instruccion
 from models.tabla.Tipos import Tipo, Tipos
 from models.expresion.Expresion import Expresion
 
 
-class InstanciaStruct(Expresion):
+class InstanciaStruct(Expresion, Simbolo):
     def __init__(self, id_struct, lista_atributos, linea, columna):
         self.id_struct = id_struct
         self.lista_atributos = lista_atributos
@@ -22,13 +24,9 @@ class InstanciaStruct(Expresion):
         return Tipos.STRUCT
     
     def getValor(self, ts):
-        print("Instancia - ", self.id_instancia)
         
-        if self.compilada:
-            return self
-        
-        print("atributos - ", self.lista_atributos)
-        
+        copiaLista = copy.deepcopy(self.lista_atributos)
+
         struct:Struct = ts.obtenerStruct(self.id_struct)
         
         if struct is None:
@@ -60,7 +58,8 @@ class InstanciaStruct(Expresion):
             
             self.lista_atributos.pop(0)
 
-        self.compilada = True
+        self.lista_atributos = copiaLista
+       
         return self
 
 

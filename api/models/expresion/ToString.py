@@ -19,8 +19,6 @@ class ToString(Expresion):
         
     def getTipo(self, ts):
         tipo = self.exp.getTipo(ts)
-        print(self.exp.getValor(ts))
-        print("toString - ", tipo)
         
         if tipo == Tipos.STR or tipo == Tipos.STRING:
             return Tipos.STRING
@@ -29,8 +27,6 @@ class ToString(Expresion):
     
     def getValor(self, ts):
         tipo = self.exp.getTipo(ts)
-        print(self.exp.getValor(ts))
-        print("toString - ", tipo)
         
         if tipo == Tipos.STR or tipo == Tipos.STRING:
             return self.exp.getValor(ts)

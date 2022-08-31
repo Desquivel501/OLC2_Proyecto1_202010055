@@ -1,3 +1,6 @@
+from models.tabla.InstanciaStruct import InstanciaStruct
+from models.tabla.InstanciaVector import InstanciaVector
+from models.tabla.InstanciaArreglo import InstanciaArreglo
 from models.tabla.Tipos import Tipo
 from models.tabla.Simbolo import Simbolo
 from models.instruccion.Statement import Statement
@@ -11,16 +14,16 @@ from models.misc.error import Error_
 
 class For(Instruccion):
 
-    def __init__(self, iterador, cuerpo: Statement, linea, columna, rango = None, arreglo = None , ):
+    def __init__(self, iterador, cuerpo: Statement, linea, columna, rango = None, lista = None):
         self.rango = rango
-        self.arreglo = arreglo
+        self.lista = lista
         self.cuerpo = cuerpo
         self.linea = linea
         self.columna = columna
         self.iterador = iterador
 
 
-    def ejecutar(self, ts):
+    def ejecutar(self, ts : TablaSimbolos):
         ts_local = TablaSimbolos(ts, "FOR")
 
         
@@ -52,6 +55,60 @@ class For(Instruccion):
                            continue
             else:
                 raise Error_("Semantico", "Rango de For debe de ser i64", self.linea, self.columna)
+        
+        if self.lista is not None:
+            lista = self.lista.getValor(ts)
+            lista_tipo = self.lista.getTipo(ts)
+            
+            if isinstance(lista, InstanciaArreglo):
+                
+                for i in range(0, len(lista.valores)):
+
+                    nuevo = Simbolo()
+                    nuevo.iniciarPrimitivo( self.iterador, Tipo(tipo=lista.tipo), lista.valores[i], True)
+                    ts_local.add(self.iterador, nuevo)
+                    
+                    res = self.cuerpo.ejecutar(ts_local)
+
+                    if res is not None:
+                        if res["tipo"] == "break":
+                            break
+                        if res["tipo"] == "continue":
+                           continue
+            
+            
+            if isinstance(lista, InstanciaVector):
+               
+                for i in range(0, len(lista.valores)):
+                    
+                    if isinstance(lista.valores[i], InstanciaStruct):
+                        lista.valores[i].id_instancia = self.iterador
+                        
+                        ts_local.add(self.iterador, lista.valores[i])
+                    
+                        for x in lista.valores[i].dic_atributos:
+                            print(lista.valores[i].dic_atributos[x].valor)
+                            
+                        
+                        prueba = ts_local.buscar(self.iterador)
+                        
+                        for x in prueba.dic_atributos:
+                            print(prueba.dic_atributos[x].valor)
+                        
+                    else:
+                        nuevo = Simbolo()
+                        nuevo.iniciarPrimitivo( self.iterador, Tipo(tipo=lista.tipo), lista.valores[i], True)
+                        ts_local.add(self.iterador, nuevo)
+                    
+                    res = self.cuerpo.ejecutar(ts_local)
+
+                    if res is not None:
+                        if res["tipo"] == "break":
+                            break
+                        if res["tipo"] == "continue":
+                           continue
+        
+        
                     
         
         # res = None

@@ -12,26 +12,32 @@ from models.tabla.Tipos import Tipo
 
 class Asignacion(Instruccion):
     
-    def __init__(self, identificador: str, valor: Expresion, tipo: Tipo, mut:bool, linea:int, columna: int ):
+    def __init__(self, identificador: str, valor: Expresion, tipo: Tipo, mut:bool, linea:int, columna: int , referencia = False):
         self.identificador = identificador
         self.valor = valor
         self.tipo = tipo
         self.mut = mut
         self.linea = linea
         self.columna = columna
+        self.referencia = referencia
+        self.valorCompilado = None
         
     def ejecutar(self, ts: TablaSimbolos):
         
         var_valor = self.valor.getValor(ts)
         var_tipo = self.valor.getTipo(ts)
         
+        
         if isinstance(var_valor, InstanciaStruct):
-            print("Asignacion - ", self.identificador)
-            struct = CrearInstanciaStruct(self.identificador,var_valor,self.mut,self.linea,self.columna)
-            struct.ejecutar(ts)
+            print("STRUCT/////////////////////////////////////////////////")
+            # struct = CrearInstanciaStruct(self.identificador,self.valor,self.mut,self.linea,self.columna)
+            # struct.ejecutar(ts)
+
+            var_valor.id_instancia = self.identificador
+            var_valor.mut = self.mut
+            ts.add(self.identificador, var_valor)
+            
             return
-        
-        
 
         if self.tipo is not None:
             if self.tipo.tipo != var_tipo:
@@ -44,10 +50,10 @@ class Asignacion(Instruccion):
         simbolo = ts.buscar(self.identificador);
         
         if simbolo is None:
+
             nuevo = Simbolo()
             nuevo.iniciarPrimitivo( self.identificador, self.tipo, var_valor, self.mut)
             ts.add(self.identificador, nuevo)
-            print("var: ",self.identificador, " - ", var_valor, "Tipo: " , self.tipo.tipo)
         
         else:
             if simbolo.tipo.tipo != var_tipo:

@@ -1,4 +1,5 @@
 from re import L
+from models.misc.Program import Program
 from models.misc.error import Error_
 from ply import lex
 
@@ -35,7 +36,19 @@ reservadas = {
     'for': 'FOR',
     'to_owned' : 'TO_OWNED',
     'len' : 'LEN',
-    'contains' : 'CONTAINS'
+    'contains' : 'CONTAINS',
+    'Vec' : 'VEC_U',
+    'vec' : 'VEC_L',
+    'new' : 'NEW',
+    'with_capacity' : 'WITH_CAPACITY',
+    'push':'PUSH',
+    'insert':'INSERT',
+    'remove': 'REMOVE',
+    'contains':'CONTAINS',
+    'capacity':'CAPACITY',
+    'chars':'CHARS',
+    'usize':'USIZE',
+    'clone':'CLONE'
 
 }
 
@@ -124,7 +137,7 @@ def t_DECIMAL(t):
         t.value = float(t.value)
     except ValueError:
         print("Float value too large %d", t.value)
-        t.value = 0
+        t.value = 0.0
     return t
 
 def t_ENTERO(t):
@@ -157,9 +170,15 @@ def t_ignorar_salto(t):
     r"""\n+"""
     t.lexer.lineno += t.value.count('\n')
     
+    
 def t_COMENTARIO_SIMPLE(t):
     r'//.*\n'
     t.lexer.lineno += 1
+    
+
+def t_COMENTARIO_MULTILINEA(t):
+    r'/\*(.|\n)*?\*/'
+    t.lexer.lineno += t.value.count('\n')
 
 
 # Manejo de errores lexicos
@@ -167,6 +186,7 @@ def t_error(t):
     print(f'Caracter no reconocido {t.value[0]!r} en la linea {t.lexer.lineno}')
     t.lexer.skip(1)
     error = Error_("Lexico", f'Caracter {t.value[0]!r} no reconocido', t.lexer.lineno,0)
+    Program.errores.append(error)
     
 
 

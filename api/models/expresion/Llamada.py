@@ -36,47 +36,12 @@ class Llamada(Expresion, Instruccion):
             
             ts_local = TablaSimbolos(ts, "funcion")
             
-            if len(funcion.lista_param) != len(self.listaExpresiones):
-                raise Error_("Semantico", f'Cantidad de parametros incorrecto', self.linea, self.columna)
+            funcion.ejecutarParametros(ts_local,self.listaExpresiones,ts)
             
-            i = 0
-            for exp in self.listaExpresiones:
-                valor_exp = exp.getValor(ts)
-                tipo_exp = exp.getTipo(ts)
-                
-                
-                if funcion.lista_param[i].tipo.tipo != tipo_exp:
-                    raise Error_("Semantico", f'Tipo incorrecto en parametro {funcion.lista_param[i].identificador}', self.linea, self.columna)
-                
-
-                nuevo = Simbolo()
-                nuevo.iniciarPrimitivo(funcion.lista_param[i].identificador, funcion.lista_param[i].tipo, valor_exp, True)
-                
-                ts_local.add(funcion.lista_param[i].identificador, nuevo)
-                
-                i += 1
+            retorno = funcion.ejecutarFuncion(ts_local)
             
-            res = funcion.instrucciones.ejecutar(ts_local)
-            print("res f - ", res)
-            
-            if funcion.tipo.tipo != Tipos.VOID:
-               
-                if res["tipo"] == "return":
-                    
-                    if res["exp"] is None:
-                        raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return', self.linea, self.columna)
-                    
-                    valor_return = res["exp"].getValor(ts_local)
-                    tipo_return = res["exp"].getTipo(ts_local)
-                            
-                    if tipo_return != funcion.tipo.tipo:
-                        raise Error_("Semantico", f'Tipo de Return incorrecto', self.linea, self.columna)
-
-                    return valor_return
-                
-                else:
-                    raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return', self.linea, self.columna)
-
+            if retorno is not None:
+                return retorno
             
             
         else:

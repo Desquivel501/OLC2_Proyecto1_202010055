@@ -1,5 +1,7 @@
 
 
+from models.tabla.InstanciaArreglo import InstanciaArreglo
+from models.tabla.InstanciaVector import InstanciaVector
 from models.tabla.InstanciaStruct import InstanciaStruct
 from models.instruccion.Instruccion import Instruccion
 from models.tabla.Funcion import Funcion
@@ -27,19 +29,42 @@ class AccesoArreglo(Expresion):
              
     def getValor(self, ts: TablaSimbolos):
                 
-        instancia = ts.obtenerArreglo(self.id_instancia)
+        instancia = ts.buscar(self.id_instancia)
         
-        if instancia == None:
-            raise Error_("Semantico", f'Arreglo {self.id_instancia} no existe', self.linea, self.columna)
         
-        self.tipo = instancia.tipo
+        print(self.id_instancia)
+        print(instancia)
         
-        dimensiones = self.obtenerDimensiones(ts)
-        valor = instancia.getValor(dimensiones, 0, instancia.valores, self.linea, self.columna)
+        if instancia is None:
+            raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', self.linea, self.columna)  
         
-        print(valor)   
-
-        return valor       
+                
+        elif isinstance(instancia, InstanciaVector):
+            print("vector")  
+            self.tipo = instancia.tipo     
+            dimensiones = self.obtenerDimensiones(ts)
+            valor = instancia.getValor(dimensiones, 0, instancia.valores, self.linea, self.columna)
+            return valor  
+        
+        if isinstance(instancia, Simbolo):
+            instancia = instancia.valor
+        
+        if isinstance(instancia, InstanciaArreglo):
+            print("array")
+            
+            self.tipo = instancia.tipo
+            
+            dimensiones = self.obtenerDimensiones(ts)
+            valor = instancia.getValor(dimensiones, 0, instancia.valores, self.linea, self.columna)
+            print(valor)   
+            return valor      
+        
+ 
+        
+        
+        
+        print("OUT")
+        raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', self.linea, self.columna)  
         
     
     def obtenerDimensiones(self, ts):

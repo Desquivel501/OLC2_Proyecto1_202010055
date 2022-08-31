@@ -24,10 +24,10 @@ class Aritmetica(Operacion):
         tipo_left = self.left.getTipo(ts)
         tipo_right = self.right.getTipo(ts) 
         
-        print(valor_left, " - ", valor_right )
-        
         if self.unaria is True:
             return valor_left*(-1)
+        
+        print(tipo_left, " - ", tipo_right)
             
         
         if self.operador == Operador.POW:

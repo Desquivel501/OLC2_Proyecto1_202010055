@@ -22,15 +22,24 @@ class ModArreglo(Instruccion):
              
     def ejecutar(self, ts: TablaSimbolos):
                 
-        instancia = ts.obtenerArreglo(self.id_instancia)
-        
+        instancia = ts.buscar(self.id_instancia)
+
         nuevo_valor = self.expresion.getValor(ts)
+        
+        if isinstance(instancia, Simbolo):
+            instancia = instancia.valor
         
         if isinstance(nuevo_valor, InstanciaArreglo):
             nuevo_valor = nuevo_valor.valores
         
         if instancia == None:
             raise Error_("Semantico", f'Arreglo {self.id_instancia} no existe', self.linea, self.columna)
+        
+        if not isinstance(instancia, InstanciaArreglo):
+            
+            print(instancia)
+            
+            raise Error_("Semantico", f'Simbolo \'{self.identificador}\' no es de tipo Arreglo', self.linea, self.columna)
         
         self.tipo = instancia.tipo
         

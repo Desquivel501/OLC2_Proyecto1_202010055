@@ -25,6 +25,9 @@ class Casteo(Expresion):
         tipo = self.exp.getTipo(ts)
         valor = self.exp.getValor(ts)
         
+        if tipo == self.nuevo_tipo.tipo:
+            return valor
+        
         if tipo == Tipos.INT and self.nuevo_tipo.tipo == Tipos.CHAR:
             return chr(valor)
         elif tipo == Tipos.INT and self.nuevo_tipo.tipo == Tipos.FLOAT:
