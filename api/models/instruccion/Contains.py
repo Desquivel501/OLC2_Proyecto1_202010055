@@ -35,7 +35,7 @@ class Contains_(Expresion):
             if (vector.tipo != tipo):
                 raise Error_("Semantico", f'Tipo de insert a vector incorrecto', ts.env, self.linea, self.columna)  
         
-            return vector.contains(valor,  ts.env, self.linea, self.columna)
+            return vector.contains(valor, self.linea, self.columna)
         
         
         raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', ts.env, self.linea, self.columna)  

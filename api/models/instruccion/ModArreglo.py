@@ -44,7 +44,7 @@ class ModArreglo(Instruccion):
         self.tipo = instancia.tipo
         
         dimensiones = self.obtenerDimensiones(ts)
-        instancia.modValor(dimensiones, 0, instancia.valores, nuevo_valor, ts.env, self.linea, self.columna)
+        instancia.modValor(dimensiones, 0, instancia.valores, nuevo_valor, self.linea, self.columna)
         
         print(nuevo_valor)   
 

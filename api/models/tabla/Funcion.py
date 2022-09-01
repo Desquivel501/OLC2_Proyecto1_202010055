@@ -53,38 +53,8 @@ class Funcion(Instruccion):
         
         codigo = self.instrucciones.codigo
         
-        # for ins in codigo:
-            # try:
-            #     element = ins.ejecutar(ts_local)
-                
-            #     if element is not None:
-            #         if element["tipo"] == "break":
-            #             raise Error_("Semantico", f'No se puede ejecutar un Break fuera de un ciclo', ts_local.env, self.linea, self.columna)
-                    
-            #         if element["tipo"] == "continue":
-            #             raise Error_("Semantico", f'No se puede ejecutar un Continue fuera de un ciclo', ts_local.env, self.linea, self.columna)
-                    
-            #         if element["tipo"] == "return":
-                        
-            #             if self.tipo.tipo != Tipos.VOID:
-            #                 if element["exp"] is None:
-            #                     raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return', ts_local.env, self.linea, self.columna)
-                            
-            #                 valor_return = element["exp"].getValor(ts_local)
-            #                 tipo_return = element["exp"].getTipo(ts_local)
-                            
-            #                 if tipo_return != self.tipo.tipo:
-            #                     raise Error_("Semantico", f'Tipo de Return incorrecto', ts_local.env, self.linea, self.columna)
-
-            #                 return valor_return
-            #             else:
-            #                 raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return tipo {ts_local.getTiposNombre(self.tipo.tipo)}', ts_local.env, self.linea, self.columna)
-
-                
-            # except Exception as e:
-            #     print(e)
-            
         for ins in codigo:
+            try:
                 element = ins.ejecutar(ts_local)
                 
                 if element is not None:
@@ -109,6 +79,36 @@ class Funcion(Instruccion):
                             return valor_return
                         else:
                             raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return tipo {ts_local.getTiposNombre(self.tipo.tipo)}', ts_local.env, self.linea, self.columna)
+
+                
+            except Exception as e:
+                print(e)
+            
+        # for ins in codigo:
+        #         element = ins.ejecutar(ts_local)
+                
+        #         if element is not None:
+        #             if element["tipo"] == "break":
+        #                 raise Error_("Semantico", f'No se puede ejecutar un Break fuera de un ciclo', ts_local.env, self.linea, self.columna)
+                    
+        #             if element["tipo"] == "continue":
+        #                 raise Error_("Semantico", f'No se puede ejecutar un Continue fuera de un ciclo', ts_local.env, self.linea, self.columna)
+                    
+        #             if element["tipo"] == "return":
+                        
+        #                 if self.tipo.tipo != Tipos.VOID:
+        #                     if element["exp"] is None:
+        #                         raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return', ts_local.env, self.linea, self.columna)
+                            
+        #                     valor_return = element["exp"].getValor(ts_local)
+        #                     tipo_return = element["exp"].getTipo(ts_local)
+                            
+        #                     if tipo_return != self.tipo.tipo:
+        #                         raise Error_("Semantico", f'Tipo de Return incorrecto', ts_local.env, self.linea, self.columna)
+
+        #                     return valor_return
+        #                 else:
+        #                     raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return tipo {ts_local.getTiposNombre(self.tipo.tipo)}', ts_local.env, self.linea, self.columna)
                         
 
         

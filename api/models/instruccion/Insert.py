@@ -38,7 +38,7 @@ class Insert(Instruccion):
             if (tipo_indice != Tipos.INT):
                 raise Error_("Semantico", f'Indice debe de ser de tipo i64', ts.env, self.linea, self.columna)  
             
-            vector.insert(valor_valor, valor_indice,  ts.env, self.linea, self.columna)
+            vector.insert(valor_valor, valor_indice, self.linea, self.columna)
             return
         
         

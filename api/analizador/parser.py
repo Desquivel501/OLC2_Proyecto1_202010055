@@ -202,7 +202,7 @@ def p_exp_list(p):
         p[0] = p[1]
 
 
-#-----------------------------------------------------------------------------------------------------------FUNCIONES
+#-------------------------------------------------------------------------------------------------------------------------FUNCIONES
 
 def p_funcion(p):
     """
@@ -237,6 +237,7 @@ def p_lista_param(p):
         p[1].append(p[3])
         p[0] = p[1]
 
+
 def p_parametro(p):
     """
     parametro : ID D_PUNTO tipo_funcion
@@ -270,7 +271,6 @@ def p_llamada(p):
         p[0] = Llamada(p[1],p[3],p.lineno(1), p.lexpos(0) )
 
 
-
 def p_exp_list_llamada(p):
     """
     exp_list_llamada : exp_list_llamada COMA exp_llamada
@@ -281,6 +281,7 @@ def p_exp_list_llamada(p):
     else:
         p[1].append(p[3])
         p[0] = p[1]
+
 
 def p_exp_llamada(p):
     """
@@ -332,7 +333,7 @@ def p_statement_error(p):
     """ 
     statement : error LLV_D 
     """
-    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) ))
+    Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) )
     p[0] = ""
 
 
@@ -492,7 +493,7 @@ def p_loop_exp(p):
     p[0] = Loop(p[2], True, p.lineno(1),p.lexpos(0) )
 
 
-#---------------------------------------------------------------------------------------------------------------------------------FOR
+#---------------------------------------------------------------------------------------------------------FOR
 
 
 def p_for(p):
@@ -501,7 +502,6 @@ def p_for(p):
     """
     p[0] = For(p[2], p[5],p.lineno(1),p.lexpos(0) ,rango=p[4])
     
-
 
 def p_for_lista(p):
     """
@@ -517,9 +517,7 @@ def p_rango_for(p):
     p[0] = Rango(p[1], p[4])
 
 
-
-
-#------------------------------------------------------------------------------------------------------------------------------ASIGNACION VARIABLE
+#---------------------------------------------------------------------------------------------------ASIGNACION VARIABLE
 
 
 def p_asignacion(p):
@@ -557,7 +555,6 @@ def p_re_asignacion(p):
     p[0] = Asignacion( p[1], p[3], None, True,  p.lineno(1),p.lexpos(0)  )
 
 
-
 #----------------------------------------------------------------------------------------------------TIPOS
 
 
@@ -581,6 +578,7 @@ def p_tipo(p):
         p[0] = Tipo(stipo = p[1])
     else:
         p[0] = Tipo(stipo = "&str")
+        
         
 def p_tipo_funcion(p):
     """
@@ -629,9 +627,6 @@ def p_dimension_arreglo_tipo(p):
     else:
         p[0] = p[2]
     
-
-
-
 
 def p_dimension_arreglo_tipo_un(p):
     """
@@ -920,6 +915,7 @@ def p_vec_new(p):
     vec_new : VEC_U D_PUNTO D_PUNTO NEW PAR_I PAR_D
     """
 
+
 def p_vec_capacity(p):
     """
     vec_capacity : VEC_U D_PUNTO D_PUNTO WITH_CAPACITY PAR_I expresion PAR_D
@@ -932,6 +928,7 @@ def p_vec_dato(p):
     vec_dato : VEC_L NOT COR_I exp_list  COR_D
     """
     p[0] = VectorData(p[4], p.lineno(1), p.lexpos(0) )
+
 
 def p_vec_dato_intervalo(p):
     """
@@ -953,8 +950,7 @@ def p_vector_insert(p):
     """
     p[0] = Insert(p[1],p[7], p[5] , p.lineno(1), p.lexpos(0) )
     
-
-
+    
 def p_vector_remove(p):
     """
     vec_remove : expresion PUNTO REMOVE PAR_I expresion PAR_D
@@ -982,13 +978,14 @@ def p_len(p):
     """
     p[0] = Length(p[1], p.lineno(1), p.lexpos(0) )
 
+
 def p_clone(p):
     """
     clone : expresion PUNTO CLONE PAR_I PAR_D
     """
     p[0] = Clone(p[1], p.lineno(1), p.lexpos(0) )
     
-
+    
 def p_chars(p):
     """
     chars : expresion PUNTO CHARS PAR_I PAR_D
@@ -1126,7 +1123,6 @@ def p_cast(p):
     p[0] = Casteo(p[3],p[1], p.lineno(1), p.lexpos(0) )
 
 
-
 def p_expresion_sentencia(p):
     """
     expresion : exp_if
@@ -1153,8 +1149,7 @@ def p_dato_arreglo_exp(p):
     """
     p[0] = p[1]
     
-    
-    
+       
 def p_vec_exp(p):
     """
     expresion : vec_dato 
@@ -1176,17 +1171,6 @@ def p_error(p):
     Error_("Sintactivo", f'Error de sintaxis {p.value!r}'," - ",p.lineno,0)
 
 
-def getColumn(inicio, fin):
-    return fin - inicio
-
-
-
-    # while True:
-    #      tok = parser.token()
-    #      if not tok or tok.type == 'SEMI': break
-    # parser.errok()
-
-    # return tok
 
 # Build the parser
 parser = yacc() 

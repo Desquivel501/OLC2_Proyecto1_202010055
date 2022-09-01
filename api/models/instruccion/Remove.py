@@ -50,7 +50,7 @@ class Remove(Instruccion, Expresion):
             if (tipo_indice != Tipos.INT):
                 raise Error_("Semantico", f'Tipo de push a vector incorrecto', ts.env, self.linea, self.columna)  
         
-            return vector.remove(valor_indice,  ts.env, self.linea, self.columna)
+            return vector.remove(valor_indice, self.linea, self.columna)
         
         
         raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', ts.env, self.linea, self.columna)  
@@ -71,7 +71,7 @@ class Remove(Instruccion, Expresion):
             if (tipo_indice != Tipos.INT):
                 raise Error_("Semantico", f'Tipo de push a vector incorrecto', ts.env, self.linea, self.columna)  
             
-            vector.remove(valor_indice,  ts.env, self.linea, self.columna)
+            vector.remove(valor_indice, self.linea, self.columna)
             return
         
         
