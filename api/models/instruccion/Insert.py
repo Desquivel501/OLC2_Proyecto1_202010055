@@ -22,7 +22,7 @@ class Insert(Instruccion):
 
         vector = self.id_instancia.getValor(ts)
         if not isinstance(vector, InstanciaVector):
-            raise Error_("Semantico", f'La instruccion \'Insert \' solo se puede ejecutar en vectores', self.linea, self.columna)  
+            raise Error_("Semantico", f'La instruccion \'Insert \' solo se puede ejecutar en vectores', ts.env, self.linea, self.columna)  
         
         valor_valor = self.expresion.getValor(ts)
         tipo_valor = self.expresion.getTipo(ts)
@@ -33,16 +33,16 @@ class Insert(Instruccion):
         if vector is not None:
             
             if (vector.tipo != tipo_valor):
-                raise Error_("Semantico", f'Tipo de insert a vector incorrecto', self.linea, self.columna)  
+                raise Error_("Semantico", f'Tipo de insert a vector incorrecto', ts.env, self.linea, self.columna)  
             
             if (tipo_indice != Tipos.INT):
-                raise Error_("Semantico", f'Indice debe de ser de tipo i64', self.linea, self.columna)  
+                raise Error_("Semantico", f'Indice debe de ser de tipo i64', ts.env, self.linea, self.columna)  
             
-            vector.insert(valor_valor, valor_indice,  self.linea, self.columna)
+            vector.insert(valor_valor, valor_indice,  ts.env, self.linea, self.columna)
             return
         
         
-        raise Error_("Semantico", f'No se ha encontrado el simbolo {self.id_instancia}', self.linea, self.columna)  
+        raise Error_("Semantico", f'No se ha encontrado el simbolo {self.id_instancia}', ts.env, self.linea, self.columna)  
         
         
         

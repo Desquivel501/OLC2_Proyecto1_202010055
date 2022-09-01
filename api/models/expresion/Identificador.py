@@ -33,7 +33,7 @@ class Identificador(Expresion):
 
         else:
             print("here")
-            raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', self.linea, self.columna)
+            raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', ts.env, self.linea, self.columna)
              
         
     def getValor(self, ts: TablaSimbolos):
@@ -53,4 +53,4 @@ class Identificador(Expresion):
             return simbolo.valor;
 
         else:
-            raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', self.linea, self.columna)
+            raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', ts.env, self.linea, self.columna)

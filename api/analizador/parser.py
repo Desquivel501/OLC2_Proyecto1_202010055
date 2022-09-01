@@ -124,7 +124,7 @@ def p_instruccion_error(p):
     """ 
     statement : error PUNTOCOMA 
     """
-    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), p.lineno(1), p.lexpos(0) ))
+    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) ))
     p[0] = ""
 
 
@@ -170,7 +170,7 @@ def p_clase_funcion_error(p):
     """ 
     intrucciones_global : error LLV_D 
     """
-    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), p.lineno(1), p.lexpos(0) ))
+    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) ))
     p[0] = ""
 
 
@@ -332,7 +332,7 @@ def p_statement_error(p):
     """ 
     statement : error LLV_D 
     """
-    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), p.lineno(1), p.lexpos(0) ))
+    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) ))
     p[0] = ""
 
 
@@ -662,12 +662,9 @@ def p_lista_campos(p):
 
 def p_campo(p):
     """
-    campo : ID D_PUNTO tipo
+    campo : ID D_PUNTO tipo_funcion
     """
-    if p.slice[3].type == 'ID':
-        p[0] = Campos(p[1], Tipo(tipo=Tipos.STRUCT))
-    else:
-        p[0] = Campos(p[1], p[3])
+    p[0] = Campos(p[1], p[3])
         
 
 def p_dec_struct(p):
@@ -875,9 +872,12 @@ def p_vector_cappacity(p):
     declaracion_vector : LET ID D_PUNTO VEC_U MENOR v_tipo MAYOR IGUAL vec_capacity
                        | LET MUT ID D_PUNTO VEC_U MENOR v_tipo MAYOR IGUAL vec_capacity
     """
+    
     if len(p) == 10:
+        print(p[6])
         p[0] = CrearVector(p[2],p[9],p[6],None,False, p.lineno(1), p.lexpos(0) )
     else:
+        print(p[7])
         p[0] = CrearVector(p[3],p[10],p[7],None,True, p.lineno(1), p.lexpos(0) )
 
 
@@ -902,8 +902,10 @@ def p_v_tipo(p):
            | USIZE
     """
     if p.slice[1].type == 'ID':
+        print("STRUCT")
         p[0] = Tipo(tipo=Tipos.STRUCT)
-    if p.slice[1].type == 'USIZE':
+        print(p[0])
+    elif p.slice[1].type == 'USIZE':
         p[0] = Tipo(tipo=Tipos.INT)
     elif p.slice[1].type == 'VEC_U':
         p[0] = Tipo(tipo=Tipos.VECTOR_DATA)
@@ -1006,7 +1008,8 @@ def p_expresion_aritmetica(p):
                | expresion DIV expresion
                | expresion MODULO expresion
     """
-    p[0] = Aritmetica(p[1], p[2], p[3], p.lineno(1), p.lexpos(0) , False)
+    print(p.lineno(0))
+    p[0] = Aritmetica(p[1], p[2], p[3], p.lineno(0), p.lexpos(0) , False)
 
 
 def p_expresion_unario_ar(p):
@@ -1170,12 +1173,7 @@ def p_error(p):
     print(f'Error de sintaxis {p.value!r}, linea {p.lineno}')
     print("next: ", parser.token())
     parser.restart()
-    Program.errores.append(Error_("Sintactivo", f'Error de sintaxis {p.value!r}',p.lineno,0)) 
-
-
-def find_column(inp, token):
-    line_start = inp.rfind('\n', 0, token.lexpos) + 1
-    return (token.lexpos - line_start) + 1
+    Error_("Sintactivo", f'Error de sintaxis {p.value!r}'," - ",p.lineno,0)
 
 
 def getColumn(inicio, fin):
@@ -1190,7 +1188,5 @@ def getColumn(inicio, fin):
 
     # return tok
 
-
-
 # Build the parser
-parser = yacc()
+parser = yacc() 

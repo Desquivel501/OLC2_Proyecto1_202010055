@@ -1,4 +1,5 @@
 
+from models.tabla.InstanciaStruct import InstanciaStruct
 from models.tabla.Simbolo import Simbolo
 from models.misc.error import Error_
 
@@ -20,21 +21,28 @@ class InstanciaVector(Expresion, Simbolo):
         return self.tipo
     
     def getValor(self, listaDimensiones, index, valores, linea, columna):
-        print("getValores")
         indiceDimension:int = listaDimensiones.pop(0)
-        tamanoDimension:int = len(self.valores[index])
+        
+        if isinstance(self.valores[index], InstanciaStruct):
+            tamanoDimension:int = len(self.valores)
+        
+        else:
+            tamanoDimension:int = len(self.valores[index])
+        
 
         if len(listaDimensiones) > 0:
             
             if indiceDimension > (tamanoDimension-1):
-                raise Error_("Semantico", f'Índice fuera de los límites', linea, columna)
+                print(indiceDimension, " - ", tamanoDimension)
+                raise Error_("Semantico", f'Índice fuera de los límites', "", linea, columna)
             else:
                 subArreglo = valores[indiceDimension]
-                return self.getValor(listaDimensiones, index+1, subArreglo, linea, columna)
+                return self.getValor(listaDimensiones, index+1, subArreglo, "", linea, columna)
 
         else:
             if indiceDimension > (tamanoDimension-1):
-                raise Error_("Semantico", f'Índice fuera de los límites', linea, columna)
+                print(indiceDimension, " - ", tamanoDimension)
+                raise Error_("Semantico", f'Índice fuera de los límites', "", linea, columna)
             else:
                 return valores[indiceDimension]
         

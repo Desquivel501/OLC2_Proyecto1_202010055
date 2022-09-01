@@ -24,7 +24,7 @@ class CrearVector(Instruccion):
             capacidad_tipo = self.capacidad.getTipo(ts)
             
             if capacidad_tipo is not Tipos.INT:
-                raise Error_("Semantico", f'Capacidad incorrecta', self.linea, self.columna)
+                raise Error_("Semantico", f'Capacidad incorrecta', ts.env, self.linea, self.columna)
             
             
             instanciaVector = InstanciaVector(self.tipo.tipo, [] , [])
@@ -36,7 +36,7 @@ class CrearVector(Instruccion):
             print("Vacio")
             print("---------------------------------------------------") 
             
-            ts.add(self.id_instancia, instanciaVector)
+            ts.add(self.id_instancia, instanciaVector, self.linea, self.columna)
             return
         
 
@@ -44,13 +44,13 @@ class CrearVector(Instruccion):
         expresionArreglo = self.expresion.getValor(ts)
         
         if tipo != Tipos.VECTOR_DATA:
-            raise Error_("Semantico", f'Tipo incorrecto en arreglo', self.linea, self.columna)
+            raise Error_("Semantico", f'Tipo incorrecto en arreglo', ts.env, self.linea, self.columna)
         
         nueva_instancia = expresionArreglo
 
         if self.tipo is not None:        
             if self.tipo.tipo != nueva_instancia.tipo:
-                raise Error_("Semantico", f'Tipos en arreglo no coinciden', self.linea, self.columna)
+                raise Error_("Semantico", f'Tipos en arreglo no coinciden', ts.env, self.linea, self.columna)
 
           
         print("-------------LISTA---------------------------------")        
@@ -68,7 +68,7 @@ class CrearVector(Instruccion):
         
         print("ID: ", nueva_instancia.identificador, " - Tipo: ", nueva_instancia.tipo, " - Valores: ", nueva_instancia.valores)
                 
-        ts.add(self.id_instancia, nueva_instancia)
+        ts.add(self.id_instancia, nueva_instancia, self.linea, self.columna)
         
         
     # def obtenerDimendiones(self, ts):
@@ -77,7 +77,7 @@ class CrearVector(Instruccion):
     #         valor = dim.getValor(ts)
     #         tipo = dim.getTipo(ts)
     #         if tipo != Tipos.INT:
-    #             raise Error_("Semantico", f'Dimension de un arreglo debe de ser tipo i64', self.linea, self.columna)
+    #             raise Error_("Semantico", f'Dimension de un arreglo debe de ser tipo i64', ts.env, self.linea, self.columna)
             
     #         listaDimensiones.append(valor)
         

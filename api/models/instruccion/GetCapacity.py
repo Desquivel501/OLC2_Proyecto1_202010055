@@ -22,11 +22,11 @@ class GetCapacity(Expresion):
         
         vector = self.id_instancia.getValor(ts)
         if not isinstance(vector, InstanciaVector):
-            raise Error_("Semantico", f'La instruccion \'Capacity \' solo se puede ejecutar en vectores', self.linea, self.columna)  
+            raise Error_("Semantico", f'La instruccion \'Capacity \' solo se puede ejecutar en vectores', ts.env, self.linea, self.columna)  
         
         if vector is not None:
             return vector.capacidad
         
-        raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', self.linea, self.columna)  
+        raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', ts.env, self.linea, self.columna)  
         
    

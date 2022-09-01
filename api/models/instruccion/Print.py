@@ -38,28 +38,28 @@ class Print_(Instruccion):
                 
                 
                 if x == -1 and y == -1:
-                    raise Error_("Semantico", "Numero incorrecto de parametros en Println!", self.linea, self.columna)
+                    raise Error_("Semantico", "Numero incorrecto de parametros en Println!", ts.env, self.linea, self.columna)
                 
                 
                 if x == -1 :
                     if not isinstance(valor, list):
-                        raise Error_("Semantico", "Tipo incorrecto de parametros en Println!", self.linea, self.columna)
+                        raise Error_("Semantico", "Tipo incorrecto de parametros en Println!", ts.env, self.linea, self.columna)
                     cadena = cadena.replace("{:?}", str(valor),1)
                 
                 elif y == -1 :
                     if isinstance(valor, list):
-                       raise Error_("Semantico", "Tipo incorrecto de parametros en Println!", self.linea, self.columna)
+                       raise Error_("Semantico", "Tipo incorrecto de parametros en Println!", ts.env, self.linea, self.columna)
                     cadena = cadena.replace("{}", str(valor),1)
                 
                 else:
                     if x < y:
                         if isinstance(valor, list):
-                            raise Error_("Semantico", "Tipo incorrecto de parametros en Println!", self.linea, self.columna)
+                            raise Error_("Semantico", "Tipo incorrecto de parametros en Println!", ts.env, self.linea, self.columna)
                         cadena = cadena.replace("{}", str(valor),1)
                     
                     else:
                         if not isinstance(valor, list):
-                            raise Error_("Semantico", "Tipo incorrecto de parametros en Println!", self.linea, self.columna)
+                            raise Error_("Semantico", "Tipo incorrecto de parametros en Println!", ts.env, self.linea, self.columna)
                         cadena = cadena.replace("{:?}", str(valor),1)
         
            
@@ -67,7 +67,7 @@ class Print_(Instruccion):
         x  = cadena.find("{}")
         y = cadena.find("{:?}")
         if x != -1 or y != -1:
-            raise Error_("Semantico", "Numero incorrecto de parametros en Println!", self.linea, self.columna)
+            raise Error_("Semantico", "Numero incorrecto de parametros en Println!", ts.env, self.linea, self.columna)
             
 
             

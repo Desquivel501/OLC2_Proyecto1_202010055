@@ -29,7 +29,7 @@ class ArrayDataIntervalo(Expresion):
         tipo_cantidad = self.cantidad.getTipo(ts)
         
         if tipo_cantidad != Tipos.INT:
-            raise Error_("Semantico", f'La cantidad que se repite una expresion debe de ser tipo i64', self.linea, self.columna)
+            raise Error_("Semantico", f'La cantidad que se repite una expresion debe de ser tipo i64',   ts.env, self.linea, self.columna)
         
         listaValores = []
         for i in range(0, valor_cantidad):

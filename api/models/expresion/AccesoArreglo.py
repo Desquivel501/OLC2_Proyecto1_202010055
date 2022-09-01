@@ -35,19 +35,16 @@ class AccesoArreglo(Expresion):
         print(self.id_instancia)
         print(instancia)
         
-        if instancia is None:
-            raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', self.linea, self.columna)  
         
-                
-        elif isinstance(instancia, InstanciaVector):
+        if instancia is None:
+            raise Error_("Semantico", f'No se ha encontrado el simbolo {self.id_instancia}',  ts.env, self.linea, self.columna)  
+
+        if isinstance(instancia, InstanciaVector):
             print("vector")  
             self.tipo = instancia.tipo     
             dimensiones = self.obtenerDimensiones(ts)
             valor = instancia.getValor(dimensiones, 0, instancia.valores, self.linea, self.columna)
             return valor  
-        
-        if isinstance(instancia, Simbolo):
-            instancia = instancia.valor
         
         if isinstance(instancia, InstanciaArreglo):
             print("array")
@@ -55,16 +52,37 @@ class AccesoArreglo(Expresion):
             self.tipo = instancia.tipo
             
             dimensiones = self.obtenerDimensiones(ts)
+            valor = instancia.getValor(dimensiones, 0, instancia.valores,  self.linea, self.columna)
+            print(valor)   
+            return valor     
+
+        if isinstance(instancia, Simbolo):
+            instancia = instancia.valor
+            print(instancia)
+                
+        if isinstance(instancia, InstanciaVector):
+            print("vector")  
+            self.tipo = instancia.tipo     
+            dimensiones = self.obtenerDimensiones(ts)
             valor = instancia.getValor(dimensiones, 0, instancia.valores, self.linea, self.columna)
+            return valor  
+        
+        if isinstance(instancia, InstanciaArreglo):
+            print("array")
+            
+            self.tipo = instancia.tipo
+            
+            dimensiones = self.obtenerDimensiones(ts)
+            valor = instancia.getValor(dimensiones, 0, instancia.valores,  self.linea, self.columna)
             print(valor)   
             return valor      
         
- 
+
         
         
         
         print("OUT")
-        raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', self.linea, self.columna)  
+        raise Error_("Semantico", f'No se ha encontrado el simbolo {self.id_instancia}',   ts.env, self.linea, self.columna)  
         
     
     def obtenerDimensiones(self, ts):
@@ -73,7 +91,7 @@ class AccesoArreglo(Expresion):
             valor = dim.getValor(ts)
             tipo = dim.getTipo(ts)
             if tipo != Tipos.INT:
-                raise Error_("Semantico", f'Dimension de un arreglo debe de ser tipo i64', self.linea, self.columna)
+                raise Error_("Semantico", f'Dimension de un arreglo debe de ser tipo i64',  ts.env, self.linea, self.columna)
             
             listaDimensiones.append(valor)
         

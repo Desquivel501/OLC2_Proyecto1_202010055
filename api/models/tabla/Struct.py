@@ -13,7 +13,7 @@ class Struct(Instruccion):
     def ejecutar(self, ts):
         struct = ts.obtenerStruct(self.identificador)
         if struct is not None:
-            raise Error_("Semantico", f'Struct {self.identificador} ya ha sido declarado', self.linea, self.columna)
+            raise Error_("Semantico", f'Struct {self.identificador} ya ha sido declarado', ts.env, self.linea, self.columna)
         
         ts.agregarStruct(self.identificador, self)
         

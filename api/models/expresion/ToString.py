@@ -23,7 +23,7 @@ class ToString(Expresion):
         if tipo == Tipos.STR or tipo == Tipos.STRING:
             return Tipos.STRING
         else:
-            raise Error_("Semantico", "Solo se puede usar la funcion 'to_string' con expresiones tipo &str", self.linea, self.columna)
+            raise Error_("Semantico", "Solo se puede usar la funcion 'to_string' con expresiones tipo &str", ts.env, self.linea, self.columna)
     
     def getValor(self, ts):
         tipo = self.exp.getTipo(ts)
@@ -31,4 +31,4 @@ class ToString(Expresion):
         if tipo == Tipos.STR or tipo == Tipos.STRING:
             return self.exp.getValor(ts)
         else:
-            raise Error_("Semantico", "Solo se puede usar la funcion 'to_string' con expresiones tipo &str", self.linea, self.columna)
+            raise Error_("Semantico", "Solo se puede usar la funcion 'to_string' con expresiones tipo &str", ts.env, self.linea, self.columna)

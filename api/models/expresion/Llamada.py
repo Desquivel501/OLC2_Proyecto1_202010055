@@ -22,7 +22,7 @@ class Llamada(Expresion, Instruccion):
         if funcion is not None:
             return funcion.tipo.tipo
         else:
-           raise Error_("Semantico", f'No se encontro la funcion {self.identificador}', self.linea, self.columna)
+           raise Error_("Semantico", f'No se encontro la funcion {self.identificador}', ts.env, self.linea, self.columna)
              
     
     def ejecutar(self, ts: TablaSimbolos):
@@ -45,4 +45,4 @@ class Llamada(Expresion, Instruccion):
             
             
         else:
-            raise Error_("Semantico", f'No se encontro la funcion {self.identificador}', self.linea, self.columna)
+            raise Error_("Semantico", f'No se encontro la funcion {self.identificador}', ts.env, self.linea, self.columna)

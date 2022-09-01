@@ -20,7 +20,7 @@ class If(Instruccion):
 
     def ejecutar(self, ts):
         
-        ts_local = TablaSimbolos(ts, "IF")
+        ts_local = TablaSimbolos(ts, "if")
         condicion = self.condicion.getValor(ts)
         
         print(condicion)
@@ -30,7 +30,7 @@ class If(Instruccion):
         print(tipo_condicion)
         
         if tipo_condicion is not Tipos.BOOLEAN:
-            raise Error_("Semantico", "La condicion en in If debe ser de tipo BOOLEAN", self.linea, self.columna)
+            raise Error_("Semantico", "La condicion en un If debe ser de tipo BOOLEAN", ts.env, self.linea, self.columna)
         
         if condicion:
             return self.cuerpo.ejecutar(ts_local)

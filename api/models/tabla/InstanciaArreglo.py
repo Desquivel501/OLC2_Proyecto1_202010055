@@ -26,14 +26,14 @@ class InstanciaArreglo(Expresion, Simbolo):
         if len(listaDimensiones) > 0:
 
             if indiceDimension > (tamanoDimension-1):
-                raise Error_("Semantico", f'Índice fuera de los límites', linea, columna)
+                raise Error_("Semantico", f'Índice fuera de los límites', "", linea, columna)
             else:
                 subArreglo = valores[indiceDimension]
                 return self.getValor(listaDimensiones, index+1, subArreglo, linea, columna)
 
         else:
             if indiceDimension > (tamanoDimension-1):
-                raise Error_("Semantico", f'Índice fuera de los límites', linea, columna)
+                raise Error_("Semantico", f'Índice fuera de los límites', "", linea, columna)
             else:
                 return valores[indiceDimension]
             
@@ -41,7 +41,7 @@ class InstanciaArreglo(Expresion, Simbolo):
     def modValor(self, listaDimensiones, index, valores, nuevo, linea, columna):
 
         if self.mut == False:
-            raise Error_("Semantico", f'No se puede emodificar un arreglo constante', linea, columna)
+            raise Error_("Semantico", f'No se puede emodificar un arreglo constante', "", linea, columna)
         
         indiceDimension:int = listaDimensiones.pop(0)
         tamanoDimension:int = self.dimensiones[index]
@@ -49,14 +49,14 @@ class InstanciaArreglo(Expresion, Simbolo):
         if len(listaDimensiones) > 0:
 
             if indiceDimension > (tamanoDimension-1):
-                raise Error_("Semantico", f'Índice fuera de los límites', linea, columna)
+                raise Error_("Semantico", f'Índice fuera de los límites', "", linea, columna)
             else:
                 subArreglo = valores[indiceDimension]
                 return self.modValor(listaDimensiones, index+1, subArreglo, nuevo, linea, columna)
 
         else:
             if indiceDimension > (tamanoDimension-1):
-               raise Error_("Semantico", f'Índice fuera de los límites', linea, columna)
+               raise Error_("Semantico", f'Índice fuera de los límites', "", linea, columna)
             else:
                 # if isinstance(nuevo, list):
                 #     if len(valores[indiceDimension]) != len(nuevo):

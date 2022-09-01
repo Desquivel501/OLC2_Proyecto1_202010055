@@ -2,6 +2,7 @@
 
 import copy
 from struct import Struct
+from models.tabla.InstanciaArreglo import InstanciaArreglo
 from models.tabla.Simbolo import Simbolo
 from models.misc.error import Error_
 from models.instruccion.Instruccion import Instruccion
@@ -30,33 +31,48 @@ class InstanciaStruct(Expresion, Simbolo):
         struct:Struct = ts.obtenerStruct(self.id_struct)
         
         if struct is None:
-            raise Error_("Semantico", f'Struct {self.id_struct } no ha sido declarado', self.linea, self.columna)
+            raise Error_("Semantico", f'Struct {self.id_struct } no ha sido declarado', ts.env, self.linea, self.columna)
         
         
         for campo in struct.campos:
             if len(self.lista_atributos) == 0:
                 print("es 0")
-                raise Error_("Semantico", f'Numero incorrecto de atributos', self.linea, self.columna)
+                raise Error_("Semantico", f'Numero incorrecto de atributos', ts.env, self.linea, self.columna)
             
-            atributo = self.lista_atributos[0]
             
-            if campo.identificador == atributo.identificador:
+            agregado = False
+            i = 0
+            for atributo in self.lista_atributos:
+            
+                if campo.identificador == atributo.identificador:
 
-                valor = atributo.valor.getValor(ts)
-                tipo = atributo.valor.getTipo(ts)
-                
-                if tipo == campo.tipo.tipo:
+                    valor = atributo.valor.getValor(ts)
+                    tipo = atributo.valor.getTipo(ts)
                     
-                    # print(campo.identificador, " - ", valor)
-                    atributo.tipo = tipo
-                    atributo.valor = valor
-                    self.dic_atributos[campo.identificador] = atributo
-                else:
-                    raise Error_("Semantico", f'Tipo incorrecto en atributo \'{campo.identificador}\'', self.linea, self.columna)
-            else:
-                raise Error_("Semantico", f'Atributo \'{campo.identificador}\' no existe', self.linea, self.columna)
-            
-            self.lista_atributos.pop(0)
+                    if isinstance(valor, InstanciaArreglo):
+                        tipo = valor.tipo
+                        valor = valor.valores
+                        
+                    if tipo == campo.tipo.tipo:
+
+                        atributo.tipo = tipo
+                        atributo.valor = valor
+                        self.dic_atributos[campo.identificador] = atributo
+                        self.lista_atributos.pop(i)
+                        agregado = True
+                        break
+                    else:
+                        print(tipo, " - - " ,campo.tipo.tipo)
+                        
+                        raise Error_("Semantico", f'Tipo incorrecto en atributo \'{campo.identificador}\'', ts.env, self.linea, self.columna)
+                i += 1
+
+            if not agregado:
+                raise Error_("Semantico", f'No se encontro campo \'{campo.identificador}\' ', ts.env, self.linea, self.columna)
+        
+        if len(self.lista_atributos) != 0:
+            raise Error_("Semantico", f'Atributos incorrectos', ts.env, self.linea, self.columna)
+
 
         self.lista_atributos = copiaLista
        

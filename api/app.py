@@ -19,12 +19,26 @@ CORS(app)
 # ast.ejecutar(driver, ts)
 
 # print(driver.console)
+@app.route("/simbolos",methods=["GET"])
+def tabla_simbolos():
+    if request.method == 'GET':
+        return  json.dumps(Program.tabla, indent=2)
+    
 
-
+@app.route("/errores",methods=["GET"])
+def tabla_errores():
+    if request.method == 'GET':
+        print(Program.errores)
+        
+        return  json.dumps(Program.errores, indent=2)
+    
+    
 @app.route("/interpretar",methods=["POST"])
 def interpretar():
     if request.method == 'POST':
         Program.console = ""
+        Program.tabla = []
+        Program.errores = []
         data = request.json
         print(data)
        
@@ -33,15 +47,16 @@ def interpretar():
         if instrucciones != "":
             
             # try:
+
             #     ast: Ast = parser.parse(instrucciones)
-            #     ts = TablaSimbolos(None, 'Global')
+            #     ts = TablaSimbolos(None, 'Main')
             #     ast.ejecutar(ts)
                 
             # except Exception as e:
             #     print(e)
                 
             ast: Ast = parser.parse(instrucciones)
-            ts = TablaSimbolos(None, 'Global')
+            ts = TablaSimbolos(None, 'Main')
             ast.ejecutar(ts)    
         
         
@@ -49,7 +64,7 @@ def interpretar():
         # print(Program.console)
         # tabla = Program.tabla
         # Program.printTabla(tabla)
-
+        
         return {
             'resultado': Program.console
         }

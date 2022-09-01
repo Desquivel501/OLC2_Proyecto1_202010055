@@ -31,13 +31,13 @@ class CrearArreglo(Instruccion):
         expresionArreglo = self.expresion.getValor(ts)
         
         if tipo != Tipos.ARRAY_DATA:
-            raise Error_("Semantico", f'Tipo incorrecto en arreglo', self.linea, self.columna)
+            raise Error_("Semantico", f'Tipo incorrecto en arreglo', ts.env, self.linea, self.columna)
         
         nueva_instancia = expresionArreglo
         
         if con_dimensiones:
             if self.tipo.tipo != nueva_instancia.tipo:
-                raise Error_("Semantico", f'Tipos en arreglo no coinciden', self.linea, self.columna)
+                raise Error_("Semantico", f'Tipos en arreglo no coinciden', ts.env, self.linea, self.columna)
         
                 
         print("-------------LISTA---------------------------------")        
@@ -50,20 +50,20 @@ class CrearArreglo(Instruccion):
         
         if con_dimensiones:
             if not self.validarDimension(nueva_instancia.dimensiones, self.dimensiones):
-                raise Error_("Semantico", f'Las dimensiones del arreglo no coinciden', self.linea, self.columna)
+                raise Error_("Semantico", f'Las dimensiones del arreglo no coinciden', ts.env, self.linea, self.columna)
         
 
         instancia = ts.buscar(self.id_instancia)
         
         if instancia is not None:
-            raise Error_("Semantico", f'Ya se ha declarado el simbolo \'{self.id_instancia}\'', self.linea, self.columna)
+            raise Error_("Semantico", f'Ya se ha declarado el simbolo \'{self.id_instancia}\'', ts.env, self.linea, self.columna)
         
         nueva_instancia.identificador = self.id_instancia
         nueva_instancia.mut = self.mut
         
         print("ID: ", nueva_instancia.identificador, " - Tipo: ", nueva_instancia.tipo, " - Valores: ", nueva_instancia.valores)
                 
-        ts.add(self.id_instancia, nueva_instancia)
+        ts.add(self.id_instancia, nueva_instancia, self.linea, self.columna)
         
         
     def obtenerDimendiones(self, ts):
@@ -72,7 +72,7 @@ class CrearArreglo(Instruccion):
             valor = dim.getValor(ts)
             tipo = dim.getTipo(ts)
             if tipo != Tipos.INT:
-                raise Error_("Semantico", f'Dimension de un arreglo debe de ser tipo i64', self.linea, self.columna)
+                raise Error_("Semantico", f'Dimension de un arreglo debe de ser tipo i64', ts.env, self.linea, self.columna)
             
             listaDimensiones.append(valor)
         
@@ -82,11 +82,11 @@ class CrearArreglo(Instruccion):
     def validarDimension(self, dimensiones, nuevas_dimensiones):
         
         if len(dimensiones) != len(nuevas_dimensiones):
-            raise Error_("Semantico", f'Dimensiones del arreglo {self.id_instancia} no coinciden', self.linea, self.columna)
+            raise Error_("Semantico", f'Dimensiones del arreglo {self.id_instancia} no coinciden', "", self.linea, self.columna)
         
         for i in range(0, len(dimensiones)):
             if dimensiones[i] != nuevas_dimensiones[i]:
-                raise Error_("Semantico", f'Dimensiones del arreglo {self.id_instancia} no coinciden', self.linea, self.columna)
+                raise Error_("Semantico", f'Dimensiones del arreglo {self.id_instancia} no coinciden', "", self.linea, self.columna)
         
         return True
     

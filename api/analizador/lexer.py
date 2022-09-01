@@ -185,9 +185,13 @@ def t_COMENTARIO_MULTILINEA(t):
 def t_error(t):
     print(f'Caracter no reconocido {t.value[0]!r} en la linea {t.lexer.lineno}')
     t.lexer.skip(1)
-    error = Error_("Lexico", f'Caracter {t.value[0]!r} no reconocido', t.lexer.lineno,0)
-    Program.errores.append(error)
+    Error_("Lexico", f'Caracter {t.value[0]!r} no reconocido', " - " ,t.lexer.lineno,0)
+
     
+ # EOF handling rule
+def t_eof(t):
+    t.lexer.lineno = 1
+    return None
 
 
 lexer = lex.lex()

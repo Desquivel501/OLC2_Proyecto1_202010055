@@ -28,16 +28,16 @@ class Contains_(Expresion):
         
         vector = self.id_instancia.getValor(ts)
         if not isinstance(vector, InstanciaVector):
-            raise Error_("Semantico", f'La instruccion \'Contains \' solo se puede ejecutar en vectores', self.linea, self.columna)  
+            raise Error_("Semantico", f'La instruccion \'Contains \' solo se puede ejecutar en vectores', ts.env, self.linea, self.columna)  
         
         if vector is not None:
             
             if (vector.tipo != tipo):
-                raise Error_("Semantico", f'Tipo de insert a vector incorrecto', self.linea, self.columna)  
+                raise Error_("Semantico", f'Tipo de insert a vector incorrecto', ts.env, self.linea, self.columna)  
         
-            return vector.contains(valor,  self.linea, self.columna)
+            return vector.contains(valor,  ts.env, self.linea, self.columna)
         
         
-        raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', self.linea, self.columna)  
+        raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', ts.env, self.linea, self.columna)  
         
    

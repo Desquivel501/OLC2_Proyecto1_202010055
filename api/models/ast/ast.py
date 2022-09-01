@@ -16,7 +16,7 @@ class Ast:
         self.ts = None
 
     def ejecutar(self, ts):
-        for instruccion in self.instrucciones:
+        # for instruccion in self.instrucciones:
             
         #     try:
         #         if isinstance(instruccion, Funcion):
@@ -32,16 +32,24 @@ class Ast:
                         
         #     except Exception as e:
         #         print(e)
+          
+          
+          
                     
         # try:
         #     main = ts.obtenerFuncion("main")
         
         #     if main is not None:
-        #         main.instrucciones.ejecutar(ts)
+        #         main.ejecutarFuncion(ts)
         #     else:
-        #         raise Error_('Semantico', f'No existe metodo main', 0, 0)
+                
+        #         raise Error_('Semantico', f'No existe metodo main', " Global ", 0, 0)
         # except Exception as e:
         #         print(e)
+        
+        
+        
+        for instruccion in self.instrucciones:
         
             if isinstance(instruccion, Funcion):
                 fun = ts.obtenerFuncion(instruccion.identificador)
@@ -57,9 +65,10 @@ class Ast:
                         
         
         main = ts.obtenerFuncion("main")
-
         if main is not None:
-            main.instrucciones.ejecutar(ts)
+            main.ejecutarFuncion(ts)
+        else:      
+            raise Error_('Semantico', f'No existe metodo main', " Global ", 0, 0)
         
         
         

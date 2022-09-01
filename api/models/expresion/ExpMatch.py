@@ -30,7 +30,7 @@ class ExpMatch(Expresion):
                 incorrecto = True
                     
         if incorrecto :
-            raise Error_("Semantico", "Todas las opciones de un Match deben de ser del mismo tipo", self.linea, self.columna)
+            raise Error_("Semantico", "Todas las opciones de un Match deben de ser del mismo tipo",   ts.env, self.linea, self.columna)
         
         return tipo_res
     
@@ -53,7 +53,7 @@ class ExpMatch(Expresion):
                 incorrecto = True
                     
         if incorrecto :
-            raise Error_("Semantico", "Todas las opciones de un Match deben de ser del mismo tipo", self.linea, self.columna)
+            raise Error_("Semantico", "Todas las opciones de un Match deben de ser del mismo tipo",   ts.env, self.linea, self.columna)
         
         
         found = False

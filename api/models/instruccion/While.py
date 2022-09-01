@@ -18,13 +18,13 @@ class While(Instruccion):
 
     def ejecutar(self, ts):
         res = None
-        ts_local = TablaSimbolos(ts, "WHILE")
+        ts_local = TablaSimbolos(ts, "while")
         
         condicion = self.condicion.getValor(ts)
         tipo_condicion = self.condicion.getTipo(ts)
         
         if tipo_condicion is not Tipos.BOOLEAN:
-            raise Error_("Semantico", "La condicion en un WHILE debe ser de tipo BOOLEAN", self.linea, self.columna)
+            raise Error_("Semantico", "La condicion en un While debe ser de tipo BOOLEAN", ts.env, self.linea, self.columna)
         
         i = 0
         while condicion:

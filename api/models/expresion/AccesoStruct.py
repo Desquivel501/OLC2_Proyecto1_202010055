@@ -37,10 +37,6 @@ class AccesoStruct(Expresion):
             self.listaExpresiones = copiaLista
             return val
         
-        else:
-            raise Error_("Semantico", f'NOSE', self.linea, self.columna)
-                    
-        
     
     def acceso(self, listaExpresion, struct, ts):
         expresionInicial = self.listaExpresiones.pop(0)
@@ -55,7 +51,7 @@ class AccesoStruct(Expresion):
                 self.tipo = struct.dic_atributos[expresionInicial].tipo
                 return(res)
             else:
-                raise Error_("Semantico", f'No se encontro el atributo {expresionInicial}', self.linea, self.columna)
+                raise Error_("Semantico", f'No se encontro el atributo {expresionInicial}',   ts.env, self.linea, self.columna)
             
         else:
             expresionInicial = expresionInicial.identificador
@@ -65,7 +61,7 @@ class AccesoStruct(Expresion):
                return self.acceso(self.listaExpresiones, nuevo_struct, ts)
             
             else:
-                raise Error_("Semantico", f'No se encontro el simbolo {expresionInicial}', self.linea, self.columna)
+                raise Error_("Semantico", f'No se encontro el simbolo {expresionInicial}',   ts.env, self.linea, self.columna)
             
         
         

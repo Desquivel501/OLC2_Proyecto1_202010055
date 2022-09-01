@@ -30,19 +30,19 @@ class Asignacion(Instruccion):
         
         if isinstance(var_valor, InstanciaStruct):
             print("STRUCT/////////////////////////////////////////////////")
-            # struct = CrearInstanciaStruct(self.identificador,self.valor,self.mut,self.linea,self.columna)
+            # struct = CrearInstanciaStruct(self.identificador,self.valor,self.mut,ts.env, self.linea, self.columna)
             # struct.ejecutar(ts)
 
             var_valor.id_instancia = self.identificador
             var_valor.mut = self.mut
-            ts.add(self.identificador, var_valor)
+            ts.add(self.identificador, var_valor, self.linea, self.columna)
             
             return
 
         if self.tipo is not None:
             if self.tipo.tipo != var_tipo:
-                print('Semantica', f'El valor de la variable no coincide con su tipo: {self.tipo.tipo} -> {var_tipo}')
-                raise Error_('Semantica', f'El valor de la variable no coincide con su tipo: { self.tipo.tipo} -> {var_tipo}', self.linea, self.columna)
+                print('Semantico', f'El valor de la variable no coincide con su tipo: {self.tipo.tipo} -> {var_tipo}')
+                raise Error_('Semantico', f'El valor de la variable no coincide con su tipo: { self.tipo.tipo} -> {var_tipo}', ts.env, self.linea, self.columna)
         else:
             
             self.tipo = Tipo(tipo = var_tipo)
@@ -53,16 +53,16 @@ class Asignacion(Instruccion):
 
             nuevo = Simbolo()
             nuevo.iniciarPrimitivo( self.identificador, self.tipo, var_valor, self.mut)
-            ts.add(self.identificador, nuevo)
+            ts.add(self.identificador, nuevo, self.linea, self.columna)
         
         else:
             if simbolo.tipo.tipo != var_tipo:
                 print(f'El valor de la variable no coincide con su tipo: {simbolo.tipo.tipo} -> {var_tipo}')
-                raise Error_(f'Semantica", "El valor de la variable no coincide con su tipo: {simbolo.tipo.tipo} -> {var_tipo}', self.linea, self.columna)
+                raise Error_('Semantico', f'El valor de la variable no coincide con su tipo: {simbolo.tipo.tipo} -> {var_tipo}', ts.env, self.linea, self.columna)
                 
             elif simbolo.mut is False:
                 print(f'No se puede cambiar el valor de una constante')
-                raise Error_("Semantica", "No se puede cambiar el valor de una constante", self.linea, self.columna)
+                raise Error_("Semantico", "No se puede cambiar el valor de una constante", ts.env, self.linea, self.columna)
             else:
                 simbolo.valor = var_valor
                 print("var: ",self.identificador, " - ", var_valor, "Tipo: " ,  self.tipo.tipo)

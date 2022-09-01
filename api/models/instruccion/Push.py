@@ -24,7 +24,7 @@ class Push(Instruccion):
 
         vector = self.id_instancia.getValor(ts)
         if not isinstance(vector, InstanciaVector):
-            raise Error_("Semantico", f'La instruccion \'Push \' solo se puede ejecutar en vectores', self.linea, self.columna) 
+            raise Error_("Semantico", f'La instruccion \'Push \' solo se puede ejecutar en vectores', ts.env, self.linea, self.columna) 
         
         valor = self.expresion.getValor(ts)
         tipo = self.expresion.getTipo(ts)
@@ -41,13 +41,13 @@ class Push(Instruccion):
            
             
             if (vector.tipo != tipo):
-                raise Error_("Semantico", f'Tipo de push a vector incorrecto', self.linea, self.columna)  
+                raise Error_("Semantico", f'Tipo de push a vector incorrecto', ts.env, self.linea, self.columna)  
             
             vector.push(valor, self.linea, self.columna)
             return
         
         
-        raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', self.linea, self.columna)  
+        raise Error_("Semantico", f'NO se ha encontrado el simbolo {self.id_instancia}', ts.env, self.linea, self.columna)  
         
         
         

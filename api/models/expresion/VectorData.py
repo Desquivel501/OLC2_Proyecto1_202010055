@@ -35,7 +35,7 @@ class VectorData(Expresion):
             
             else:
                 if tipo != tipo_expresion:
-                    raise Error_("Semantico", f'Tipos en vector no coinciden', self.linea, self.columna)
+                    raise Error_("Semantico", f'Tipos en vector no coinciden', ts.env, self.linea, self.columna)
                 else:
                     self.expresionesCompiladas.append({"tipo":tipo_expresion, "valor":valor_expresion})
                     
@@ -66,7 +66,7 @@ class VectorData(Expresion):
                 
                 else:
                     if instanciaArray.tipo != tipoFin:
-                        raise Error_("Semantico", f'Tipos en vector no coinciden', self.linea, self.columna)
+                        raise Error_("Semantico", f'Tipos en vector no coinciden', ts.env, self.linea, self.columna)
                 
                 self.valores.insert(i, instanciaArray.valores )
                 

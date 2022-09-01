@@ -39,4 +39,4 @@ class Contains(Expresion):
             
              
 
-        raise Error_("Semantico", "Solo se puede usar la funcion 'len' con Arreglos o Vectores", self.linea, self.columna)
+        raise Error_("Semantico", "Solo se puede usar la funcion 'len' con Arreglos o Vectores",  ts.env, self.linea, self.columna)

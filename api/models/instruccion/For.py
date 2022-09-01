@@ -24,7 +24,7 @@ class For(Instruccion):
 
 
     def ejecutar(self, ts : TablaSimbolos):
-        ts_local = TablaSimbolos(ts, "FOR")
+        ts_local = TablaSimbolos(ts, "for")
 
         
         if self.rango is not None:
@@ -44,7 +44,7 @@ class For(Instruccion):
 
                     nuevo = Simbolo()
                     nuevo.iniciarPrimitivo( self.iterador, Tipo(tipo=tipo_fin), i, True)
-                    ts_local.add(self.iterador, nuevo)
+                    ts_local.add(self.iterador, nuevo, self.linea, self.columna)
                     
                     res = self.cuerpo.ejecutar(ts_local)
 
@@ -54,7 +54,7 @@ class For(Instruccion):
                         if res["tipo"] == "continue":
                            continue
             else:
-                raise Error_("Semantico", "Rango de For debe de ser i64", self.linea, self.columna)
+                raise Error_("Semantico", "Rango de For debe de ser i64", ts.env, self.linea, self.columna)
         
         if self.lista is not None:
             lista = self.lista.getValor(ts)
@@ -66,7 +66,7 @@ class For(Instruccion):
 
                     nuevo = Simbolo()
                     nuevo.iniciarPrimitivo( self.iterador, Tipo(tipo=lista.tipo), lista.valores[i], True)
-                    ts_local.add(self.iterador, nuevo)
+                    ts_local.add(self.iterador, nuevo, self.linea, self.columna)
                     
                     res = self.cuerpo.ejecutar(ts_local)
 
@@ -84,7 +84,7 @@ class For(Instruccion):
                     if isinstance(lista.valores[i], InstanciaStruct):
                         lista.valores[i].id_instancia = self.iterador
                         
-                        ts_local.add(self.iterador, lista.valores[i])
+                        ts_local.add(self.iterador, lista.valores[i], self.linea, self.columna)
                     
                         for x in lista.valores[i].dic_atributos:
                             print(lista.valores[i].dic_atributos[x].valor)
@@ -110,28 +110,3 @@ class For(Instruccion):
         
         
                     
-        
-        # res = None
-        # ts_local = TablaSimbolos(ts, "WHILE")
-        
-        # condicion = self.condicion.getValor(ts)
-        # tipo_condicion = self.condicion.getTipo(ts)
-        
-        # if tipo_condicion is not Tipos.BOOLEAN:
-        #     raise Error_("Semantico", "La condicion en un WHILE debe ser de tipo BOOLEAN", self.linea, self.columna)
-        
-        # i = 0
-        # while condicion:
-            
-        #     res = self.cuerpo.ejecutar(ts_local)
-                
-        #     if res is not None:
-        #         if res["tipo"] == "break":
-        #             break
-        #         if res["tipo"] == "continue":
-        #             continue
-            
-            
-            
-        #     condicion = self.condicion.getValor(ts)
-        

@@ -35,10 +35,10 @@ class Casteo(Expresion):
         elif tipo == Tipos.FLOAT and self.nuevo_tipo.tipo == Tipos.INT:
             return round(valor)
         else:
-            raise Error_("Semantico", f'No se puede castear de {tipo} a {self.nuevo_tipo.tipo}',self.linea, self.columna)
+            raise Error_("Semantico", f'No se puede castear de {tipo} a {self.nuevo_tipo.tipo}',  ts.env, self.linea, self.columna)
         
         
         # if tipo == Tipos.STR:
         #     return self.exp.getValor(ts)
         # else:
-        #     raise Error_("Semantico", "Solo se puede usar la funcion 'to_string' con expresiones tipo &str", self.linea, self.columna)
+        #     raise Error_("Semantico", "Solo se puede usar la funcion 'to_string' con expresiones tipo &str", ts.env, self.linea, self.columna)

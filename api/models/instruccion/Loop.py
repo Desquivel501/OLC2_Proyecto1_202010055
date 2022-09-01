@@ -19,7 +19,7 @@ class Loop(Instruccion):
 
     def ejecutar(self, ts):
         res = None
-        ts_local = TablaSimbolos(ts, "WHILE")
+        ts_local = TablaSimbolos(ts, "loop")
         
         while True:
             

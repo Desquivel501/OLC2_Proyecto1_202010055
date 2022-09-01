@@ -1,3 +1,5 @@
+from models.tabla.Tipos import Tipo
+from models.tabla.Tipos import Tipos
 from models.tabla.InstanciaVector import InstanciaVector
 from models.tabla.InstanciaArreglo import InstanciaArreglo
 from models.tabla.InstanciaStruct import InstanciaStruct
@@ -19,11 +21,17 @@ class TablaSimbolos:
         self.arreglos = {}
         self.vectores = {}
 
-    def add(self, id: str, simbolo: Simbolo):
+    def add(self, id: str, simbolo: Simbolo, linea, columna):
         # print("ID: ", id)
         # print("SIMBOLO: ", simbolo)
         self.tabla[id] = simbolo
-        Program.tabla[id] = (simbolo, self.env)
+        
+        data = self.getTipos(simbolo)
+        
+        tipo = data[0]
+        tipo_s = data[1]
+        
+        Program.tabla.append({"id":id, "simbolo": tipo_s, "tipo":tipo,  "ambito":self.env, "linea": linea, "columna": columna})
 
     def buscar(self, id: str) -> Simbolo:
         ts = self
@@ -118,5 +126,61 @@ class TablaSimbolos:
         return None
 
 
+    def getTiposNombre(self, s):
+        
+        if isinstance(s, Tipo):
+            s = s.tipo
+        
+        if s == Tipos.INT:
+            return "i64"
+        if s == Tipos.FLOAT:
+            return "f64"
+        if s == Tipos.BOOLEAN:
+            return "bool"
+        if s == Tipos.STR:
+            return "&str"
+        if s == Tipos.STRING:
+            return "String"
+        if s == Tipos.CHAR:
+            return "char"
+        if s == Tipos.ARRAY_DATA:
+            return "Arreglo "
+        if s == Tipos.VECTOR_DATA:
+            return "Vector"
+        if s == Tipos.STRUCT:
+            return "Struct"
+        else:
+            return ""
+            
 
+    def getTipos(self, simbolo):
+        if isinstance(simbolo, InstanciaVector):
+            tipo = self.getTiposNombre(simbolo.tipo)
+            tipo_s = "Vector"
+        elif isinstance(simbolo, InstanciaVector):
+            tipo = self.getTiposNombre(simbolo.tipo)
+            tipo_s = "Vector"
+        elif isinstance(simbolo, InstanciaArreglo):
+            tipo = self.getTiposNombre(simbolo.tipo)
+            tipo_s = "Arreglo"
+        elif isinstance(simbolo, InstanciaStruct):
+            tipo = ""
+            tipo_s = "Struct"
+        else:
+            if isinstance(simbolo.valor, InstanciaVector):
+                tipo = self.getTiposNombre(simbolo.tipo)
+                tipo_s = "Vector"
+            elif isinstance(simbolo.valor, InstanciaVector):
+                tipo = self.getTiposNombre(simbolo.tipo)
+                tipo_s = "Vector"
+            elif isinstance(simbolo.valor, InstanciaArreglo):
+                tipo = self.getTiposNombre(simbolo.tipo)
+                tipo_s = "Arreglo"
+            elif isinstance(simbolo.valor, InstanciaStruct):
+                tipo = ""
+                tipo_s = "Struct"
+            else:
+                tipo = self.getTiposNombre(simbolo.tipo.tipo)
+                tipo_s = "Primitivo"
 
+        return (tipo, tipo_s)

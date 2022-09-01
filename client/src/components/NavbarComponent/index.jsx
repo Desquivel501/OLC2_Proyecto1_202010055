@@ -23,7 +23,7 @@ export const NavbarComponent = () => {
             </Nav.Item> 
             <NavDropdown title="Reportes" id="basic-nav-dropdown">
               <NavDropdown.Item href="/reporte_ts">Reporte de tabla de símbolos</NavDropdown.Item>
-              <NavDropdown.Item href="">Reporte de errores</NavDropdown.Item>
+              <NavDropdown.Item  href="/errores">Reporte de errores</NavDropdown.Item>
               <NavDropdown.Item href="">Reporte de base de datos existente</NavDropdown.Item>
               <NavDropdown.Item href="">Reporte de tablas de base de datos</NavDropdown.Item>
             </NavDropdown>

@@ -27,10 +27,10 @@ class ExpIf(Expresion):
         tipo_condicion = self.condicion.getTipo(ts)
         
         if tipo_condicion is not Tipos.BOOLEAN:
-            raise Error_("Semantica", "La condicion en in If debe ser de tipo BOOLEAN", self.linea, self.columna)
+            raise Error_("Semantico", "La condicion en in If debe ser de tipo BOOLEAN",  ts.env, self.linea, self.columna)
 
         if self.cuerpo.getTipo(ts) != self.else_.getTipo(ts):
-            raise Error_("Semantica", "Al usar un If como expresion, cada bloque debe de ser del mismo tipo", self.linea, self.columna)
+            raise Error_("Semantico", "Al usar un If como expresion, cada bloque debe de ser del mismo tipo",  ts.env, self.linea, self.columna)
         
         if condicion:
             return self.cuerpo.getValor(ts)

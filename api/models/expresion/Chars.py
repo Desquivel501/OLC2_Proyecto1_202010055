@@ -25,7 +25,7 @@ class Chars(Expresion):
     
         
         if tipo_expresion not in [Tipos.STR, Tipos.STRING] :
-            raise Error_("Semantico", f'La funcion CHARS solo acepta valores tipo &str y String', self.linea, self.columna)
+            raise Error_("Semantico", f'La funcion CHARS solo acepta valores tipo &str y String',   ts.env, self.linea, self.columna)
         
         listaValores = list(valor_expresion)
     
