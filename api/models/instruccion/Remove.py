@@ -36,12 +36,17 @@ class Remove(Instruccion, Expresion):
             
     
     def getValor(self, ts):
-        vector = self.id_instancia.getValor(ts)
         
+        if isinstance(self.id_instancia, Identificador):
+            instancia = self.id_instancia.getValor(ts)
+            vector = instancia
+        else:
+            vector = ts.buscar(self.id_instancia)
 
         valor_indice = self.indice.getValor(ts)
         tipo_indice = self.indice.getTipo(ts)
         
+
         if vector is not None:
             
             if not isinstance(vector, InstanciaVector):
@@ -58,7 +63,12 @@ class Remove(Instruccion, Expresion):
              
     def ejecutar(self, ts: TablaSimbolos):
 
-        vector = ts.buscar(self.id_instancia)
+        if isinstance(self.id_instancia, Identificador):
+            instancia = self.id_instancia.getValor(ts)
+            vector = instancia
+        else:
+            vector = ts.buscar(self.id_instancia)
+        
         
         if not isinstance(vector,InstanciaVector):
             raise Error_("Semantico", f'Simbolo {self.id_instancia} no es de tipo Vector', ts.env, self.linea, self.columna) 

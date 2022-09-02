@@ -34,7 +34,7 @@ class Llamada(Expresion, Instruccion):
         
         if funcion is not None:
             
-            ts_local = TablaSimbolos(ts, "funcion")
+            ts_local = TablaSimbolos(ts, self.identificador)
             
             funcion.ejecutarParametros(ts_local,self.listaExpresiones,ts)
             
@@ -46,3 +46,11 @@ class Llamada(Expresion, Instruccion):
             
         else:
             raise Error_("Semantico", f'No se encontro la funcion {self.identificador}', ts.env, self.linea, self.columna)
+        
+    
+    def checkPub(self, ts):
+        funcion = ts.obtenerFuncion(self.identificador)
+        if funcion is not None:
+            return funcion.publico
+        else:
+           raise Error_("Semantico", f'No se encontro la funcion {self.identificador}', ts.env, self.linea, self.columna)

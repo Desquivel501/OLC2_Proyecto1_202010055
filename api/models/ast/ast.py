@@ -1,3 +1,4 @@
+from models.tabla.Modulo import Modulo
 from models.expresion.Llamada import Llamada
 from models.tabla.TablaSimbolos import TablaSimbolos
 from models.instruccion import Instruccion
@@ -16,7 +17,11 @@ class Ast:
         self.ts = None
 
     def ejecutar(self, ts):
+        
         for instruccion in self.instrucciones:
+            
+            if instruccion is None:
+                continue
             
             try:
                 if isinstance(instruccion, Funcion):
@@ -28,6 +33,11 @@ class Ast:
                 if isinstance(instruccion, Struct):
                     struct = ts.obtenerStruct(instruccion.identificador)
                     if struct is None:
+                        instruccion.ejecutar(ts)
+                
+                if isinstance(instruccion, Modulo):
+                    modulo = ts.obtenerModulo(instruccion.identificador)
+                    if modulo is None:
                         instruccion.ejecutar(ts)
                         
             except Exception as e:
@@ -60,7 +70,12 @@ class Ast:
         #     if isinstance(instruccion, Struct):
         #         struct = ts.obtenerStruct(instruccion.identificador)
         #         if struct is None:
-        #                 instruccion.ejecutar(ts)
+        #             instruccion.ejecutar(ts)
+        
+        #     if isinstance(instruccion, Modulo):
+        #         modulo = ts.obtenerModulo(instruccion.identificador)
+        #         if modulo is None:
+        #             instruccion.ejecutar(ts)
                         
                         
         

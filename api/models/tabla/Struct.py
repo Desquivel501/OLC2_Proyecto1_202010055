@@ -9,6 +9,7 @@ class Struct(Instruccion):
         self.campos = campos
         self.linea = linea
         self.columna = columna
+        self.publico = False
         
     def ejecutar(self, ts):
         struct = ts.obtenerStruct(self.identificador)

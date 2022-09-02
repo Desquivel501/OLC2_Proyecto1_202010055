@@ -1,3 +1,4 @@
+from models.tabla.Modulo import Modulo
 from models.tabla.Tipos import Tipo
 from models.tabla.Tipos import Tipos
 from models.tabla.InstanciaVector import InstanciaVector
@@ -20,6 +21,7 @@ class TablaSimbolos:
         self.instancias_structs = {}
         self.arreglos = {}
         self.vectores = {}
+        self.modulos = {}
 
     def add(self, id: str, simbolo: Simbolo, linea, columna):
         # print("ID: ", id)
@@ -124,7 +126,29 @@ class TablaSimbolos:
                 return exist
             ts = ts.anterior
         return None
+    
 
+#-------------------------------------------MODULOS-----------------------------------------------
+
+    def agregarModulo(self, id: str,  mod: Modulo):
+        self.modulos[id] = mod
+
+
+    def obtenerModulo(self, id: str):
+        ts = self
+        while ts is not None:
+            exist = ts.modulos.get(id)
+            if exist is not None:
+                return exist
+            ts = ts.anterior
+        return None
+    
+    def nuevoEntornoMod(self, identificador):
+        ts_modulo = TablaSimbolos(self, identificador)
+        return ts_modulo
+
+
+#-------------------------------------------TIPOS REPORTE-----------------------------------------------
 
     def getTiposNombre(self, s):
         
@@ -184,3 +208,5 @@ class TablaSimbolos:
                 tipo_s = "Primitivo"
 
         return (tipo, tipo_s)
+    
+    

@@ -28,9 +28,17 @@ def tabla_simbolos():
 @app.route("/errores",methods=["GET"])
 def tabla_errores():
     if request.method == 'GET':
-        print(Program.errores)
-        
         return  json.dumps(Program.errores, indent=2)
+    
+@app.route("/tablas",methods=["GET"])
+def tabla_tablas():
+    if request.method == 'GET':
+        return  json.dumps(Program.lista_tablas, indent=2)
+
+@app.route("/bases",methods=["GET"])
+def tabla_bases():
+    if request.method == 'GET':
+        return  json.dumps(Program.lista_bases, indent=2)
     
     
 @app.route("/interpretar",methods=["POST"])
@@ -58,9 +66,14 @@ def interpretar():
             # ast: Ast = parser.parse(instrucciones)
             # ts = TablaSimbolos(None, 'Main')
             # ast.ejecutar(ts)    
+            
+            
+            
+            print(Program.lista_bases)
+            
+            print(Program.lista_tablas)
         
         
-
         # print(Program.console)
         # tabla = Program.tabla
         # Program.printTabla(tabla)

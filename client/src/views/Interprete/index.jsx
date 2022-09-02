@@ -27,6 +27,7 @@ export const Interprete = () => {
 
   const clear = () => {
     setConsoleText('');
+    setCode('');
   }
 
   return (

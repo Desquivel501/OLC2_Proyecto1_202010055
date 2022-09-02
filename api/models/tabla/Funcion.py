@@ -1,5 +1,6 @@
 
 
+from models.misc.Program import Program
 from models.tabla.Simbolo import Simbolo
 from models.instruccion.Statement import Statement
 from models.misc.error import Error_
@@ -15,6 +16,8 @@ class Funcion(Instruccion):
         self.linea = linea
         self.columna = columna
         self.instrucciones = instrucciones
+        self.publico = False
+        self.esCrearTabla = False
         
     def ejecutar(self, ts):
         funcion = ts.obtenerFuncion(self.identificador)
@@ -26,6 +29,8 @@ class Funcion(Instruccion):
         
 
     def ejecutarParametros(self, entorno, expresiones, entorno_padre):
+        
+        print(self.lista_param)
         
         if len(self.lista_param) != len(expresiones):
             raise Error_("Semantico", f'Cantidad de parametros incorrecto', "", self.linea, self.columna)
@@ -50,10 +55,39 @@ class Funcion(Instruccion):
             
     def ejecutarFuncion(self, ts_local):
         
+        if(self.esCrearTabla):
+            
+            base_datos = ts_local.anterior.anterior.env
+            tabla = ts_local.anterior.env
+            
+            instancia_base = ts_local.obtenerModulo(base_datos)
+            instancia_tabla = ts_local.obtenerModulo(tabla)
+            
+            if len(Program.lista_bases) == 0:
+                linea = instancia_base.linea
+                Program.lista_bases.append({"nombre_base":base_datos, "cantidad": 1, "linea":linea})
+
+            else:
+                for base in Program.lista_bases:
+                    
+                    if base_datos == base.get("nombre_base"):
+                        base["cantidad"] += 1
+                    
+                    else:
+                        linea = instancia_base.linea
+                        Program.lista_bases.append({"nombre_base":base_datos, "cantidad": 1, "linea":linea})
+
+            Program.lista_tablas.append({"nombre_base":base_datos, "nombre_tablas":tabla, "linea":instancia_tabla.linea})
+            
+                
         
         codigo = self.instrucciones.codigo
         
         for ins in codigo:
+            
+            if ins is None:
+                continue
+            
             try:
                 element = ins.ejecutar(ts_local)
                 
@@ -83,6 +117,8 @@ class Funcion(Instruccion):
                 
             except Exception as e:
                 print(e)
+        
+        
             
         # for ins in codigo:
         #         element = ins.ejecutar(ts_local)

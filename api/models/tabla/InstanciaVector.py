@@ -48,13 +48,23 @@ class InstanciaVector(Expresion, Simbolo):
         
         
     def push(self, valor, linea, columna):
-        if self.capacidad == len(self.valores):
-            self.capacidad += 1       
+        
+        if self.capacidad == 0:
+            self.capacidad = 1
+
+        elif self.capacidad == len(self.valores):
+            self.capacidad *= 2       
+        
         self.valores.append(valor)
 
     def insert(self, valor, indice ,linea, columna):
-        if self.capacidad == len(self.valores):
-            self.capacidad += 1 
+        if self.capacidad == 0:
+            self.capacidad = 1
+
+        elif self.capacidad == len(self.valores):
+            self.capacidad *= 2      
+            
+            
         self.valores.insert(indice, valor)
     
     def remove(self, indice ,linea, columna):  

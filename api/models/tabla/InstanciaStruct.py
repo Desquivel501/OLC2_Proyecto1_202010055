@@ -27,7 +27,9 @@ class InstanciaStruct(Expresion, Simbolo):
     def getValor(self, ts):
         
         copiaLista = copy.deepcopy(self.lista_atributos)
-
+        print("ATRIBUTOS")
+        print(self.lista_atributos)
+        
         struct:Struct = ts.obtenerStruct(self.id_struct)
         
         if struct is None:

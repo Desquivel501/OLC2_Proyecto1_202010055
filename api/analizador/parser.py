@@ -1,3 +1,6 @@
+from models.expresion.WithCapacity import Capacidad
+from models.expresion.AccesoModulo import AccesoModulo
+from models.tabla.Modulo import Modulo
 from models.expresion.Clone import Clone
 from models.misc.Program import Program
 from models.expresion.Chars import Chars
@@ -78,8 +81,8 @@ def p_ini(p):
     ini : intrucciones_global
     """
     p[0] = Ast(p[1])
-
-
+    
+    
 #----------------------------------------------------------------------------------------------------INSTRUCCIONES
 
 def p_instrucciones(p):
@@ -95,6 +98,7 @@ def p_instrucciones_instruccion(p):
     instrucciones : instruccion
     """
     p[0] = [p[1]]
+
 
 def p_instruccion(p):
     """
@@ -116,6 +120,7 @@ def p_instruccion(p):
                 | vec_push PUNTOCOMA
                 | vec_insert PUNTOCOMA
                 | vec_remove PUNTOCOMA
+                | acceso_mod_exp PUNTOCOMA
     """
     p[0] = p[1]
     
@@ -146,6 +151,7 @@ def p_instruccion_no_pt(p):
     p[0] = p[1]
 
 
+
 def p_instrucciones_global(p):
     """
     intrucciones_global : intrucciones_global ins_global
@@ -162,6 +168,7 @@ def p_instruccion_global(p):
     """
     ins_global : funcion
                | struct
+               | mod
     """
     p[0] = p[1]
     
@@ -171,7 +178,67 @@ def p_clase_funcion_error(p):
     intrucciones_global : error LLV_D 
     """
     Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) ))
-    p[0] = ""
+    p[0] = None
+
+
+#--------------------------------------------------------------------------------------------------------------------------MODULOS
+
+def p_modulo(p):
+    """
+    mod : MOD ID LLV_I instrucciones_mod LLV_D
+    """
+    p[0] = Modulo(p[2], p[4], p.lineno(1),p.lexpos(0))
+    
+def p_instrucciones_mod(p):
+    """
+    instrucciones_mod : instrucciones_mod instruccion_mod
+                      | instruccion_mod 
+    """
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[1].append(p[2])
+        p[0] = p[1]
+
+
+def p_instruccion_mod(p):
+    """
+    instruccion_mod : struct
+                    | funcion
+                    | mod
+                    | PUB struct
+                    | PUB funcion
+                    | PUB mod
+    """
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[2].publico = True
+        p[0] = p[2]
+
+
+def p_acceso_modulo_exp(p):
+    """
+    acceso_mod_exp : acceso_mod D_PUNTO D_PUNTO llamada
+    """
+    p[1].append(p[4])
+    p[0] = AccesoModulo(p[1],p.lineno(1), p.lexpos(0) )
+
+
+def p_acceso_modulo(p):
+    """
+    acceso_mod : acceso_mod D_PUNTO D_PUNTO ID
+    """
+    p[1].append(p[4])
+    p[0] = p[1]
+
+
+def p_acceso_mod_corte(p):
+    """
+    acceso_mod :  ID
+    """
+    p[0] = [p[1]]
+
 
 
 
@@ -217,8 +284,8 @@ def p_funcion(p):
 
 def p_funcion_tipo(p):
     """
-    funcion : FN ID PAR_I lista_param PAR_D MENOS MAYOR tipo statement
-            | FN ID PAR_I PAR_D MENOS MAYOR tipo statement
+    funcion : FN ID PAR_I lista_param PAR_D MENOS MAYOR tipo_funcion statement
+            | FN ID PAR_I PAR_D MENOS MAYOR tipo_funcion statement
     """
     if len(p) == 10:
         p[0] = Funcion(p[2],p[4],p[9], p[8], p.lineno(1), p.lexpos(0) )
@@ -242,12 +309,23 @@ def p_parametro(p):
     """
     parametro : ID D_PUNTO tipo_funcion
               | ID D_PUNTO AMP MUT tipo_funcion
+              
+              | MUT ID D_PUNTO tipo_funcion
+              | MUT ID D_PUNTO AMP tipo_funcion
     """
-    if len(p) == 4:
+    if len(p) == 4 and p.slice[1].type == "ID":
         p[0] = Parametro(p[1], p[3], False)
-    else:
-        p[0] = Parametro(p[1], p[5], True)
-
+    elif len(p) == 6 and p.slice[1].type == "ID":
+        p[0] = Parametro(p[1], p[5], False)
+        
+    elif len(p) == 5 and p.slice[1].type == "MUT":
+        p[0] = Parametro(p[2], p[4], True)
+    elif len(p) == 6 and p.slice[1].type == "MUT":
+        p[0] = Parametro(p[2], p[5], True)
+        
+    print(p[0])
+        
+        
 
 def p_return(p):
     """
@@ -286,10 +364,13 @@ def p_exp_list_llamada(p):
 def p_exp_llamada(p):
     """
     exp_llamada : AMP MUT expresion
+                | AMP expresion
                 | expresion
     """
     if len(p) == 2:
         p[0] = p[1]
+    elif len(p) == 3:
+        p[0] = p[2]
     else:
         p[0] = p[3]
 
@@ -334,7 +415,7 @@ def p_statement_error(p):
     statement : error LLV_D 
     """
     Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) )
-    p[0] = ""
+    p[0] = None
 
 
 def p_expresion_if_else(p):
@@ -852,6 +933,7 @@ def p_vector_tipo(p):
     else:
         p[0] = CrearVector(p[3],None,p[7],p[10],True, p.lineno(1), p.lexpos(0) )
 
+
 def p_vector_new(p):
     """
     declaracion_vector : LET ID D_PUNTO VEC_U MENOR v_tipo MAYOR IGUAL vec_new
@@ -862,6 +944,7 @@ def p_vector_new(p):
     else:
         p[0] = CrearVector(p[3],Primitivo(0, None, p.lineno(1), p.lexpos(0) ),p[7],None,True, p.lineno(1), p.lexpos(0) )
 
+
 def p_vector_cappacity(p):
     """
     declaracion_vector : LET ID D_PUNTO VEC_U MENOR v_tipo MAYOR IGUAL vec_capacity
@@ -869,11 +952,11 @@ def p_vector_cappacity(p):
     """
     
     if len(p) == 10:
-        print(p[6])
-        p[0] = CrearVector(p[2],p[9],p[6],None,False, p.lineno(1), p.lexpos(0) )
+        capacidad = p[9].expresion
+        p[0] = CrearVector(p[2],capacidad,p[6],None,False, p.lineno(1), p.lexpos(0) )
     else:
-        print(p[7])
-        p[0] = CrearVector(p[3],p[10],p[7],None,True, p.lineno(1), p.lexpos(0) )
+        capacidad = p[10].expresion
+        p[0] = CrearVector(p[3],capacidad,p[7],None,True, p.lineno(1), p.lexpos(0) )
 
 
 def p_tipo_vector(p):
@@ -881,6 +964,21 @@ def p_tipo_vector(p):
     tipo_vec : VEC_U MENOR v_tipo MAYOR
     """
     p[0] = p[3]
+    
+    
+    
+def p_tipo_modulo(p):
+    """
+    tipo_modulo : tipo_mod D_PUNTO D_PUNTO ID
+    """
+    p[0] = Tipo(tipo=Tipos.STRUCT)
+    
+    
+def p_tipo_mod(p):
+    """
+    tipo_mod : tipo_mod D_PUNTO D_PUNTO ID
+             | ID
+    """    
 
 
 def p_v_tipo(p):
@@ -895,6 +993,7 @@ def p_v_tipo(p):
            | ID
            | VEC_U MENOR tipo MAYOR
            | USIZE
+           | tipo_modulo
     """
     if p.slice[1].type == 'ID':
         print("STRUCT")
@@ -904,6 +1003,8 @@ def p_v_tipo(p):
         p[0] = Tipo(tipo=Tipos.INT)
     elif p.slice[1].type == 'VEC_U':
         p[0] = Tipo(tipo=Tipos.VECTOR_DATA)
+    elif p.slice[1].type == 'tipo_modulo':
+        p[0] = p[1]
     elif len(p) == 2:
         p[0] = Tipo(stipo = p[1])
     else:
@@ -920,7 +1021,7 @@ def p_vec_capacity(p):
     """
     vec_capacity : VEC_U D_PUNTO D_PUNTO WITH_CAPACITY PAR_I expresion PAR_D
     """
-    p[0] = p[6]
+    p[0] = Capacidad(p[6])
 
 
 def p_vec_dato(p):
@@ -1158,6 +1259,14 @@ def p_vec_exp(p):
               | vec_get_capacity
               | length
               | clone
+              | vec_capacity
+              | vec_new
+    """
+    p[0] = p[1]
+
+def p_exp_mod(p):
+    """
+    expresion : acceso_mod_exp
     """
     p[0] = p[1]
     
@@ -1168,7 +1277,7 @@ def p_error(p):
     print(f'Error de sintaxis {p.value!r}, linea {p.lineno}')
     print("next: ", parser.token())
     parser.restart()
-    Error_("Sintactivo", f'Error de sintaxis {p.value!r}'," - ",p.lineno,0)
+    Error_("Sintactico", f'Error de sintaxis {p.value!r}'," - ",p.lineno,0)
 
 
 

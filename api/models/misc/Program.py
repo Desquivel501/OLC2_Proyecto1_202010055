@@ -5,6 +5,9 @@ class Program:
     errores = []
     tabla = []
     
+    lista_bases = []
+    lista_tablas = []
+    
     
     # def printTabla(tabla):
     #     for sim in tabla:

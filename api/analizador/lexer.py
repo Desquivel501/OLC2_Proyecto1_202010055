@@ -48,7 +48,9 @@ reservadas = {
     'capacity':'CAPACITY',
     'chars':'CHARS',
     'usize':'USIZE',
-    'clone':'CLONE'
+    'clone':'CLONE',
+    'mod':'MOD',
+    'pub':'PUB'
 
 }
 
