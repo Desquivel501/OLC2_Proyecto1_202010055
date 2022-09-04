@@ -17,73 +17,77 @@ class Ast:
         self.ts = None
 
     def ejecutar(self, ts):
-        
-        # for instruccion in self.instrucciones:
-            
-        #     if instruccion is None:
-        #         continue
-            
-        #     try:
-        #         if isinstance(instruccion, Funcion):
-        #             fun = ts.obtenerFuncion(instruccion.identificador)
-        #             if fun is None:
-        #                 instruccion.ejecutar(ts)
-                
-                
-        #         if isinstance(instruccion, Struct):
-        #             struct = ts.obtenerStruct(instruccion.identificador)
-        #             if struct is None:
-        #                 instruccion.ejecutar(ts)
-                
-        #         if isinstance(instruccion, Modulo):
-        #             modulo = ts.obtenerModulo(instruccion.identificador)
-        #             if modulo is None:
-        #                 instruccion.ejecutar(ts)
-                        
-        #     except Exception as e:
-        #         print(e)
-          
-          
-          
-                    
-        # try:
-        #     main = ts.obtenerFuncion("main")
-        
-        #     if main is not None:
-        #         main.ejecutarFuncion(ts)
-        #     else:
-                
-        #         raise Error_('Semantico', f'No existe metodo main', " Global ", 0, 0)
-        # except Exception as e:
-        #         print(e)
-        
-        
+        existeModulo = False
         
         for instruccion in self.instrucciones:
+            
+            if instruccion is None:
+                continue
+            
+            try:
+                if isinstance(instruccion, Funcion):
+                    fun = ts.obtenerFuncion(instruccion.identificador)
+                    if fun is None:
+                        instruccion.ejecutar(ts)
+                
+                
+                if isinstance(instruccion, Struct):
+                    struct = ts.obtenerStruct(instruccion.identificador)
+                    if struct is None:
+                        instruccion.ejecutar(ts)
+                
+                if isinstance(instruccion, Modulo):
+                    modulo = ts.obtenerModulo(instruccion.identificador)
+                    if modulo is None:
+                        instruccion.ejecutar(ts)
+                        existeModulo = True
+                        
+            except Exception as e:
+                print(e)
         
-            if isinstance(instruccion, Funcion):
-                fun = ts.obtenerFuncion(instruccion.identificador)
-                if fun is None:
-                    instruccion.ejecutar(ts)
+        try:
+            if not existeModulo:
+                raise Error_('Semantico', f'No existe ningun Modulo', " Global ", 0, 0)
+        except Exception as e:
+                print(e)
+        
+        try:
+            main = ts.obtenerFuncion("main")
+        
+            if main is not None:
+                main.ejecutarFuncion(ts)
+            else:
+                
+                raise Error_('Semantico', f'No existe metodo main', " Global ", 0, 0)
+        except Exception as e:
+                print(e)
+        
+        
+        # for instruccion in self.instrucciones:
+        
+        #     if isinstance(instruccion, Funcion):
+        #         fun = ts.obtenerFuncion(instruccion.identificador)
+        #         if fun is None:
+        #             instruccion.ejecutar(ts)
                     
                     
-            if isinstance(instruccion, Struct):
-                struct = ts.obtenerStruct(instruccion.identificador)
-                if struct is None:
-                    instruccion.ejecutar(ts)
+        #     if isinstance(instruccion, Struct):
+        #         struct = ts.obtenerStruct(instruccion.identificador)
+        #         if struct is None:
+        #             instruccion.ejecutar(ts)
         
-            if isinstance(instruccion, Modulo):
-                modulo = ts.obtenerModulo(instruccion.identificador)
-                if modulo is None:
-                    instruccion.ejecutar(ts)
+        #     if isinstance(instruccion, Modulo):
+        #         modulo = ts.obtenerModulo(instruccion.identificador)
+        #         if modulo is None:
+        #             instruccion.ejecutar(ts)
                         
                         
         
-        main = ts.obtenerFuncion("main")
-        if main is not None:
-            main.ejecutarFuncion(ts)
-        else:      
-            raise Error_('Semantico', f'No existe metodo main', " Global ", 0, 0)
+        # main = ts.obtenerFuncion("main")
+        # if main is not None:
+        #     main.ejecutarFuncion(ts)
+        # else:      
+        #     raise Error_('Semantico', f'No existe metodo main', " Global ", 0, 0)
         
         
         

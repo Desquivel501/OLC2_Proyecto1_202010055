@@ -8,6 +8,7 @@ class Aritmetica(Operacion):
     
     def __init__(self, left: Expresion, operador, right: Expresion, linea, columna, unaria):
         super().__init__(left, operador, right, linea, columna, unaria)
+        
         self.linea = linea
         self.columna = columna
         self.tipo = None

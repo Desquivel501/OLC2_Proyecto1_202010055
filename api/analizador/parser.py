@@ -1109,7 +1109,7 @@ def p_expresion_aritmetica(p):
                | expresion DIV expresion
                | expresion MODULO expresion
     """
-    p[0] = Aritmetica(p[1], p[2], p[3], p.lineno(0), p.lexpos(0) , False)
+    p[0] = Aritmetica(p[1], p[2], p[3], p.lineno(1), p.lexpos(0) , False)
 
 
 def p_expresion_unario_ar(p):
