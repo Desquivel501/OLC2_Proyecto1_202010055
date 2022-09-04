@@ -24,8 +24,6 @@ class TablaSimbolos:
         self.modulos = {}
 
     def add(self, id: str, simbolo: Simbolo, linea, columna):
-        # print("ID: ", id)
-        # print("SIMBOLO: ", simbolo)
         self.tabla[id] = simbolo
         
         data = self.getTipos(simbolo)

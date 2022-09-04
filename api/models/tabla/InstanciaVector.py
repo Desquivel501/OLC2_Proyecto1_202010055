@@ -33,7 +33,6 @@ class InstanciaVector(Expresion, Simbolo):
         if len(listaDimensiones) > 0:
             
             if indiceDimension > (tamanoDimension-1):
-                print(indiceDimension, " - ", tamanoDimension)
                 raise Error_("Semantico", f'Índice fuera de los límites', "", linea, columna)
             else:
                 subArreglo = valores[indiceDimension]
@@ -41,7 +40,6 @@ class InstanciaVector(Expresion, Simbolo):
 
         else:
             if indiceDimension > (tamanoDimension-1):
-                print(indiceDimension, " - ", tamanoDimension)
                 raise Error_("Semantico", f'Índice fuera de los límites', "", linea, columna)
             else:
                 return valores[indiceDimension]

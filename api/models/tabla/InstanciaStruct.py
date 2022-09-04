@@ -27,8 +27,6 @@ class InstanciaStruct(Expresion, Simbolo):
     def getValor(self, ts):
         
         copiaLista = copy.deepcopy(self.lista_atributos)
-        print("ATRIBUTOS")
-        print(self.lista_atributos)
         
         struct:Struct = ts.obtenerStruct(self.id_struct)
         
@@ -38,7 +36,6 @@ class InstanciaStruct(Expresion, Simbolo):
         
         for campo in struct.campos:
             if len(self.lista_atributos) == 0:
-                print("es 0")
                 raise Error_("Semantico", f'Numero incorrecto de atributos', ts.env, self.linea, self.columna)
             
             
@@ -63,9 +60,7 @@ class InstanciaStruct(Expresion, Simbolo):
                         self.lista_atributos.pop(i)
                         agregado = True
                         break
-                    else:
-                        print(tipo, " - - " ,campo.tipo.tipo)
-                        
+                    else:             
                         raise Error_("Semantico", f'Tipo incorrecto en atributo \'{campo.identificador}\'', ts.env, self.linea, self.columna)
                 i += 1
 

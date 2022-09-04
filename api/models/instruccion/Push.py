@@ -31,14 +31,9 @@ class Push(Instruccion):
         
         if vector is not None:
             
-            print(vector.tipo, " - ", tipo)
-            
             if(tipo == Tipos.VECTOR_DATA):
                 valor = valor.valores
-            
-            print(vector.tipo, " - ", tipo)
-            
-           
+          
             
             if (vector.tipo != tipo):
                 raise Error_("Semantico", f'Tipo de push a vector incorrecto', ts.env, self.linea, self.columna)  

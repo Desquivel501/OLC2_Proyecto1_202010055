@@ -21,7 +21,6 @@ class ModStruct(Instruccion):
         
      
     def ejecutar(self, ts: TablaSimbolos):
-        print("MOD********************************************")
         
         copia = copy.deepcopy(self.listaExpresiones)
         
@@ -31,23 +30,18 @@ class ModStruct(Instruccion):
 
         identificador = ""
         if isinstance(expresionInicial, Identificador):
-            print("id")
             identificador = expresionInicial.getValor(ts)
 
             if isinstance(identificador, InstanciaStruct):
-                print("struct")
                 struct = identificador
             
             else:
                 struct = ts.buscar(expresionInicial)
         
         if isinstance(expresionInicial, AccesoArreglo):
-            print("arreglo")
             val = expresionInicial.getValor(ts)
-            print("VALOR -- ", )
             
             if isinstance(val, InstanciaStruct):
-                print("struct")
                 struct = val
                 
             
@@ -83,7 +77,6 @@ class ModStruct(Instruccion):
                 nuevo_valor = self.valor.getValor(ts)
                 nuevo_tipo = self.valor.getTipo(ts)
                 
-                print(viejo_tipo, " - ", nuevo_tipo)
                 
                 if viejo_tipo == nuevo_tipo:
                     struct.dic_atributos[expresionInicial].valor = nuevo_valor

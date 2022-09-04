@@ -29,7 +29,6 @@ class Modulo(Instruccion):
             if isinstance(instruccion, Funcion):
                 if self.esTabla:
                     if instruccion.identificador == "crear_tabla":
-                        print("here***************************************************************************************************************")
                         instruccion.esCrearTabla = True
             
             if isinstance(instruccion, Modulo):
@@ -40,6 +39,4 @@ class Modulo(Instruccion):
             instruccion.ejecutar(self.entorno)
         
         ts.agregarModulo(self.identificador, self)
-        
-        print("creado modulo")
     

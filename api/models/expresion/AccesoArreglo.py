@@ -31,57 +31,39 @@ class AccesoArreglo(Expresion):
                 
         instancia = ts.buscar(self.id_instancia)
         
-        
-        print(self.id_instancia)
-        print(instancia)
-        
-        
         if instancia is None:
             raise Error_("Semantico", f'No se ha encontrado el simbolo {self.id_instancia}',  ts.env, self.linea, self.columna)  
 
         if isinstance(instancia, InstanciaVector):
-            print("vector")  
             self.tipo = instancia.tipo     
             dimensiones = self.obtenerDimensiones(ts)
             valor = instancia.getValor(dimensiones, 0, instancia.valores, self.linea, self.columna)
             return valor  
         
         if isinstance(instancia, InstanciaArreglo):
-            print("array")
-            
+
             self.tipo = instancia.tipo
             
             dimensiones = self.obtenerDimensiones(ts)
-            valor = instancia.getValor(dimensiones, 0, instancia.valores,  self.linea, self.columna)
-            print(valor)   
+            valor = instancia.getValor(dimensiones, 0, instancia.valores,  self.linea, self.columna) 
             return valor     
 
         if isinstance(instancia, Simbolo):
             instancia = instancia.valor
-            print(instancia)
                 
         if isinstance(instancia, InstanciaVector):
-            print("vector")  
             self.tipo = instancia.tipo     
             dimensiones = self.obtenerDimensiones(ts)
             valor = instancia.getValor(dimensiones, 0, instancia.valores, self.linea, self.columna)
             return valor  
         
         if isinstance(instancia, InstanciaArreglo):
-            print("array")
             
             self.tipo = instancia.tipo
-            
             dimensiones = self.obtenerDimensiones(ts)
             valor = instancia.getValor(dimensiones, 0, instancia.valores,  self.linea, self.columna)
-            print(valor)   
             return valor      
         
-
-        
-        
-        
-        print("OUT")
         raise Error_("Semantico", f'No se ha encontrado el simbolo {self.id_instancia}',   ts.env, self.linea, self.columna)  
         
     

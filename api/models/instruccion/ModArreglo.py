@@ -37,7 +37,6 @@ class ModArreglo(Instruccion):
         
         if not isinstance(instancia, InstanciaArreglo):
             
-            print(instancia)
             
             raise Error_("Semantico", f'Simbolo \'{self.identificador}\' no es de tipo Arreglo', ts.env, self.linea, self.columna)
         
@@ -45,8 +44,6 @@ class ModArreglo(Instruccion):
         
         dimensiones = self.obtenerDimensiones(ts)
         instancia.modValor(dimensiones, 0, instancia.valores, nuevo_valor, self.linea, self.columna)
-        
-        print(nuevo_valor)   
 
     
     def obtenerDimensiones(self, ts):

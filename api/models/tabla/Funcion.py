@@ -30,8 +30,6 @@ class Funcion(Instruccion):
 
     def ejecutarParametros(self, entorno, expresiones, entorno_padre):
         
-        print(self.lista_param)
-        
         if len(self.lista_param) != len(expresiones):
             raise Error_("Semantico", f'Cantidad de parametros incorrecto', "", self.linea, self.columna)
         
@@ -42,7 +40,6 @@ class Funcion(Instruccion):
             tipo_exp = expresion.getTipo(entorno_padre)
             
             if self.lista_param[i].tipo.tipo != tipo_exp:
-                print(self.lista_param[i].tipo.tipo , " - ", tipo_exp)
                 
                 raise Error_("Semantico", f'Tipo incorrecto en parametro {self.lista_param[i].identificador}', entorno.env, self.linea, self.columna)
                 
@@ -83,44 +80,12 @@ class Funcion(Instruccion):
         
         codigo = self.instrucciones.codigo
         
-        for ins in codigo:
-            
-            if ins is None:
-                continue
-            
-            try:
-                element = ins.ejecutar(ts_local)
-                
-                if element is not None:
-                    if element["tipo"] == "break":
-                        raise Error_("Semantico", f'No se puede ejecutar un Break fuera de un ciclo', ts_local.env, self.linea, self.columna)
-                    
-                    if element["tipo"] == "continue":
-                        raise Error_("Semantico", f'No se puede ejecutar un Continue fuera de un ciclo', ts_local.env, self.linea, self.columna)
-                    
-                    if element["tipo"] == "return":
-                        
-                        if self.tipo.tipo != Tipos.VOID:
-                            if element["exp"] is None:
-                                raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return', ts_local.env, self.linea, self.columna)
-                            
-                            valor_return = element["exp"].getValor(ts_local)
-                            tipo_return = element["exp"].getTipo(ts_local)
-                            
-                            if tipo_return != self.tipo.tipo:
-                                raise Error_("Semantico", f'Tipo de Return incorrecto', ts_local.env, self.linea, self.columna)
-
-                            return valor_return
-                        else:
-                            raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return tipo {ts_local.getTiposNombre(self.tipo.tipo)}', ts_local.env, self.linea, self.columna)
-
-                
-            except Exception as e:
-                print(e)
-        
-        
-            
         # for ins in codigo:
+            
+        #     if ins is None:
+        #         continue
+            
+        #     try:
         #         element = ins.ejecutar(ts_local)
                 
         #         if element is not None:
@@ -145,6 +110,38 @@ class Funcion(Instruccion):
         #                     return valor_return
         #                 else:
         #                     raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return tipo {ts_local.getTiposNombre(self.tipo.tipo)}', ts_local.env, self.linea, self.columna)
+
+                
+        #     except Exception as e:
+        #         print(e)
+        
+        
+            
+        for ins in codigo:
+                element = ins.ejecutar(ts_local)
+                
+                if element is not None:
+                    if element["tipo"] == "break":
+                        raise Error_("Semantico", f'No se puede ejecutar un Break fuera de un ciclo', ts_local.env, self.linea, self.columna)
+                    
+                    if element["tipo"] == "continue":
+                        raise Error_("Semantico", f'No se puede ejecutar un Continue fuera de un ciclo', ts_local.env, self.linea, self.columna)
+                    
+                    if element["tipo"] == "return":
+                        
+                        if self.tipo.tipo != Tipos.VOID:
+                            if element["exp"] is None:
+                                raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return', ts_local.env, self.linea, self.columna)
+                            
+                            valor_return = element["exp"].getValor(ts_local)
+                            tipo_return = element["exp"].getTipo(ts_local)
+                            
+                            if tipo_return != self.tipo.tipo:
+                                raise Error_("Semantico", f'Tipo de Return incorrecto', ts_local.env, self.linea, self.columna)
+
+                            return valor_return
+                        else:
+                            raise Error_("Semantico", f'La funcion {self.identificador} debe poseer un return tipo {ts_local.getTiposNombre(self.tipo.tipo)}', ts_local.env, self.linea, self.columna)
                         
 
         

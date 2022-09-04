@@ -32,7 +32,4 @@ class Length(Expresion):
         
         if isinstance(valor,list):
             return len(valor)
-        
-        print(valor)
-
         raise Error_("Semantico", "Solo se puede usar la funcion 'len' con Arreglos o Vectores", ts.env, self.linea, self.columna)

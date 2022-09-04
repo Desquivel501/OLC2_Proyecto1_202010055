@@ -34,11 +34,9 @@ class For(Instruccion):
              
             tipo_inicio = self.rango.inicio.getTipo(ts)
             tipo_fin = self.rango.fin.getTipo(ts)
-            
-            print(valor_inicio, " - ", valor_fin)
+        
             
             if tipo_inicio == Tipos.INT and tipo_fin == Tipos.INT:
-                print("here")
                 
                 for i in range(valor_inicio, valor_fin):
 
@@ -86,14 +84,6 @@ class For(Instruccion):
                         
                         ts_local.add(self.iterador, lista.valores[i], self.linea, self.columna)
                     
-                        for x in lista.valores[i].dic_atributos:
-                            print(lista.valores[i].dic_atributos[x].valor)
-                            
-                        
-                        prueba = ts_local.buscar(self.iterador)
-                        
-                        for x in prueba.dic_atributos:
-                            print(prueba.dic_atributos[x].valor)
                         
                     else:
                         nuevo = Simbolo()

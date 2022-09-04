@@ -16,12 +16,10 @@ class Logica(Operacion):
         
         if self.operador == Operador.NOT:
             if tipo_left is not Tipos.BOOLEAN and tipo_right is not Tipos.BOOLEAN:
-                print(f'No se puede realizar operacion logica entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede negar un valor tipo {Tipos(tipo_right).name}',ts.env, self.linea, self.columna)
             return not valor_left
 
         if tipo_left is not Tipos.BOOLEAN and tipo_right is not Tipos.BOOLEAN:
-                print(f'No se puede realizar operacion logica entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede realizar operacion logica entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',ts.env, self.linea, self.columna)
         
         if self.operador == Operador.AND:

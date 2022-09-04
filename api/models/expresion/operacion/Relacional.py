@@ -26,7 +26,6 @@ class Relacional(Operacion):
             if tipo_left == tipo_right:
                 return valor_left == valor_right
             else:
-                print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',ts.env, self.linea, self.columna)
                 
                 
@@ -34,7 +33,6 @@ class Relacional(Operacion):
             if tipo_left == tipo_right:
                 return valor_left != valor_right
             else:
-                print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',ts.env, self.linea, self.columna)
                 
                 
@@ -51,8 +49,6 @@ class Relacional(Operacion):
             if tipo_left == tipo_right:
                 return valor_left > valor_right
             else:
-                
-                print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',ts.env, self.linea, self.columna)
                 
                 
@@ -60,7 +56,6 @@ class Relacional(Operacion):
             if tipo_left == tipo_right:
                 return valor_left < valor_right
             else:
-                print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',ts.env, self.linea, self.columna)
                 
                 
@@ -68,7 +63,6 @@ class Relacional(Operacion):
             if tipo_left == tipo_right:
                 return valor_left >= valor_right
             else:
-                print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',ts.env, self.linea, self.columna)
                 
 
@@ -76,7 +70,6 @@ class Relacional(Operacion):
             if tipo_left == tipo_right:
                 return valor_left <= valor_right
             else:
-                print(f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}')
                 raise Error_("Semantico",f'No se puede realizar operacion "{self.getOperacion(self.operador)}" entre {Tipos(tipo_left).name} y {Tipos(tipo_right).name}',ts.env, self.linea, self.columna)
                
                 

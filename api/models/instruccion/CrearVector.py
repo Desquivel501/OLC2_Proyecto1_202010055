@@ -32,10 +32,6 @@ class CrearVector(Instruccion):
             instanciaVector.mut = self.mut
             instanciaVector.capacidad = capacidad
             
-            print("-------------LISTA---------------------------------")        
-            print("Vacio")
-            print("---------------------------------------------------") 
-            
             ts.add(self.id_instancia, instanciaVector, self.linea, self.columna)
             return
         
@@ -51,23 +47,11 @@ class CrearVector(Instruccion):
         if self.tipo is not None:        
             if self.tipo.tipo != nueva_instancia.tipo:
                 raise Error_("Semantico", f'Tipos en arreglo no coinciden', ts.env, self.linea, self.columna)
-
-          
-        print("-------------LISTA---------------------------------")        
-        print(nueva_instancia.valores)
-        print("---------------------------------------------------") 
-        
-        print("-------------DIMENSION-----------------------------")        
-        print(nueva_instancia.dimensiones)
-        print("---------------------------------------------------") 
-        
-
+            
         nueva_instancia.identificador = self.id_instancia
         nueva_instancia.mut = self.mut
         nueva_instancia.capacidad = len(nueva_instancia.valores)
-        
-        print("ID: ", nueva_instancia.identificador, " - Tipo: ", nueva_instancia.tipo, " - Valores: ", nueva_instancia.valores)
-                
+            
         ts.add(self.id_instancia, nueva_instancia, self.linea, self.columna)
         
         

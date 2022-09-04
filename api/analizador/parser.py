@@ -19,6 +19,7 @@ from models.expresion.AccesoArreglo import AccesoArreglo
 from models.expresion.ArrayData import ArrayData
 from models.instruccion.CrearArreglo import CrearArreglo
 from models.misc.Dimension import Dimension
+from models.misc.Else import Else
 from models.instruccion.For import For
 from models.misc.Rango import Rango
 from models.instruccion.ModStruct import ModStruct
@@ -189,6 +190,7 @@ def p_modulo(p):
     """
     p[0] = Modulo(p[2], p[4], p.lineno(1),p.lexpos(0))
     
+    
 def p_instrucciones_mod(p):
     """
     instrucciones_mod : instrucciones_mod instruccion_mod
@@ -323,8 +325,6 @@ def p_parametro(p):
     elif len(p) == 6 and p.slice[1].type == "MUT":
         p[0] = Parametro(p[2], p[5], True)
         
-    print(p[0])
-        
         
 
 def p_return(p):
@@ -420,18 +420,25 @@ def p_statement_error(p):
 
 def p_expresion_if_else(p):
     """
-    exp_if : IF expresion LLV_I expresion LLV_D exp_else
+    exp_if : IF expresion LLV_I instrucciones expresion LLV_D exp_else
+           | IF expresion LLV_I expresion LLV_D exp_else
     """
-    p[0] = ExpIf(p[2],p[4],p[6],p.lineno(1),p.lexpos(0) )
+    if len(p) == 8:
+        p[0] = ExpIf(p[2],p[4], p[5], p[7], p.lineno(1),p.lexpos(0) )
+    else:
+        p[0] = ExpIf(p[2],None, p[4],p[6],p.lineno(1),p.lexpos(0) )
 
 
 def p_expresion_else(p):
     """
-    exp_else : ELSE LLV_I expresion LLV_D
+    exp_else : ELSE LLV_I instrucciones expresion LLV_D
+             | ELSE LLV_I expresion LLV_D
              | ELSE exp_if
     """
-    if p[2] == '{':
-        p[0] = p[3]
+    if len(p) == 6:
+        p[0] = Else(p[3], p[4])
+    elif len(p) == 5:
+        p[0] = Else(None, p[3])
     else:
         p[0] = p[2]
 
@@ -648,10 +655,10 @@ def p_tipo(p):
         | STRING
         | CHAR
         | VOID
-        | ID
+        | acceso_mod
         | USIZE
     """
-    if p.slice[1].type == 'ID':
+    if p.slice[1].type == 'acceso_mod':
         p[0] = Tipo(tipo=Tipos.STRUCT)
     elif p.slice[1].type == 'USIZE':
         p[0] = Tipo(tipo=Tipos.INT)
@@ -689,11 +696,9 @@ def p_tipo_funcion(p):
         p[0] = Tipo(stipo = "&str")
         
     if p.slice[1].type == 'dimensiones_un_tipo':
-        print("*****************************************************************")
         p[0] = p[1]
     
     if p.slice[1].type == 'dimensiones_arreglo_tipo':
-        print("*****************************************************************")
         p[0] = p[1]
 
 
@@ -724,6 +729,7 @@ def p_struct(p):
     """
     p[0] = Struct(p[2],p[4],p.lineno(1), p.lexpos(0) )
 
+
 def p_lista_campos(p):
     """
     lista_campos : lista_campos COMA campo
@@ -739,8 +745,12 @@ def p_lista_campos(p):
 def p_campo(p):
     """
     campo : ID D_PUNTO tipo_funcion
+          | PUB ID D_PUNTO tipo_funcion
     """
-    p[0] = Campos(p[1], p[3])
+    if len(p) == 4:
+        p[0] = Campos(p[1], p[3])
+    else:
+        p[0] = Campos(p[2], p[4])
         
 
 def p_dec_struct(p):
@@ -814,8 +824,6 @@ def p_arreglo(p):
     """
     lista = p[4].lista
     tipo = p[4].tipo
-    print("tipo: ", tipo)
-    print("lista: ", lista)
     p[0] = CrearArreglo(p[2],lista,tipo,p[6],False,p.lineno(1), p.lexpos(0) )
     
 
@@ -826,8 +834,6 @@ def p_arreglo_mut(p):
     """
     lista = p[5].lista
     tipo = p[5].tipo
-    print("tipo: ", tipo)
-    print("lista: ", lista)
     p[0] = CrearArreglo(p[3],lista,tipo,p[7],True,p.lineno(1), p.lexpos(0) )
 
 
@@ -966,7 +972,6 @@ def p_tipo_vector(p):
     p[0] = p[3]
     
     
-    
 def p_tipo_modulo(p):
     """
     tipo_modulo : tipo_mod D_PUNTO D_PUNTO ID
@@ -996,9 +1001,7 @@ def p_v_tipo(p):
            | tipo_modulo
     """
     if p.slice[1].type == 'ID':
-        print("STRUCT")
         p[0] = Tipo(tipo=Tipos.STRUCT)
-        print(p[0])
     elif p.slice[1].type == 'USIZE':
         p[0] = Tipo(tipo=Tipos.INT)
     elif p.slice[1].type == 'VEC_U':
@@ -1106,7 +1109,6 @@ def p_expresion_aritmetica(p):
                | expresion DIV expresion
                | expresion MODULO expresion
     """
-    print(p.lineno(0))
     p[0] = Aritmetica(p[1], p[2], p[3], p.lineno(0), p.lexpos(0) , False)
 
 

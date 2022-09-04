@@ -32,7 +32,6 @@ class Identificador(Expresion):
             return simbolo.tipo.tipo;
 
         else:
-            print("here")
             raise Error_("Semantico", f'No se encontro el simbolo {self.identificador}', ts.env, self.linea, self.columna)
              
         

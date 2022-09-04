@@ -28,21 +28,10 @@ class Asignacion(Instruccion):
         
     def ejecutar(self, ts: TablaSimbolos):
         
-        print("VALOR", self.valor)
-        
-        if isinstance(self.valor, Identificador):
-            print(self.valor.identificador)
-        
         var_valor = self.valor.getValor(ts)
         var_tipo = self.valor.getTipo(ts)
         
-        
-        
         if isinstance(var_valor, InstanciaStruct):
-            print("STRUCT/////////////////////////////////////////////////")
-            # struct = CrearInstanciaStruct(self.identificador,self.valor,self.mut,ts.env, self.linea, self.columna)
-            # struct.ejecutar(ts)
-
             var_valor.id_instancia = self.identificador
             var_valor.mut = self.mut
             ts.add(self.identificador, var_valor, self.linea, self.columna)
@@ -51,8 +40,6 @@ class Asignacion(Instruccion):
 
         if self.tipo is not None:
             if self.tipo.tipo != var_tipo:
-                print("here")
-                print('Semantico', f'El valor de la variable no coincide con su tipo: {self.tipo.tipo} -> {var_tipo}')
                 raise Error_('Semantico', f'El valor de la variable no coincide con su tipo: { self.tipo.tipo} -> {var_tipo}', ts.env, self.linea, self.columna)
         else:
            
@@ -70,8 +57,6 @@ class Asignacion(Instruccion):
         
         else:
             
-            print(self.identificador)
-            
             tipo_ = None
             if isinstance(simbolo, InstanciaVector):
                 tipo_ = Tipos.VECTOR_DATA
@@ -80,18 +65,13 @@ class Asignacion(Instruccion):
             
             
             if  tipo_ != var_tipo:
-                print("here2")
-                print(f'El valor de la variable no coincide con su tipo: {tipo_} -> {var_tipo}')
                 raise Error_('Semantico', f'El valor de la variable no coincide con su tipo: {tipo_} -> {var_tipo}', ts.env, self.linea, self.columna)
                 
             elif simbolo.mut is False:
-                print(f'No se puede cambiar el valor de una constante')
                 raise Error_("Semantico", "No se puede cambiar el valor de una constante", ts.env, self.linea, self.columna)
             else:
                 
-                if isinstance(simbolo, InstanciaVector):
-                    print("CAPACIDAD ----------------------------", var_valor.capacidad)
-                    
+                if isinstance(simbolo, InstanciaVector):                 
                     copia = copy.deepcopy(var_valor)       
                     simbolo = copia
 
@@ -100,7 +80,6 @@ class Asignacion(Instruccion):
                 else:
                     simbolo.valor = var_valor
                     ts.add(self.identificador, simbolo, self.linea, self.columna)
-                    print("var: ",self.identificador, " - ", var_valor, "Tipo: " ,  self.tipo.tipo)
                 
             
        

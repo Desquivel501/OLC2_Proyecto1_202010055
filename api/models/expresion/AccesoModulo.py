@@ -28,7 +28,6 @@ class AccesoModulo(Expresion, Instruccion):
         
              
     def getValor(self, ts: TablaSimbolos):
-        print("ACCESO MOD")
         
         copiaLista = copy.deepcopy(self.listaExpresiones)
         
@@ -48,9 +47,7 @@ class AccesoModulo(Expresion, Instruccion):
     def acceso(self, listaExpresion, struct, ts):
         expresionInicial = self.listaExpresiones.pop(0)
         
-        if len(listaExpresion) == 0:
-            print(expresionInicial)
-            
+        if len(listaExpresion) == 0:  
             publico = expresionInicial.checkPub(ts)
 
             if not publico:

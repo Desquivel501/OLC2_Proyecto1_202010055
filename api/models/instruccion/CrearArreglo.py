@@ -39,15 +39,7 @@ class CrearArreglo(Instruccion):
             if self.tipo.tipo != nueva_instancia.tipo:
                 raise Error_("Semantico", f'Tipos en arreglo no coinciden', ts.env, self.linea, self.columna)
         
-                
-        print("-------------LISTA---------------------------------")        
-        print(nueva_instancia.valores)
-        print("---------------------------------------------------") 
-        
-        print("-------------DIMENSION-----------------------------")        
-        print(nueva_instancia.dimensiones)
-        print("---------------------------------------------------") 
-        
+            
         if con_dimensiones:
             if not self.validarDimension(nueva_instancia.dimensiones, self.dimensiones):
                 raise Error_("Semantico", f'Las dimensiones del arreglo no coinciden', ts.env, self.linea, self.columna)
@@ -60,8 +52,6 @@ class CrearArreglo(Instruccion):
         
         nueva_instancia.identificador = self.id_instancia
         nueva_instancia.mut = self.mut
-        
-        print("ID: ", nueva_instancia.identificador, " - Tipo: ", nueva_instancia.tipo, " - Valores: ", nueva_instancia.valores)
                 
         ts.add(self.id_instancia, nueva_instancia, self.linea, self.columna)
         

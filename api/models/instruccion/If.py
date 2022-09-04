@@ -23,11 +23,7 @@ class If(Instruccion):
         ts_local = TablaSimbolos(ts, "if")
         condicion = self.condicion.getValor(ts)
         
-        print(condicion)
-        
         tipo_condicion = self.condicion.getTipo(ts)
-        
-        print(tipo_condicion)
         
         if tipo_condicion is not Tipos.BOOLEAN:
             raise Error_("Semantico", "La condicion en un If debe ser de tipo BOOLEAN", ts.env, self.linea, self.columna)
