@@ -130,7 +130,7 @@ def p_instruccion_error(p):
     """ 
     statement : error PUNTOCOMA 
     """
-    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) ))
+    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1),p.lexpos(1) ))
     p[0] = ""
 
 
@@ -178,7 +178,7 @@ def p_clase_funcion_error(p):
     """ 
     intrucciones_global : error LLV_D 
     """
-    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) ))
+    Program.errores.append(Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1),p.lexpos(1) ))
     p[0] = None
 
 
@@ -224,7 +224,7 @@ def p_acceso_modulo_exp(p):
     acceso_mod_exp : acceso_mod D_PUNTO D_PUNTO llamada
     """
     p[1].append(p[4])
-    p[0] = AccesoModulo(p[1],p.lineno(1), p.lexpos(0) )
+    p[0] = AccesoModulo(p[1],p.lineno(1),p.lexpos(1) )
 
 
 def p_acceso_modulo(p):
@@ -256,7 +256,7 @@ def p_instruccion_print(p):
     if len(p) == 6:
          p[0] = Print_(p[4], None,p.lineno(1),p.lexpos(0) )
     else:
-        p[0] = Print_( Primitivo(p[4], Tipos.STR, p.lineno(1), p.lexpos(0) ) , p[6],p.lineno(1),p.lexpos(0) )
+        p[0] = Print_( Primitivo(p[4], Tipos.STR, p.lineno(1),p.lexpos(1) ) , p[6],p.lineno(1),p.lexpos(0) )
 
 
 def p_exp_list(p):
@@ -279,9 +279,9 @@ def p_funcion(p):
             | FN ID PAR_I PAR_D statement
     """
     if len(p) == 7:
-        p[0] = Funcion(p[2],p[4],p[6], Tipo(tipo = Tipos.VOID), p.lineno(1), p.lexpos(0) )
+        p[0] = Funcion(p[2],p[4],p[6], Tipo(tipo = Tipos.VOID), p.lineno(1),p.lexpos(1) )
     else:
-        p[0] = Funcion(p[2],[],p[5], Tipo(tipo = Tipos.VOID), p.lineno(1), p.lexpos(0) )
+        p[0] = Funcion(p[2],[],p[5], Tipo(tipo = Tipos.VOID), p.lineno(1),p.lexpos(1) )
 
 
 def p_funcion_tipo(p):
@@ -290,9 +290,9 @@ def p_funcion_tipo(p):
             | FN ID PAR_I PAR_D MENOS MAYOR tipo_funcion statement
     """
     if len(p) == 10:
-        p[0] = Funcion(p[2],p[4],p[9], p[8], p.lineno(1), p.lexpos(0) )
+        p[0] = Funcion(p[2],p[4],p[9], p[8], p.lineno(1),p.lexpos(1) )
     else:
-        p[0] = Funcion(p[2],[],p[8], p[7], p.lineno(1), p.lexpos(0) )
+        p[0] = Funcion(p[2],[],p[8], p[7], p.lineno(1),p.lexpos(1) )
 
 
 def p_lista_param(p):
@@ -333,9 +333,9 @@ def p_return(p):
            | RETURN
     """
     if len(p) == 2:
-        p[0] = Return(None, p.lineno(1), p.lexpos(0) )
+        p[0] = Return(None, p.lineno(1),p.lexpos(1) )
     else:
-        p[0] = Return(p[2], p.lineno(1), p.lexpos(0) )
+        p[0] = Return(p[2], p.lineno(1),p.lexpos(1) )
 
 
 def p_llamada(p):
@@ -344,9 +344,9 @@ def p_llamada(p):
             | ID PAR_I exp_list_llamada PAR_D
     """
     if len(p) == 4:
-        p[0] = Llamada(p[1],[],p.lineno(1), p.lexpos(0) )
+        p[0] = Llamada(p[1],[],p.lineno(1),p.lexpos(1) )
     else:
-        p[0] = Llamada(p[1],p[3],p.lineno(1), p.lexpos(0) )
+        p[0] = Llamada(p[1],p[3],p.lineno(1),p.lexpos(1) )
 
 
 def p_exp_list_llamada(p):
@@ -381,14 +381,14 @@ def p_instruccion_if(p):
     """
     if : IF expresion statement
     """
-    p[0] = If(p[2], p[3], None, p.lineno(1), p.lexpos(0) )
+    p[0] = If(p[2], p[3], None, p.lineno(1),p.lexpos(1) )
 
 
 def p_instruccion_if_else(p):
     """
     if : IF expresion statement else
     """
-    p[0] = If(p[2], p[3], p[4], p.lineno(1), p.lexpos(0) )
+    p[0] = If(p[2], p[3], p[4], p.lineno(1),p.lexpos(1) )
 
 
 def p_instruccion_else(p):
@@ -414,7 +414,7 @@ def p_statement_error(p):
     """ 
     statement : error LLV_D 
     """
-    Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1), p.lexpos(0) )
+    Error_("Sintactico", "Error de sintaxis: " + str(p[1].value), " - ", p.lineno(1),p.lexpos(1) )
     p[0] = None
 
 
@@ -727,7 +727,7 @@ def p_struct(p):
     """
     struct : STRUCT ID LLV_I lista_campos LLV_D
     """
-    p[0] = Struct(p[2],p[4],p.lineno(1), p.lexpos(0) )
+    p[0] = Struct(p[2],p[4],p.lineno(1),p.lexpos(1) )
 
 
 def p_lista_campos(p):
@@ -768,7 +768,7 @@ def p_instancia(p):
     """
     instancia : ID LLV_I lista_atributo LLV_D
     """
-    p[0] = InstanciaStruct(p[1],p[3],p.lineno(1), p.lexpos(0) )
+    p[0] = InstanciaStruct(p[1],p[3],p.lineno(1),p.lexpos(1) )
 
 
 def p_lista_atributo(p):
@@ -788,7 +788,7 @@ def p_mod_struct(p):
     """
     mod_struct : acceso_struct IGUAL expresion
     """
-    p[0] = ModStruct(p[1],p[3],p.lineno(1), p.lexpos(0) )
+    p[0] = ModStruct(p[1],p[3],p.lineno(1),p.lexpos(1) )
 
 
 def p_acceso_struct_exp(p):
@@ -796,7 +796,7 @@ def p_acceso_struct_exp(p):
     acceso_struct_exp : acceso_struct
     """
     
-    p[0] = AccesoStruct(p[1],p.lineno(1), p.lexpos(0) )
+    p[0] = AccesoStruct(p[1],p.lineno(1),p.lexpos(1) )
 
 
 def p_acceso_struct(p):
@@ -824,7 +824,7 @@ def p_arreglo(p):
     """
     lista = p[4].lista
     tipo = p[4].tipo
-    p[0] = CrearArreglo(p[2],lista,tipo,p[6],False,p.lineno(1), p.lexpos(0) )
+    p[0] = CrearArreglo(p[2],lista,tipo,p[6],False,p.lineno(1),p.lexpos(1) )
     
 
 
@@ -834,7 +834,7 @@ def p_arreglo_mut(p):
     """
     lista = p[5].lista
     tipo = p[5].tipo
-    p[0] = CrearArreglo(p[3],lista,tipo,p[7],True,p.lineno(1), p.lexpos(0) )
+    p[0] = CrearArreglo(p[3],lista,tipo,p[7],True,p.lineno(1),p.lexpos(1) )
 
 
 
@@ -844,9 +844,9 @@ def p_arreglo_no_tipo(p):
                         | LET ID IGUAL datos_arreglo
     """
     if len(p) == 6:
-        p[0] = CrearArreglo(p[3],None,None,p[5],True,p.lineno(1), p.lexpos(0) )
+        p[0] = CrearArreglo(p[3],None,None,p[5],True,p.lineno(1),p.lexpos(1) )
     else:   
-        p[0] = CrearArreglo(p[2],None,None,p[4],True,p.lineno(1), p.lexpos(0) )
+        p[0] = CrearArreglo(p[2],None,None,p[4],True,p.lineno(1),p.lexpos(1) )
 
 
 def p_dimension_arreglo(p):
@@ -866,14 +866,14 @@ def p_datos_arreglo(p):
     """
     datos_arreglo : COR_I exp_list COR_D
     """
-    p[0] = ArrayData(p[2],p.lineno(1), p.lexpos(0) )
+    p[0] = ArrayData(p[2],p.lineno(1),p.lexpos(1) )
 
 
 def p_datos_arreglo_intervalo(p):
     """
     datos_arreglo : COR_I expresion PUNTOCOMA expresion  COR_D
     """
-    p[0] = ArrayDataIntervalo(p[2], p[4],p.lineno(1), p.lexpos(0) )
+    p[0] = ArrayDataIntervalo(p[2], p[4],p.lineno(1),p.lexpos(1) )
     
     
 #----------------------------------------------------------------------------------------------------ACCESO ARREGLOS
@@ -882,7 +882,7 @@ def p_acceso_arreglo(p):
     """
     acceso_arreglo : ID dimensiones
     """
-    p[0] = AccesoArreglo(p[1],p[2], p.lineno(1), p.lexpos(0) )
+    p[0] = AccesoArreglo(p[1],p[2], p.lineno(1),p.lexpos(1) )
 
 
 def p_dimensiones(p):
@@ -913,7 +913,7 @@ def p_mod_arreglo(p):
     """
     mod_arreglo : ID dimensiones IGUAL expresion
     """
-    p[0] = ModArreglo(p[1],p[2],p[4], p.lineno(1), p.lexpos(0) )
+    p[0] = ModArreglo(p[1],p[2],p[4], p.lineno(1),p.lexpos(1) )
 
 
 #----------------------------------------------------------------------------------------------------VECTORES
@@ -924,9 +924,9 @@ def p_vector(p):
                        | LET MUT ID IGUAL vec_dato
     """
     if len(p) == 5:
-        p[0] = CrearVector(p[2],None,None,p[4],False, p.lineno(1), p.lexpos(0) )
+        p[0] = CrearVector(p[2],None,None,p[4],False, p.lineno(1),p.lexpos(1) )
     else:
-        p[0] = CrearVector(p[3],None,None,p[5],True, p.lineno(1), p.lexpos(0) )
+        p[0] = CrearVector(p[3],None,None,p[5],True, p.lineno(1),p.lexpos(1) )
     
     
 def p_vector_tipo(p):
@@ -935,9 +935,9 @@ def p_vector_tipo(p):
                        | LET MUT ID D_PUNTO VEC_U MENOR v_tipo MAYOR IGUAL vec_dato
     """
     if len(p) == 10:
-        p[0] = CrearVector(p[2],None,p[6],p[9],False, p.lineno(1), p.lexpos(0) )
+        p[0] = CrearVector(p[2],None,p[6],p[9],False, p.lineno(1),p.lexpos(1) )
     else:
-        p[0] = CrearVector(p[3],None,p[7],p[10],True, p.lineno(1), p.lexpos(0) )
+        p[0] = CrearVector(p[3],None,p[7],p[10],True, p.lineno(1),p.lexpos(1) )
 
 
 def p_vector_new(p):
@@ -946,9 +946,9 @@ def p_vector_new(p):
                        | LET MUT ID D_PUNTO VEC_U MENOR v_tipo MAYOR IGUAL vec_new
     """
     if len(p) == 10:
-        p[0] = CrearVector(p[2],Primitivo(0, None, p.lineno(1), p.lexpos(0) ),p[6],None,False, p.lineno(1), p.lexpos(0) )
+        p[0] = CrearVector(p[2],Primitivo(0, None, p.lineno(1),p.lexpos(1) ),p[6],None,False, p.lineno(1),p.lexpos(1) )
     else:
-        p[0] = CrearVector(p[3],Primitivo(0, None, p.lineno(1), p.lexpos(0) ),p[7],None,True, p.lineno(1), p.lexpos(0) )
+        p[0] = CrearVector(p[3],Primitivo(0, None, p.lineno(1),p.lexpos(1) ),p[7],None,True, p.lineno(1),p.lexpos(1) )
 
 
 def p_vector_cappacity(p):
@@ -959,10 +959,10 @@ def p_vector_cappacity(p):
     
     if len(p) == 10:
         capacidad = p[9].expresion
-        p[0] = CrearVector(p[2],capacidad,p[6],None,False, p.lineno(1), p.lexpos(0) )
+        p[0] = CrearVector(p[2],capacidad,p[6],None,False, p.lineno(1),p.lexpos(1) )
     else:
         capacidad = p[10].expresion
-        p[0] = CrearVector(p[3],capacidad,p[7],None,True, p.lineno(1), p.lexpos(0) )
+        p[0] = CrearVector(p[3],capacidad,p[7],None,True, p.lineno(1),p.lexpos(1) )
 
 
 def p_tipo_vector(p):
@@ -1031,70 +1031,70 @@ def p_vec_dato(p):
     """
     vec_dato : VEC_L NOT COR_I exp_list  COR_D
     """
-    p[0] = VectorData(p[4], p.lineno(1), p.lexpos(0) )
+    p[0] = VectorData(p[4], p.lineno(1),p.lexpos(1) )
 
 
 def p_vec_dato_intervalo(p):
     """
     vec_dato : VEC_L NOT COR_I expresion PUNTOCOMA expresion  COR_D
     """
-    p[0] = VectorDataIntervalo(p[4],p[6], p.lineno(1), p.lexpos(0) )
+    p[0] = VectorDataIntervalo(p[4],p[6], p.lineno(1),p.lexpos(1) )
     
 
 def p_vector_push(p):
     """
     vec_push : expresion PUNTO PUSH PAR_I expresion PAR_D
     """
-    p[0] = Push(p[1],p[5], p.lineno(1), p.lexpos(0) )
+    p[0] = Push(p[1],p[5], p.lineno(1),p.lexpos(1) )
 
 
 def p_vector_insert(p):
     """
     vec_insert : expresion PUNTO INSERT PAR_I expresion COMA expresion PAR_D
     """
-    p[0] = Insert(p[1],p[7], p[5] , p.lineno(1), p.lexpos(0) )
+    p[0] = Insert(p[1],p[7], p[5] , p.lineno(1),p.lexpos(1) )
     
     
 def p_vector_remove(p):
     """
     vec_remove : expresion PUNTO REMOVE PAR_I expresion PAR_D
     """
-    p[0] = Remove(p[1],p[5], p.lineno(1), p.lexpos(0) )
+    p[0] = Remove(p[1],p[5], p.lineno(1),p.lexpos(1) )
 
 
 def p_vector_contains(p):
     """
     vec_contains : expresion PUNTO CONTAINS PAR_I AMP expresion PAR_D
     """
-    p[0] = Contains_(p[1],p[6], p.lineno(1), p.lexpos(0) )
+    p[0] = Contains_(p[1],p[6], p.lineno(1),p.lexpos(1) )
     
     
 def p_vector_get_cap(p):
     """
     vec_get_capacity : expresion PUNTO CAPACITY PAR_I PAR_D
     """
-    p[0] = GetCapacity(p[1],p.lineno(1), p.lexpos(0) )
+    p[0] = GetCapacity(p[1],p.lineno(1),p.lexpos(1) )
 
 
 def p_len(p):
     """
     length : expresion PUNTO LEN PAR_I PAR_D
     """
-    p[0] = Length(p[1], p.lineno(1), p.lexpos(0) )
+    p[0] = Length(p[1], p.lineno(1),p.lexpos(1) )
 
 
 def p_clone(p):
     """
     clone : expresion PUNTO CLONE PAR_I PAR_D
     """
-    p[0] = Clone(p[1], p.lineno(1), p.lexpos(0) )
+    p[0] = Clone(p[1], p.lineno(1),p.lexpos(1) )
     
     
 def p_chars(p):
     """
     chars : expresion PUNTO CHARS PAR_I PAR_D
     """
-    p[0] = Chars(p[1], p.lineno(1), p.lexpos(0) )
+    p[0] = Chars(p[1], p.lineno(1),p.lexpos(1) )
 
 
   
@@ -1109,14 +1109,14 @@ def p_expresion_aritmetica(p):
                | expresion DIV expresion
                | expresion MODULO expresion
     """
-    p[0] = Aritmetica(p[1], p[2], p[3], p.lineno(1), p.lexpos(0) , False)
+    p[0] = Aritmetica(p[1], p[2], p[3], p.lineno(1),p.lexpos(1) , False)
 
 
 def p_expresion_unario_ar(p):
     """
     expresion : MENOS expresion %prec UMENOS
     """
-    p[0] = Aritmetica(p[2], p[1], p[2], p.lineno(1), p.lexpos(0) , True)
+    p[0] = Aritmetica(p[2], p[1], p[2], p.lineno(1),p.lexpos(1) , True)
 
 
 def p_expresion_ex(p):
@@ -1128,14 +1128,14 @@ def p_expresion_ex(p):
     """
 
     if p[4] == "pow":
-        p[0] = Aritmetica(p[6], 'pow', p[8], p.lineno(1), p.lexpos(0) , False)
+        p[0] = Aritmetica(p[6], 'pow', p[8], p.lineno(1),p.lexpos(1) , False)
     elif p[4] == "powf":
-        p[0] = Aritmetica(p[6], 'powf', p[8], p.lineno(1), p.lexpos(0) , False)
+        p[0] = Aritmetica(p[6], 'powf', p[8], p.lineno(1),p.lexpos(1) , False)
 
     elif p[3] == "abs":
-        p[0] = Aritmetica(p[1], 'abs', p[1], p.lineno(1), p.lexpos(0) , False)
+        p[0] = Aritmetica(p[1], 'abs', p[1], p.lineno(1),p.lexpos(1) , False)
     elif p[3] == "sqrt":
-        p[0] = Aritmetica(p[1], 'sqrt', p[1], p.lineno(1), p.lexpos(0) , False)
+        p[0] = Aritmetica(p[1], 'sqrt', p[1], p.lineno(1),p.lexpos(1) , False)
 
 
 def p_expresion_relacional(p):
@@ -1147,7 +1147,7 @@ def p_expresion_relacional(p):
               | expresion D_IGUAL expresion
               | expresion NO_IGUAL expresion
     """
-    p[0] = Relacional(p[1], p[2], p[3], p.lineno(1), p.lexpos(0) , False)
+    p[0] = Relacional(p[1], p[2], p[3], p.lineno(1),p.lexpos(1) , False)
 
 
 def p_expresion_logica(p):
@@ -1155,14 +1155,14 @@ def p_expresion_logica(p):
     expresion : expresion OR expresion
               | expresion AND expresion
     """
-    p[0] = Logica(p[1], p[2], p[3], p.lineno(1), p.lexpos(0) , False)
+    p[0] = Logica(p[1], p[2], p[3], p.lineno(1),p.lexpos(1) , False)
 
 
 def p_expresion_unario_lo(p):
     """
     expresion : NOT expresion
     """
-    p[0] = Logica(p[2], p[1], p[2], p.lineno(1), p.lexpos(0) , True)
+    p[0] = Logica(p[2], p[1], p[2], p.lineno(1),p.lexpos(1) , True)
 
 
 def p_factor_agrupacion(p):
@@ -1177,7 +1177,7 @@ def p_expresion_numero(p):
     expresion : ENTERO
               | DECIMAL
     """
-    p[0] = Primitivo(p[1], None, p.lineno(1), p.lexpos(0) )
+    p[0] = Primitivo(p[1], None, p.lineno(1),p.lexpos(1) )
 
 
 def p_expresion_bool(p):
@@ -1187,28 +1187,28 @@ def p_expresion_bool(p):
     """
 
     val = True if p[1] == 'true' else False
-    p[0] = Primitivo(val, Tipos.BOOLEAN, p.lineno(1), p.lexpos(0) )
+    p[0] = Primitivo(val, Tipos.BOOLEAN, p.lineno(1),p.lexpos(1) )
 
 
 def p_expresion_char(p):
     """
     expresion : CHAR_S
     """
-    p[0] = Primitivo(p[1], Tipos.CHAR, p.lineno(1), p.lexpos(0) )
+    p[0] = Primitivo(p[1], Tipos.CHAR, p.lineno(1),p.lexpos(1) )
 
 
 def p_expresion_str(p):
     """
     expresion : CADENA
     """
-    p[0] = Primitivo(p[1], Tipos.STR, p.lineno(1), p.lexpos(0) )
+    p[0] = Primitivo(p[1], Tipos.STR, p.lineno(1),p.lexpos(1) )
 
 
 def p_expresion_id(p):
     """
     expresion : ID
     """
-    p[0] = Identificador(p[1], p.lineno(1), p.lexpos(0) )
+    p[0] = Identificador(p[1], p.lineno(1),p.lexpos(1) )
 
 
 def p_to_string(p):
@@ -1216,14 +1216,14 @@ def p_to_string(p):
     expresion : expresion PUNTO TO_STRING PAR_I PAR_D
               | expresion PUNTO TO_OWNED PAR_I PAR_D
     """
-    p[0] = ToString(p[1], p.lineno(1), p.lexpos(0) )
+    p[0] = ToString(p[1], p.lineno(1),p.lexpos(1) )
     
 
 def p_cast(p):
     """
     expresion : expresion AS tipo
     """
-    p[0] = Casteo(p[3],p[1], p.lineno(1), p.lexpos(0) )
+    p[0] = Casteo(p[3],p[1], p.lineno(1),p.lexpos(1) )
 
 
 def p_expresion_sentencia(p):
